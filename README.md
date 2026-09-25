@@ -16,7 +16,9 @@ It uses Sepolia's official Permissioned Resolver. There is no Devouch API, datab
 The issuer published masusanou's endorsement on Sepolia. The CLI accepted the same original under two policies
 and rejected it under a policy declining the issuer, using Tenderly and ethPandaOps at the same chain snapshot.
 See the [public-chain evidence](docs/demo-evidence.md) and [implementation record](docs/implementation-status.md).
-Real-wallet withdrawal, live hosting, a published Action commit, and endorsed fork-PR runs remain to be completed.
+The [live demo](https://geeknees.github.io/devouch/) and the pinned Action commit are publicly available.
+Real-wallet withdrawal and endorsed fork-PR validation remain separate verification steps; see the receiving PR's
+**Devouch endorsement report** for the actual author's subject, evidence validity, and repository acceptance.
 The corrected lockfile passes a clean frozen install and the [GitHub test workflow](https://github.com/geeknees/devouch/actions/runs/36160022026).
 The private preparation PR's Action reported missing evidence correctly; this is not yet an endorsed fork-PR demonstration.
 
@@ -49,13 +51,14 @@ The [release runbook](docs/release-runbook.md) covers the prepared manual GitHub
 5. In **Withdraw**, load the endorsement, review it, and clear the exact public record. Run verification again after two more blocks.
 
 The demo account is [masusanou](https://github.com/masusanou), numeric ID `287365775`.
-The planned receiving repository is [geeknees/devouch](https://github.com/geeknees/devouch).
-It is currently private and will be made public for the demo, as requested by the owner.
-Public distribution and fork-PR validation have not yet been performed.
+The public receiving repository is [geeknees/devouch](https://github.com/geeknees/devouch).
+Open the published workspace at **https://geeknees.github.io/devouch/**.
 The chosen ENS name is `masusanou-dev.eth`; the published endorsement expires at `2026-10-02T16:45:00Z`.
 The [demo examples](examples/demo/README.md) retrieve its original JSON using the recorded public transaction.
-The adoption workflow pins the locally tested Action commit;
-its public availability remains unverified.
+The unchanged original is included at [`.devouch/vouches/github-287365775.json`](.devouch/vouches/github-287365775.json).
+The adoption workflow pins the publicly available [Action commit](https://github.com/geeknees/devouch/commit/9ce4525f269f590d4d8fd0e123ff35d33dce8efa).
+For fork-PR validation, confirm subject `github:287365775`, evidence `valid`, and policy `accepted`
+in **Devouch endorsement report**; a green report-mode check alone does not establish acceptance.
 
 ## CLI
 
