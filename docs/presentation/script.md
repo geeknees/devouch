@@ -55,7 +55,7 @@ Before going on stage, check which steps actually run on Sepolia versus the loca
 
 **2. Verify in two repositories (≈35s)**
 
-`[DEMO]` Run `devouch verify --credential ... --policy repo-a/policy.json --subject github:<id>` and the same command with `repo-b/policy.json`.
+`[DEMO]` Run commands 2 and 3 from [Live demo commands](#live-demo-commands).
 
 > Now two different repositories check the **same** endorsement.
 > Repo A trusts this recommender: `valid`, `accepted`.
@@ -72,7 +72,7 @@ Before going on stage, check which steps actually run on Sepolia versus the loca
 
 **4. Revoke (≈30s)**
 
-`[DEMO]` In the web app, revoke the endorsement from the wallet. Re-run verify for both repos, then re-run the Action.
+`[DEMO]` In the web app, revoke the endorsement from the wallet. Re-run commands 2 and 3, then re-run the Action.
 
 > Trust has to be withdrawable. I clear the record on ENS.
 > The old JSON is still sitting in both repositories — but verification reads the on-chain history, so now both say `revoked`.
@@ -130,7 +130,7 @@ Before going on stage, check which steps actually run on Sepolia versus the loca
 
 **2. 二つのリポジトリで検証（約35秒）**
 
-`[DEMO]` `devouch verify --credential ... --policy repo-a/policy.json --subject github:<id>` を実行し、`repo-b/policy.json` でも同じコマンドを実行する。
+`[DEMO]` [本番のコマンド](#live-demo-commands)の 2 と 3 を実行する。
 
 > 二つのリポジトリが **同じ** 推薦を確認します。
 > repo A はこの推薦者を信頼しているので `valid`・`accepted`。
@@ -147,7 +147,7 @@ Before going on stage, check which steps actually run on Sepolia versus the loca
 
 **4. 失効（約30秒）**
 
-`[DEMO]` Web アプリでウォレットから推薦を失効させる。両リポジトリで verify を再実行し、Action も再実行する。
+`[DEMO]` Web アプリでウォレットから推薦を失効させる。コマンド 2 と 3 を再実行し、Action も再実行する。
 
 > 信頼は取り消せなければいけません。ENS の記録を空にします。
 > 古い JSON は両方のリポジトリに残ったままです。でも検証はオンチェーンの履歴を読むので、どちらも `revoked` になります。
@@ -166,6 +166,36 @@ Before going on stage, check which steps actually run on Sepolia versus the loca
 > AI はコードを増やせる。メンテナーの信頼は増やせない。Devouch は、その信頼を持ち運べるようにします。ありがとうございました。
 
 ---
+
+## Live demo commands
+
+本番で端末に打つコマンド。repo のルートで実行する。ファイルは `.devouch/local/demo/`（Git 管理外）に置く。
+
+| ファイル | 用意するとき |
+| --- | --- |
+| `repo-a.json` | 用意済み。`.devouch/policy.json` と同じ推薦者・resolver を信頼する |
+| `repo-b.json` | 用意済み。`repo-a.json` から `trustedIssuers` だけ空にしたもの |
+| `vouch.json` | 本番で公開した直後に、Web の **Download endorsement** で保存する |
+
+推薦は失効すると復活しないので、リハーサルと本番で毎回新しく発行する。
+既定の RPC は Tenderly（`https://sepolia.gateway.tenderly.co`）。取得できないときは各コマンドに `--rpc-url https://rpc.sepolia.ethpandaops.io` を付ける（[実機デモの手順](../demo-runbook.md)）。
+
+```sh
+# 1. 公開前の確認（任意）。まだ推薦がないので missing になる
+./exe/devouch verify --credential .devouch/local/demo/vouch.json --policy .devouch/local/demo/repo-a.json --subject github:287365775
+
+# 公開後、Web からダウンロードした原本を置く
+mv ~/Downloads/github-287365775.json .devouch/local/demo/vouch.json
+
+# 2. repo A：valid / accepted
+./exe/devouch verify --credential .devouch/local/demo/vouch.json --policy .devouch/local/demo/repo-a.json --subject github:287365775
+
+# 3. repo B：valid / rejected（失効後は 2 と 3 とも revoked / not_evaluated）
+./exe/devouch verify --credential .devouch/local/demo/vouch.json --policy .devouch/local/demo/repo-b.json --subject github:287365775
+```
+
+Web は `github-<数値ID>.json` という名前で保存する。同名のファイルがあるとブラウザが `(1)` を付けるので、`mv` の元を合わせる。原本の JSON は整形し直さない。
+公開・失効の直後は2ブロック（約24秒）待ってから検証する。待つ間に次のセリフへ進むと間が空かない。
 
 ## Q&A Preparation / Q&A 準備
 
