@@ -1,0 +1,5 @@
+#!/usr/bin/env ruby
+# ABOUTME: Runs the Devouch Ruby command interface from a local checkout.
+# ABOUTME: Loads only this release's verifier and never executes contribution code.
+require_relative "../lib/devouch/cli"
+exit Devouch::CLI.new.run(ARGV)

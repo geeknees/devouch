@@ -1,0 +1,49 @@
+# ABOUTME: Reports the PR author's portable ENSv2 endorsement with read-only GitHub access.
+# ABOUTME: Runs only this release's bundled code and reads base/head JSON without a PR checkout.
+name: Devouch
+description: Verify portable contributor endorsements on ENSv2 and report repository acceptance.
+inputs:
+  policy-path:
+    description: Repository-relative JSON policy path, read from the PR base SHA.
+    default: .devouch/policy.json
+  mode:
+    description: Report-only mode; completed evidence decisions do not force merge approval.
+    default: report
+  github-token:
+    description: Read-only GitHub execution token.
+    default: ${{ github.token }}
+  rpc-url:
+    description: Sepolia RPC endpoint with historical state and log access.
+    default: https://sepolia.gateway.tenderly.co
+outputs:
+  evidence-status:
+    description: Independent evidence status.
+    value: ${{ steps.verify.outputs.evidence-status }}
+  policy-status:
+    description: Acceptance under the base repository policy.
+    value: ${{ steps.verify.outputs.policy-status }}
+  subject:
+    description: PR author's numeric GitHub ID.
+    value: ${{ steps.verify.outputs.subject }}
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+      with:
+        node-version: '24'
+    - uses: ruby/setup-ruby@14594264cd68ce8a2345dd349bc3d138a4ef85c8
+      with:
+        ruby-version: '3.4'
+        bundler-cache: false
+        working-directory: ${{ github.action_path }}
+    - id: verify
+      shell: bash
+      working-directory: ${{ github.action_path }}
+      env:
+        DEVOUCH_ACTION_PATH: ${{ github.action_path }}
+        DEVOUCH_POLICY_PATH: ${{ inputs.policy-path }}
+        DEVOUCH_MODE: ${{ inputs.mode }}
+        DEVOUCH_GITHUB_TOKEN: ${{ inputs.github-token }}
+        DEVOUCH_RPC_URL: ${{ inputs.rpc-url }}
+        DEVOUCH_RELEASE_REF: ${{ github.action_ref }}
+      run: ruby "$DEVOUCH_ACTION_PATH/scripts/action.rb"
