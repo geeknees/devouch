@@ -32,7 +32,7 @@ Before going on stage, check which steps actually run on Sepolia versus the loca
 > The code is cheap. The maintainer's time and trust are not.
 >
 > Mitchell Hashimoto's **vouch** shows a good answer: before reviewing, ask "has someone I trust vouched for this contributor?"
-> But today that trust sits in one repository's list. Every new project starts from zero.
+> It can already share lists across repositories. Devouch adds an issuer-signed record with an expiry and a withdrawal history that anyone can verify.
 
 ### 0:50 — Idea (30s)
 
@@ -67,7 +67,7 @@ Before going on stage, check which steps actually run on Sepolia versus the loca
 `[DEMO]` Show the PR's Devouch check summary.
 
 > For maintainers, setup is two files: a policy and a workflow.
-> The Action reads the PR author's ID, reads the endorsement from ENS, and reports the result.
+> The Action matches the PR author's ID with the original JSON, checks its ENS history, and reports the result.
 > It never checks out or runs the PR's code, and it needs no secrets.
 
 **4. Revoke (≈30s)**
@@ -76,7 +76,7 @@ Before going on stage, check which steps actually run on Sepolia versus the loca
 
 > Trust has to be withdrawable. I clear the record on ENS.
 > The old JSON is still sitting in both repositories — but verification reads the on-chain history, so now both say `revoked`.
-> One transaction, and every repository sees it.
+> Each repository sees that withdrawal on its next verification.
 
 `[FALLBACK]` If Sepolia is slow, show the recorded run of the same step and say so.
 
@@ -107,7 +107,7 @@ Before going on stage, check which steps actually run on Sepolia versus the loca
 > コードは安くなりました。でも、メンテナーの時間と信頼は安くなっていません。
 >
 > Mitchell Hashimoto の **vouch** は良い答えを示しています。レビューの前に「信頼できる誰かが、この貢献者を推薦しているか」を見る。
-> ただ今は、その信頼が一つのリポジトリのリストに閉じています。新しいプロジェクトでは毎回ゼロからです。
+> vouch は、すでに別のリポジトリのリストを参照できます。Devouch はそこに、推薦者の署名、期限、取り消しの履歴を誰でも検証できる記録を加えます。
 
 ### 0:50 — アイデア（30秒）
 
@@ -142,7 +142,7 @@ Before going on stage, check which steps actually run on Sepolia versus the loca
 `[DEMO]` PR の Devouch チェックの Summary を見せる。
 
 > メンテナーの導入は、方針ファイルと workflow の2ファイルだけです。
-> Action は PR 作者の ID を読み、ENS から推薦を読んで結果を表示します。
+> Action は PR 作者の ID と推薦原本を照合し、ENS 上の履歴を確認して結果を表示します。
 > PR のコードは checkout も実行もせず、secret も不要です。
 
 **4. 失効（約30秒）**
@@ -151,7 +151,7 @@ Before going on stage, check which steps actually run on Sepolia versus the loca
 
 > 信頼は取り消せなければいけません。ENS の記録を空にします。
 > 古い JSON は両方のリポジトリに残ったままです。でも検証はオンチェーンの履歴を読むので、どちらも `revoked` になります。
-> 一回のトランザクションで、すべてのリポジトリに反映されます。
+> 各リポジトリが次に検証した時に、取り消しが反映されます。
 
 `[FALLBACK]` Sepolia が遅い場合は、同じ手順の録画を見せ、録画であることを伝える。
 
@@ -173,25 +173,27 @@ Before going on stage, check which steps actually run on Sepolia versus the loca
 
 | ファイル | 用意するとき |
 | --- | --- |
-| `repo-a.json` | 用意済み。`.devouch/policy.json` と同じ推薦者・resolver を信頼する |
-| `repo-b.json` | 用意済み。`repo-a.json` から `trustedIssuers` だけ空にしたもの |
+| `examples/demo/policy-a.json` | Git管理済み。`.devouch/policy.json` と同じ推薦者・resolver を信頼する |
+| `examples/demo/policy-b-reject.json` | Git管理済み。別repoの方針例で、`trustedIssuers` は空 |
 | `vouch.json` | 本番で公開した直後に、Web の **Download endorsement** で保存する |
 
 推薦は失効すると復活しないので、リハーサルと本番で毎回新しく発行する。
 既定の RPC は Tenderly（`https://sepolia.gateway.tenderly.co`）。取得できないときは各コマンドに `--rpc-url https://rpc.sepolia.ethpandaops.io` を付ける（[実機デモの手順](../demo-runbook.md)）。
 
 ```sh
-# 1. 公開前の確認（任意）。まだ推薦がないので missing になる
-./exe/devouch verify --credential .devouch/local/demo/vouch.json --policy .devouch/local/demo/repo-a.json --subject github:287365775
+mkdir -p .devouch/local/demo
+
+# 1. 原本ファイルを置く前の確認（任意）。ファイルがなければ missing になる
+./exe/devouch verify --credential .devouch/local/demo/vouch.json --policy examples/demo/policy-a.json --subject github:287365775
 
 # 公開後、Web からダウンロードした原本を置く
 mv ~/Downloads/github-287365775.json .devouch/local/demo/vouch.json
 
 # 2. repo A：valid / accepted
-./exe/devouch verify --credential .devouch/local/demo/vouch.json --policy .devouch/local/demo/repo-a.json --subject github:287365775
+./exe/devouch verify --credential .devouch/local/demo/vouch.json --policy examples/demo/policy-a.json --subject github:287365775
 
 # 3. repo B：valid / rejected（失効後は 2 と 3 とも revoked / not_evaluated）
-./exe/devouch verify --credential .devouch/local/demo/vouch.json --policy .devouch/local/demo/repo-b.json --subject github:287365775
+./exe/devouch verify --credential .devouch/local/demo/vouch.json --policy examples/demo/policy-b-reject.json --subject github:287365775
 ```
 
 ダウンロードがうまくいかないときは、チェーンから原本を取り出す。Web の **Save publication position** で保存した `publication.json`（公開したブロックとトランザクション）を使う。
@@ -207,6 +209,9 @@ mv ~/Downloads/publication.json .devouch/local/demo/publication.json
 
 Web は `github-<数値ID>.json` という名前で保存する。同名のファイルがあるとブラウザが `(1)` を付けるので、`mv` の元を合わせる。原本の JSON は整形し直さない。
 公開・失効の直後は2ブロック（約24秒）待ってから検証する。待つ間に次のセリフへ進むと間が空かない。
+これは待ち時間の目安。snapshotが取引のblock以降になったことを結果で確認する。過去のAction結果は自動で更新されない。
+
+比較の根拠は [vouchの調査記録](../hackathon-research.md#vouch-が扱っている信頼)。他repoのリストを参照できることを前提に、署名・期限・失効履歴の違いを説明する。
 
 ## Q&A Preparation / Q&A 準備
 

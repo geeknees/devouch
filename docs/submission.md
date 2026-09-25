@@ -103,7 +103,7 @@ Devouch carries a reference; it does not turn that reference into automatic appr
 |---|---|
 | 公開コード / license / 配布SHA | MITあり、Actionのローカル固定SHAは [公開手順](release-runbook.md)。公開取得は未確認 |
 | ライブデモURL | 手動Pages workflowを準備、未公開 |
-| 動画URL | 実機・本人音声の提出動画は未完成。別作業でローカルEVMの無音素材を作る録画ツールが追加された |
+| 動画URL | 別エージェントの作業で完成したとユーザー確認（2026-09-26）。提出URLは未記録 |
 | ENSv2の実txと失効後のreadback | [本人公開・原本取得・A/B方針比較を確認](demo-evidence.md)。実失効は未実施 |
 | 人間・agent名義の実PRとAction run | 未取得 |
 | 別RPC・別ホストからの実操作 | ローカルUI経由の本人公開、2社RPCの検証を確認。別ホストの実操作は未実施 |

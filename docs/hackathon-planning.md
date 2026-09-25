@@ -2,7 +2,7 @@
 
 作成日：2026-09-25。実装追記：2026-09-26。
 
-状態：推薦・分散性優先の方針でCLI・静的UI・read-only Actionを新規実装し、公式ENS bytecodeを使うローカル通しテストを実施した。詳細は [実装状況](implementation-status.md)と [v1検証契約](protocol.md)。デモ先はユーザー訂正により `geeknees/devouch`、投稿者は `masusanou`。repoはデモ時に公開する。公開配布・Sepolia実取引・実fork PRはまだ未確認。以下の企画・調査記録の時点と区別する。
+状態：推薦・分散性優先の方針でCLI・静的UI・read-only Actionを新規実装し、ローカル通しテストとGitHub CIが成功した。本人walletのSepolia公開と、同一原本のA/B方針比較も [実機検証済み](demo-evidence.md)。詳細は [実装状況](implementation-status.md)と [v1検証契約](protocol.md)。デモ先は `geeknees/devouch`、投稿者は `masusanou`。公開配布・推薦付き実fork PR・実Sepolia失効は未実施。以下の企画・調査記録の時点と区別する。
 
 本書を現在の企画の入口とする。以下の関連メモは検討の背景として参照し、方針が異なる場合は本書を優先する。
 

@@ -27,7 +27,8 @@ Actionを更新するときは、ソース・配布物の一致とテストを�
 
 1. 公開するcommitと差分を確認し、privacy-checkの全ファイル・履歴検査を行う。
    ローカルの `.devouch/local/`、鍵、token、rawログを公開物へ追加しない。
-   台本の氏名は現在placeholderだが既存履歴には残る。履歴を含めて公開するかを確定する。自動で履歴を書き換えない。
+   台本の氏名は現在placeholderだが既存履歴には残る。Gitの作者・committerの氏名と個人メール、提出フォーム画像のイニシャルも確認する。
+   これらを含めて公開してよいかを確定する。自動で履歴を書き換えない。[検査結果](implementation-status.md#公開前の検査)を参照する。
 2. 保護branchへ直接pushせず、通常のreview経路で公開対象の変更をremoteへ反映する。
    リポジトリのvisibility変更は、ユーザーが指定したデモ時の操作として別に実行する。
 3. 公開repoと固定Action commitが未認証で取得できることを確認し、公開commitのTest workflow成功を確認する。

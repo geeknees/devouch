@@ -3,6 +3,12 @@
 Portable contributor endorsements, published and withdrawn by their issuer on ENSv2.
 One signed recommendation can be evaluated by multiple repositories; each maintainer chooses whom to trust.
 
+Inspired by [Mitchell Hashimoto's vouch](https://github.com/mitchellh/vouch), which asks whether a trusted person
+has vouched for a contributor before a maintainer spends time reviewing their work.
+vouch already supports sharing contributor lists across repositories. Devouch explores issuer-signed endorsements
+with an expiry and a withdrawal history on ENSv2, while keeping each repository's acceptance policy independent.
+It is a separate implementation; it does not embed vouch. See the [source comparison](docs/hackathon-research.md#vouch-が扱っている信頼).
+
 This hackathon implementation contains a Ruby CLI, a static wallet workspace, and a read-only GitHub Action.
 It uses Sepolia's official Permissioned Resolver. There is no Devouch API, database, shared publisher key, or new registry contract.
 
