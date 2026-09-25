@@ -1,12 +1,12 @@
-# Devouch 導入マニュアル（設計レビュー用）
+# Devouch 導入マニュアル
 
-更新：2026-09-25。対象は、今回企画している「貢献者への推薦を検証する版」。**以下は目指す導入手順であり、今の Action にそのまま設定して動くマニュアルではありません。** 新しい Action、入力形式、公開先・リリース SHA、既定 RPC は未実装・未確認です。既存の委任・Git 来歴版は [README](../README.md)を参照してください。
+更新：2026-09-26。推薦版の [Action](../action.yml)・[CLI](../exe/devouch)・静的画面を新規実装し、ローカル通しテストを実施しました。**公開済みの配布 SHA と実 fork PR の確認はまだありません。** 公開後に下記 workflow の SHA を埋めます。最新の確認範囲は [実装状況](implementation-status.md)、起動方法は [README](../README.md)を参照してください。
 
 公開 OSS リポジトリのメンテナー向けに、まず PR 作者の推薦を Actions の結果に表示するところまでを扱います。メンテナーは設定と workflow の2ファイルを追加し、推薦を持つ貢献者は初回だけ推薦 JSON を追加します。推薦結果を読み、レビューへ進めるかはメンテナーが決めます。
 
 PR を送る側の手順は [AI エージェント管理者向けマニュアル](agent-operator-guide.md)を参照してください。推薦の依頼、エージェントへの指示、送信後の確認をまとめています。
 
-GitHub Actions を使わず手元で取得・検証する操作は [CLI インターフェース設計](cli-interface.md#4-取得と検証を直接使う)にまとめています。CLI は独立した利用方法であり、以下の Action を導入する前提条件ではありません。新しいコマンドも設計案です。
+GitHub Actions を使わず手元で取得・検証する操作は [CLI](cli-interface.md#4-取得と検証を直接使う)にまとめています。CLI のローカル導入は Action を使う前提条件ではありません。
 
 ## 導入するとどうなるか
 
@@ -57,7 +57,7 @@ PR が作成・更新されると、Devouch が PR 作者に対する推薦を�
   "allowedResolvers": [
     {
       "address": "<その推薦者が使う resolver のアドレス>",
-      "implementation": "<対応する検証済み実装の識別情報>"
+      "implementation": "0x14f09fd05d4585759e54844dc9b00147131cf243"
     }
   ],
   "requiredIssuers": 1
@@ -68,13 +68,13 @@ PR が作成・更新されると、Devouch が PR 作者に対する推薦を�
 
 推薦者のアドレスは、その人の既知の公開経路で確認します。resolver と実装の情報は、推薦者が公開時に配布する設定例を使う想定です。PR 作者が提示したという理由だけで `trustedIssuers` を追加しないでください。秘密鍵は一切記入しません。
 
-**今の案には、resolver と実装識別情報を導入者が扱う負担が残っています。** コピーできる設定例の出力も未実装です。これらを自動で信頼する省略はせず、導入時に公開情報を取り込める形にすることを開発条件にします。
+resolver の公開アドレスは導入者が確認します。画面の公開・取得後に、Receiving repository setup からこの形式の policy 例をダウンロードできます。出力できたことはメンテナーの採用判断を代替しません。
 
 最初は一人の推薦者・必要数1に限定します。このファイルは受け入れ方針であり、推薦者や貢献者の全世界共通の登録簿ではありません。
 
 ## 2. GitHub Actions の workflow を追加する
 
-`.github/workflows/devouch.yml` を作ります。`DEVOUCH_OWNER/DEVOUCH_REPOSITORY@RELEASE_COMMIT_SHA` は未定の配布先を示すプレースホルダーです。新しい版を公開した際に提供する、実在するリポジトリと40桁の commit SHA へ置き換える必要があります。
+`.github/workflows/devouch.yml` を作ります。配布先は `geeknees/devouch`、デモ時に公開予定です。`RELEASE_COMMIT_SHA` を公開済み配布版の40桁 commit SHAへ置き換えてから使います。現在のmainにはまだ実装が公開されていません。
 
 ```yaml
 # ABOUTME: Reports the pull request author's portable endorsement.
@@ -95,16 +95,16 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - uses: DEVOUCH_OWNER/DEVOUCH_REPOSITORY@RELEASE_COMMIT_SHA
+      - uses: geeknees/devouch@RELEASE_COMMIT_SHA
         with:
           policy-path: .devouch/policy.json
           mode: report
           github-token: ${{ github.token }}
 ```
 
-`policy-path`、`mode`、`github-token` は新しい Action のインターフェース案です。既存の [action.yml](../action.yml) にこのまま渡すものではありません。`github.token` は GitHub が提供する実行用トークンを使い、PAT や repository secret の手動登録は不要にします。権限は読み取りだけです。[GitHub の権限設定](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#permissions)
+`policy-path`、`mode`、`github-token` は [action.yml](../action.yml) の入力です。`github.token` は GitHub が提供する実行用トークンを使い、PATやrepository secretの手動登録を求めません。権限は読み取りだけです。[GitHub の権限設定](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#permissions)
 
-推薦の取得・検証は、認証不要の Sepolia RPC を Action の既定値として提供する想定です。導入者が選んだ公開 RPC へ `rpc-url` 入力で変更できるようにします。**既定接続先の選定、履歴取得、利用制限の実測はリリース前の未完了事項**です。秘密の RPC キーを登録しないと動かない構成では、この導入目標を達成したと扱いません。
+既定 RPC は認証不要の `https://sepolia.gateway.tenderly.co` です。実際のデモ名の履歴とCLI requestまで確認しました。`rpc-url` 入力で変更できます。PublicNodeは古い状態の一部が取得不能でした。公開RPCの可用性・履歴保持・制限は保証せず、未完了の照会は unavailable にします。実fork PRでのSecretなしの実行は公開後の確認項目です。
 
 この workflow には `checkout`、PR のビルド、テスト実行を追加しません。Action 自身のコードだけで GitHub 上の JSON と chain を読みます。配布版はタグではなく commit SHA で固定します。[GitHub の Action 固定に関する説明](https://docs.github.com/en/actions/reference/security/secure-use#using-third-party-actions)
 
@@ -198,4 +198,4 @@ GitHub 側の fork 実行承認や組織の Action 制限は残ります。競�
 
 特に、現在の ENS 案は **一つの記録・キーに同時に一つの推薦だけ**です。同じキーへ別の人の推薦を書くと前の推薦が失効します。このままでは複数人を推薦する実運用に足りず、Git にファイルを増やしても解決しません。8時間版は、一度に一人への推薦を二つの repo 方針で再利用するデモです。管理者名義とエージェント名義の確認は、片方の発行・PR・失効後にもう片方へ新しく発行して順番に行います。複数推薦の同時保持は一般公開前の設計課題です。
 
-公開リポジトリ・fork PR での実行、手動 secret 登録なしの RPC 検証、ランタイムの自動準備、推薦 JSON と設定例のダウンロード、第三者がこの手順だけで導入できることを確認してから、実行可能な導入マニュアルへ更新します。導入所要時間はまだ測定していません。
+推薦JSONと方針例のダウンロード、CLI・Action境界、ブラウザからの操作はローカルで確認済みです。公開repoのfork PR、ランタイムのGitHub上の準備、第三者がこの手順だけで導入する確認と所要時間の測定は残っています。

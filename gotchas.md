@@ -1,0 +1,10 @@
+# 実装時の注意
+
+- ENSv2のtext setterはDNS wire-formatの名前を受け取る。ENSv1のnode setterとはABIが異なる。公式artifactとの照合テストを維持する。
+- registryのtoken IDには下位32bitの更新世代がある。イベントをlabelへ結び付けるとき、単純なlabelhash全体との等値比較では所有権変更を見逃す。
+- 現在のtextだけでは失効を判定できない。proxy配備からの履歴、リンク・実装・名前の接続変更を確認する。初期配備より後のanchorを受け入れない。
+- devouch.vouchの補助grantはresolver内の同じキー全体に作用する。一つの名前だけに限定する権限とは表示しない。専用resolverを使う。
+- 過去原本を取得するpublication hintは現在の名前の接続先に依存させない。receiptの原本・署名・公開先を照合し、通常の履歴検証へ戻す。
+- Rubyの長さ指定IO.readは空ファイルでnilを返す。空入力をinternal errorへ落とさず、credentialとpolicyの入力エラーとして扱う。
+- ローカルEVMのpass、公開RPCのread、Sepolia取引、実GitHub Actionは別の証拠。公開値を未確認のまま実機デモ完了にしない。
+- 現在のbytecodeや直近logsが読めても、古いstateが読めるRPCとは限らない。実際のnameでprepareまで確認する。proxyの配備探索は現在から遡り、無関係に古いfactory時点との中間stateを最初に要求しない。

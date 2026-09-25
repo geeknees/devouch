@@ -1,6 +1,6 @@
 # Devouch：分散性を優先したデータ構造と保存場所
 
-更新：2026-09-25。ユーザーは分散性を優先し、World賞を条件付きにする方針を選択した。推薦の公開・失効は ENS、配布用の推薦と repo 方針は GitHub repo の `.devouch/` 内の JSON で扱う。本書は設計案であり、実装済みの状態ではない。
+更新：2026-09-26。分散性を優先しWorld賞を条件付きにする設計を、推薦版として新規実装した。本書は保存場所と関係の説明。厳密な署名型・対応namespace・履歴契約は [v1検証契約](protocol.md)、実際の確認範囲は [実装状況](implementation-status.md)を優先する。
 
 **推薦者が自分で署名して ENS へ公開し、検証者が chain から本文を取得する。各 repo が自分の方針で採否を決める。Devouch 運営者の発行 API・共通署名鍵・共有 DB を必要としない。**
 
@@ -119,7 +119,7 @@ ENSv2 は Sepolia に公開されているが、仕様は未確定である。[�
   "endorsement": {
     "message": {
       "version": "1",
-      "id": "vouch-001",
+      "id": "<新規の非ゼロbytes32、小文字hex>",
       "issuer": "<推薦者 A のウォレットアドレス>",
       "subject": "github:12345",
       "scope": "oss-contribution",
@@ -147,7 +147,7 @@ ENSv2 は Sepolia に公開されているが、仕様は未確定である。[�
 | `anchorStartBlock` | 古い推薦の再掲載を見逃さないための履歴確認開始地点 |
 | `signature` | 推薦者が上の内容に同意したことをウォレットの公開アドレスで検証する |
 
-時刻は Unix 秒、巨大な整数は丸めない表現とし、EIP-712 の型を実装時に固定する。repo ID や PR head を固定しないため、同じ推薦を別 repo でも評価できる。
+時刻はuint64、recordIdとanchorStartBlockはuint256の10進文字列、idとrequestNonceはbytes32に固定した。詳細は [型の表](protocol.md#公開原本と署名)。repo IDやPR headを固定しないため、同じ推薦を別repoでも評価できる。
 
 前案の `worldReceipt` とサービス署名はない。署名が正しいことだけでは人間性の証明にならず、基本構成の表示は `human_verification: not_included` とする。World を追加する場合は、この版とは別に検証可能な証拠と結び付けを設計する。
 

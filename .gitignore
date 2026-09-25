@@ -7,5 +7,5 @@
 /ignition/deployments/
 /pkg/
 /tmp/
-/.devouch/
+/.devouch/local/
 *.gem

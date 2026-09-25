@@ -1,5 +1,7 @@
 # Devouch：原典・公式仕様の確認結果
 
+実装時の追加確認（2026-09-26）: 固定した公式ENS artifactとPublicNode / Tenderlyの公開runtime・registry・直近logsを照合した。ユーザー指定のENSアプリは https://app.ens.dev/、World sandboxは https://sandbox.auth.world.org/。World discoveryの結果と未統合の境界は [実機手順](demo-runbook.md#world-sandbox)、証拠は [実装状況](implementation-status.md)に記録した。以下の過去の調査とは確認時点を分ける。
+
 確認日：2026-09-25。一次資料、コード、公開の実行履歴を確認した結果であり、World の実認証、Sepolia への書き込み、Devouch のデプロイの動作確認は含まない。
 
 企画の入口は [企画・準備状況](hackathon-planning.md)、開発着手時の採用候補は [ハンドオフプロンプト](hackathon-handoff.md)。
@@ -160,6 +162,6 @@ World 全体が分散した構成に使えないと結論したわけではな�
 
 ## 既存 Devouch との境界
 
-今回読んだ現在の実装には、Sepolia の推薦・失効を扱う [契約](../contracts/DevouchTrustRegistry.sol)、[台帳照会](../lib/devouch/ledger.rb)、[リポジトリ方針](../lib/devouch/policy.rb)、[人間からエージェントへの委任](../lib/devouch/delegation.rb)、[コミット検証](../lib/devouch/verifier.rb)がある。World / ENSv2 への接続はこれらの確認範囲に含まれない。
+設計調査時に読んだ旧実装には、Sepolia の推薦・失効を扱う `contracts/DevouchTrustRegistry.sol`、台帳照会、リポジトリ方針、人間からエージェントへの委任、コミット検証があった。これらは旧環境の参照であり、今回の新規実装へコピーしていない。当時の確認範囲には World / ENSv2 への接続は含まれなかった。
 
 新しいハッカソン版の最小機能と、既存版が持つ機能を明示的に分ける。特に署名付きの推薦が検証できることだけをもって、エージェントへの委任や Git 履歴まで検証したと表示しない。既存実装の動作テスト・デプロイ確認は今回実施していない。

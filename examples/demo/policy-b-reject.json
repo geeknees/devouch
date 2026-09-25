@@ -1,0 +1,15 @@
+{
+  "repositoryId": "demo/independent-repository",
+  "chainId": 11155111,
+  "trustedIssuers": [],
+  "allowedScopes": [
+    "oss-contribution"
+  ],
+  "allowedResolvers": [
+    {
+      "address": "0x1C62ac64F60aDc036d184596e87c98fdFcFdb160",
+      "implementation": "0x14f09fd05d4585759e54844dc9b00147131cf243"
+    }
+  ],
+  "requiredIssuers": 1
+}

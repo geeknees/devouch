@@ -1,5 +1,7 @@
 # ETHGlobal Tokyo 2026：ENS を中心とする応募方針
 
+実装追記（2026-09-26）: ENS推薦版のローカル実装・テストは完了。Sepolia実取引・公開配布・実fork PRは未確認、Worldは未統合。[提出草案](submission.md)と [実装状況](implementation-status.md)を現在の進捗として参照する。repoはデモ時に公開する方針。
+
 更新：2026-09-25。Building from Scratch。推薦の発行・失効・再利用を8時間版の中心にする。**ユーザーは分散性を優先し、World賞は両立できた場合に狙う方針を選択した。** 中央のバックエンドと共通発行鍵を必須にした前案は撤回した。
 
 [企画・準備状況](hackathon-planning.md)、[ハンドオフ](hackathon-handoff.md)、[データ構造と保存場所](hackathon-data-model.md)、[調査結果](hackathon-research.md)を参照する。実際の chain 操作・認証・ライブデモは未実施。

@@ -1,6 +1,6 @@
 # Devouch：開発着手時のハンドオフプロンプト
 
-更新：2026-09-25。採用任意の実装案。ユーザーの訂正を受け、中央サービスを必須にした前案を撤回した。**分散性を優先し、World賞は両立できた場合に狙う**方針は合意済み。以下の小さな推薦本文を ENS に保存する具体案は、まだ実装・実動作未確認である。
+設計時点：2026-09-25。以下は開発着手時の要件・完了条件の記録。2026-09-26にCLI・静的UI・Actionを新規実装し、ローカル通しテストを実施した。現在の契約は [protocol](protocol.md)、検証済み範囲と残作業は [実装状況](implementation-status.md)。**分散性優先、World賞は条件付き**の方針を維持している。実Sepolia・実fork PRの要件をローカル成功で置き換えない。
 
 [データ構造と保存場所](hackathon-data-model.md)、[CLI インターフェース設計](cli-interface.md)、[受け入れ側の導入マニュアル案](adoption-guide.md)、[AI エージェント管理者向け送信マニュアル案](agent-operator-guide.md)、[企画の合意事項](hackathon-planning.md)、[公式資料の確認結果](hackathon-research.md)を併せて参照する。
 
