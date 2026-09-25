@@ -1,12 +1,12 @@
 # 提出文とピッチの草案
 
 現状: ローカル実装・検証済み。Sepolia 上の公開と検証を1件確認（下記「Sepolia evidence」）。公開URL・失効後の readback・fork PR の証拠は未取得。
-提出文の正本はこのファイル。フォーム画面の原本と項目ごとの補足は [project-submit-form](project-submit-form/answers.md) にある。
+提出文の正本はこのファイル。提出フォームの画面の原本は [project-submit-form/](project-submit-form/) にある。
 下記は提出用の草案であり、提出済み・受賞要件充足とは扱わない。
 
 ## フォーム入力
 
-提供された提出フォーム画像を確認した。実フォームへの保存・送信は行っていない。
+[提出フォームの画面](project-submit-form/)を確認した。実フォームへの保存・送信は行っていない。下の表の順に、フォームの画面（Project details → Images → Tech stack → Select prizes → Video → Future）を埋める。
 
 | Field | Draft |
 |---|---|
@@ -22,7 +22,10 @@
 | Languages | Ruby, TypeScript, JavaScript, HTML, CSS |
 | Web framework / Database | None / None |
 | Other tools | Bun, Node.js, GitHub Actions, Playwright, Minitest |
-| Prizes | ENSv2を主候補。Worldは未統合のため適合を主張しない |
+| Prizes | **ENS のみ**選ぶ。説明は「ENS partner prize: why it applies」、フィードバック欄は提出者が記入。World は未統合なので選ばない |
+| AI tools | 「AI tool disclosure」を貼る |
+| Video | `tools/video/out/devouch-demo-voiced.mp4`（完成後） |
+| Future | 「Future」を貼る |
 | Track / judging choice | Building from Scratch。事前設計資料を開示。Submission type は Top 10 Finalist & Partner Prizes を想定（決勝用の [台本](presentation/script.md) を用意済み）。最終判断は提出者 |
 
 Short descriptionは100文字以内。DescriptionとHow it's madeはそれぞれ280文字以上の下記原稿を使う。
@@ -135,6 +138,9 @@ Devouch carries a reference; it does not turn that reference into automatic appr
 | ENSv2の実txと失効後のreadback | 公開txと2方針の検証は取得（上記）。失効後は未取得 |
 | 人間・agent名義の実PRとAction run | 未取得 |
 | 別RPC・別ホストからの実操作 | 読み取りは確認、実取引は未確認 |
+| ENS へのフィードバック | 未記入。提出者が書く |
+| 新デザインの画面画像 | Web への適用後に `node scripts/capture-assets.ts` で撮り直す |
+| repo の公開 | private。規約で public が必須 |
 | World Agents統合・失敗経路・feedback | 未実装、条件付き候補 |
 | イベント期間・Building from Scratch適格性 | 運営未確認 |
 
