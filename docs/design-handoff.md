@@ -9,17 +9,17 @@
 | 対象 | 担当 | 状態 |
 | --- | --- | --- |
 | `web/`（HTML / CSS）と `dist/web/` の再ビルド | 開発エージェント | 未着手。区切りの良いところで適用する |
-| `assets/devouch-logo.svg` | デザイン側 | Fork マークに変更済み |
+| `assets/devouch-logo.svg` | デザイン側 | 「枝分かれする d」に変更済み |
 | `assets/devouch-cover.svg` | デザイン側 | 新デザインに変更済み |
 | `scripts/capture-assets.ts` | デザイン側 | フォント読み込み待ちを1行追加済み |
 | `docs/submission-assets/*.png` | どちらでも | `web/` 適用後に `node scripts/capture-assets.ts` で撮り直す |
 
-**`assets/` の2つの SVG は古い `d.` 版に戻さないこと。** ロゴはユーザーが選んだ Fork マーク（一つの推薦が二つの repo へ分かれる形）である。
+**`assets/` の2つの SVG は古い版に戻さないこと。** ロゴはユーザーが選んだ「枝分かれする d」：ライムの四角の上に、縦線の先が二つに分かれた太い小文字 d を置き、右の枝だけマゼンタにしている。一つの推薦に対して、各コミュニティが別々に判断することを表す。
 
 ## デザインの方向
 
 深い緑がかった黒の上に、読み物のようなセリフ体の見出しと、データを表すモノスペースを置く。
-強調はライム一色だけに絞る。「公開された記録を誰でも確かめられる」ことを、記録や計測器のような静かな画面で表す。
+強調はライムを主に使い、ロゴの右の枝などごく一部だけマゼンタを差す。「公開された記録を誰でも確かめられる」ことを、記録や計測器のような静かな画面で表す。
 
 ### 色（CSS 変数）
 
@@ -36,7 +36,8 @@
   --dim: #8e9a82;       /* 補足・ラベル */
   --faint: #5d6755;     /* 無効・目盛り */
   --moss: #7f9a66;      /* 小見出し・副次の強調 */
-  --lime: #d5f594;      /* 唯一の強調。主ボタン・有効・選択 */
+  --lime: #d5f594;      /* 主の強調。主ボタン・有効・選択 */
+  --magenta: #d6246e;   /* ブランドの第二色。ロゴの右の枝と、ごく一部の強調だけ。状態表示には使わない */
   --ember: #e08a6d;     /* 失効・拒否・危険な操作 */
   --serif: "Instrument Serif", "Iowan Old Style", Georgia, serif;
   --sans: "IBM Plex Sans", -apple-system, "Segoe UI", sans-serif;
@@ -72,7 +73,7 @@ body { background: var(--void); color: var(--bone); font-family: var(--sans); }
 
 | 部品 | 変更 |
 | --- | --- |
-| ロゴ（`.brand-mark`） | `d.` の文字を、`assets/devouch-logo.svg` の Fork マークのインライン SVG に置き換える。角丸 9px、32px 四方 |
+| ロゴ（`.brand-mark`） | `d.` の文字を、`assets/devouch-logo.svg` のインライン SVG に置き換える。32px 四方、角丸 6px。clipPath の id はページ内で重複させない |
 | `LAB` バッジ | そのまま。色は `--faint` |
 | 上部バー | 背景 `--void`、下線 `--line`。ネットワーク表示の点は `--moss` |
 | 主ボタン（`.dark`） | 背景 `--lime`、文字 `--void`。ホバー時は明度を少し上げる |
@@ -97,6 +98,20 @@ body { background: var(--void); color: var(--bone); font-family: var(--sans); }
 - 入力や署名の操作中に視線を奪わない。ワークスペースの上には敷かない。
 - 外部ライブラリは使わない。
 
+## README にもロゴを表示する
+
+`README.md` の先頭で、見出しの前にロゴを表示すること。GitHub 上で最初に目に入る場所なので、提出物の顔になる。
+
+```html
+<p align="center">
+  <img src="assets/devouch-logo.svg" alt="Devouch logo: a lowercase d whose stem forks in two" width="120" height="120">
+</p>
+```
+
+- 元データの SVG を直接参照する。PNG を別に置くと、ロゴを変えたときに食い違う。
+- `alt` は形と意味が分かる文にする。
+- 見出し `# Devouch` と1行目の説明はそのまま残す。
+
 ## 変えてはいけないもの
 
 - 要素の `id`、`data-tab`、`data-go`、フォームの `name`、ボタンの文言の意味。ブラウザテストと操作の流れが依存している。
@@ -111,6 +126,7 @@ body { background: var(--void); color: var(--bone); font-family: var(--sans); }
 3. キーボードだけで全タブ・全ボタンを操作でき、フォーカスが見える。
 4. ネットワークの開発者ツールで、外部ドメインへのフォント要求がないことを確認する。
 5. `node scripts/capture-assets.ts` で `docs/submission-assets/` の画面3枚を撮り直す。
+6. GitHub 上の README の先頭にロゴが表示される。
 
 ## 開発エージェントへ渡す指示文
 
@@ -119,5 +135,6 @@ docs/design-handoff.md を読み、web/ の見た目を新しいデザインに�
 振る舞い・要素の id・data 属性・フォームの name・表示文言の意味は変えないでください。
 フォントは外部 CDN を使わず、web/fonts/ に同梱して dist/web/ へコピーし、ライセンスを THIRD_PARTY_NOTICES に追加してください。
 assets/devouch-logo.svg と assets/devouch-cover.svg はデザイン側が更新済みなので、古い版に戻さないでください。
+README の先頭にもロゴを表示してください。
 完了後、資料の「完了の確認」を順に実行し、最後に node scripts/capture-assets.ts で提出用の画面を撮り直してください。
 ```
