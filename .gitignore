@@ -1,0 +1,11 @@
+/.bundle/
+/vendor/bundle/
+/node_modules/
+/artifacts/
+/cache/
+/coverage/
+/ignition/deployments/
+/pkg/
+/tmp/
+/.devouch/
+*.gem
