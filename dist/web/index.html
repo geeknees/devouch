@@ -1,0 +1,114 @@
+<!-- ABOUTME: Presents a static workspace for portable ENSv2 contributor endorsements. -->
+<!-- ABOUTME: Keeps human review and wallet consent explicit before public operations. -->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Issue, carry, and revoke contributor endorsements. Each repository keeps its own judgment.">
+  <meta name="color-scheme" content="light">
+  <title>Devouch — Portable trust for open source</title>
+  <link rel="stylesheet" href="./style.css">
+  <script type="module" src="./app.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="./" aria-label="Devouch home"><img class="brand-mark" src="./devouch-logo.svg" alt="" width="32" height="32">devouch<span class="beta">LAB</span></a>
+    <div class="connection"><span class="network"><span class="dot"></span>Sepolia testnet</span><button id="connect" class="button dark">Connect wallet <span aria-hidden="true">↗</span></button></div>
+  </header>
+  <main>
+    <section class="intro">
+      <div class="intro-copy"><p class="eyebrow">A RECOMMENDATION, WITHOUT A GATEKEEPER</p><h1>Endorse once.<br><span>Let each community decide.</span></h1>
+      <p class="lead">Give a collaborator a recommendation they can carry.<br>Publish it yourself. Withdraw it when things change.</p>
+      <div class="intro-note"><span class="small-mark">↳</span>Built for people and agents contributing to open source.</div></div>
+      <div class="flow" aria-label="An issuer publishes one endorsement on ENS. Repositories A and B independently choose whether to accept it.">
+        <div class="flow-top"><span class="flow-symbol">↗</span><span>YOUR RECOMMENDATION</span><span class="flow-count">01</span></div>
+        <div class="flow-node">Your wallet <span>Signs &amp; publishes</span></div><div class="flow-line"></div>
+        <div class="flow-node accent">ENSv2 <span>Shared record &amp; withdrawal history</span></div><div class="flow-fork"><span></span><span></span></div>
+        <div class="flow-bottom"><div>Repository A<span>Its own policy</span></div><div>Repository B<span>Its own policy</span></div></div>
+        <p>One record. Independent decisions.</p>
+      </div>
+    </section>
+    <section class="workspace" aria-label="Endorsement workspace">
+      <div class="workspace-top"><div><span class="eyebrow">ISSUER WORKSPACE</span><h2>A little trust goes a long way.</h2></div><span class="workspace-caption">Your wallet. Your ENS name. Your decision.</span></div>
+      <nav class="tabs" aria-label="Choose an operation">
+        <button data-tab="publish" class="tab active" aria-current="page">01 <span>Publish</span></button>
+        <button data-tab="retrieve" class="tab">02 <span>Retrieve</span></button>
+        <button data-tab="revoke" class="tab">03 <span>Withdraw</span></button>
+        <button data-tab="setup" class="tab setup-tab"><span>ENS setup</span> ↗</button>
+      </nav>
+      <div id="status" class="status" role="status" aria-live="polite" hidden></div>
+      <section id="pending-panel" class="pending-panel" hidden aria-label="Transaction recovery">
+        <h3>A transaction needs checking</h3><p id="pending-description"></p>
+        <label for="recovery-hash">Transaction hash from your wallet</label><div class="inline"><input id="recovery-hash" placeholder="0x…" autocomplete="off"><button id="recover" class="button dark">Check transaction</button></div>
+        <p class="field-note">Check your wallet history before sending anything again. The public operation is saved in this browser.</p>
+        <button id="download-recovery" class="text-button">Save recovery file ↓</button>
+      </section>
+      <div class="workspace-body">
+        <div class="panels">
+          <section id="panel-publish" class="panel">
+            <div class="panel-heading"><span class="step-icon">↗</span><div><h3>Recommend a collaborator</h3><p>A contribution relationship, signed by you.</p></div></div>
+            <form id="prepare-form">
+              <label for="publish-name">Your ENS name</label><input id="publish-name" name="name" value="masusanou-dev.eth" placeholder="your-name.eth" required autocomplete="off" spellcheck="false">
+              <p class="field-note">Use a name you own with a dedicated resolver. <button type="button" class="text-button" data-go="setup">First time? Set it up →</button></p>
+              <div class="form-row"><div><label for="subject-id">Contributor’s GitHub numeric ID</label><input id="subject-id" name="subject" value="287365775" inputmode="numeric" pattern="[1-9][0-9]*" required><p class="field-note">Demo contributor: <a href="https://github.com/masusanou" target="_blank" rel="noreferrer">masusanou ↗</a></p></div>
+              <div><label for="expires">Valid until <span class="label-note">local time</span></label><input id="expires" type="datetime-local" required></div></div>
+              <div class="scope-box"><span class="scope-dot"></span><div><strong>Open-source collaboration</strong><p>I recommend this account as a constructive collaborator.</p></div><span class="scope-label">oss-contribution</span></div>
+              <div class="form-actions"><button id="prepare" class="button dark" type="submit">Prepare endorsement <span>→</span></button><label class="file-link">Load CLI request <input id="request-file" type="file" accept=".json,application/json"></label></div>
+            </form>
+            <section id="review" class="review" hidden>
+              <p class="eyebrow">REVIEW BEFORE SIGNING</p><dl id="review-details" class="details"></dl>
+              <p id="replacement" class="notice" hidden></p>
+              <label class="consent"><input id="consent" type="checkbox"><span>I recommend this account for constructive open-source collaboration. I understand that the account ID, my signature, and this relationship will remain in public history.</span></label>
+              <div class="form-actions"><button id="sign" class="button dark">Sign endorsement</button><button id="publish" class="button accent-button" disabled>Publish to ENS ↗</button></div>
+              <p id="signature-status" class="field-note">Signing records your recommendation. Publishing requires a separate wallet transaction.</p>
+            </section>
+          </section>
+          <section id="panel-retrieve" class="panel" hidden>
+            <div class="panel-heading"><span class="step-icon">↓</span><div><h3>Carry a recommendation</h3><p>Retrieve the original bytes directly from ENS.</p></div></div>
+            <form id="fetch-form"><label for="fetch-name">Issuer’s ENS name</label><input id="fetch-name" value="masusanou-dev.eth" placeholder="issuer.eth" required spellcheck="false">
+              <details class="advanced"><summary>Retrieve an older publication</summary><p class="field-note">Load a saved publication file to retrieve a withdrawn endorsement.</p><input id="publication-file" type="file" accept=".json,application/json"></details>
+              <button class="button dark" type="submit">Retrieve from ENS ↓</button></form>
+            <p class="notice subtle">Retrieval preserves a public record. The CLI or GitHub Action checks its current validity against the receiving repository’s policy.</p>
+          </section>
+          <section id="panel-revoke" class="panel" hidden>
+            <div class="panel-heading"><span class="step-icon">↙</span><div><h3>Withdraw an endorsement</h3><p>Keep the history. Stop the recommendation from being accepted.</p></div></div>
+            <label class="dropzone"><span class="drop-icon">↥</span><strong>Choose the endorsement to withdraw</strong><span>Published JSON or an unsent CLI revocation request</span><input id="revoke-file" type="file" accept=".json,application/json"></label>
+            <section id="revoke-review" hidden><dl id="revoke-details" class="details"></dl>
+              <label class="consent"><input id="revoke-consent" type="checkbox"><span>Withdraw this exact endorsement. Its public history will remain, and previously displayed GitHub checks will change only when rerun.</span></label>
+              <button id="revoke" class="button danger">Withdraw with wallet ↙</button></section>
+          </section>
+          <section id="panel-setup" class="panel" hidden>
+            <div class="panel-heading"><span class="step-icon">⌁</span><div><h3>Your own publishing space</h3><p>Control the ENS name and the keys that can update it.</p></div></div>
+            <p class="field-note">Start with your own Sepolia ENS name from the <a href="https://app.ens.dev" target="_blank" rel="noreferrer">ENS app ↗</a>. This release supports direct <code>name.eth</code> names.</p>
+            <label for="setup-name">Your ENS name</label><input id="setup-name" value="masusanou-dev.eth" placeholder="your-name.eth" autocomplete="off">
+            <div class="setup-step"><span class="number">1</span><div><h4>Create a dedicated resolver</h4><p>Deploy the official ENSv2 resolver with your wallet as its administrator.</p><button id="deploy" class="button secondary">Create resolver ↗</button></div></div>
+            <div class="setup-step"><span class="number">2</span><div><h4>Connect the name</h4><label for="resolver-address" class="visually-hidden">Resolver address</label><input id="resolver-address" placeholder="0x… dedicated resolver" autocomplete="off">
+              <label class="consent"><input id="bind-consent" type="checkbox"><span>Point this name to the dedicated resolver. Existing records on the previous resolver will no longer be served by this name.</span></label><button id="bind" class="button secondary">Connect resolver ↗</button></div></div>
+            <details class="advanced"><summary>Optional: a helper wallet for the endorsement key</summary>
+              <p class="field-note">The key grant covers <code>devouch.vouch</code> on every name served by this resolver. Use a dedicated resolver. Your wallet can still withdraw directly.</p>
+              <label for="helper-address">Helper’s public address</label><input id="helper-address" placeholder="0x…">
+              <div class="form-actions"><button id="grant" class="button secondary">Grant key access</button><button id="remove" class="text-button">Revoke key grant</button></div>
+            </details>
+          </section>
+          <section id="downloads" class="downloads" hidden>
+            <div class="download-top"><span class="success-mark">↓</span><div><h3>Your portable record</h3><p id="download-description"></p></div></div>
+            <div class="form-actions"><button id="download-vouch" class="button dark">Download endorsement ↓</button><button id="download-publication" class="text-button">Save publication position ↓</button></div>
+            <details class="advanced"><summary>Receiving repository setup</summary><label for="repository-id">Repository</label><input id="repository-id" value="geeknees/devouch">
+              <p class="field-note">The maintainer must independently choose to trust this issuer. This file is a policy example, not an approval.</p><button id="download-policy" class="button secondary">Download policy example ↓</button>
+              <p class="field-note">Place the endorsement in <code id="credential-path"></code>. Use the pinned Action workflow from the adoption guide.</p></details>
+          </section>
+        </div>
+        <aside class="context">
+          <span class="eyebrow">HOW TO READ AN ENDORSEMENT</span><h3>A reference.<br>A reason to start a review.</h3>
+          <p>The issuer signs a contributor’s account, a purpose, and an expiry. Each repository decides whose recommendations to accept.</p>
+          <div class="context-rule"></div><dl><dt>Portable</dt><dd>The same JSON works across repository policies.</dd><dt>Revocable</dt><dd>Withdrawal is checked against ENS history on the next verification.</dd><dt>Yours to operate</dt><dd>This entire workspace can run locally.</dd></dl>
+          <div class="boundary"><span>i</span><p>Endorsements do not prove code quality, human identity, or an agent’s authority. Keep your normal review process.</p></div>
+        </aside>
+      </div>
+    </section>
+    <details class="rpc-settings"><summary>Connection settings <span>Use your own RPC</span></summary><label for="rpc-url">Sepolia JSON-RPC URL</label><div class="inline"><input id="rpc-url" type="url" value="https://sepolia.gateway.tenderly.co"><button id="apply-rpc" class="button secondary">Use this connection</button></div><p class="field-note">A provider must support historical state and logs. Connections and past checks are never treated as proof of current validity.</p><label class="file-link">Load transaction recovery <input id="recovery-file" type="file" accept=".json,application/json"></label></details>
+  </main>
+  <footer><span class="footer-brand">devouch<span> / Open-source trust, on your terms.</span></span><span>ENSv2 · Sepolia · Experimental · <a href="./THIRD_PARTY_NOTICES.txt">Licenses</a></span></footer>
+</body>
+</html>

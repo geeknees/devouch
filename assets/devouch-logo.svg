@@ -1,0 +1,9 @@
+<!-- ABOUTME: Defines the Devouch mark: one endorsement branching to two independent repositories. -->
+<!-- ABOUTME: Provides a scalable source for the square submission logo. -->
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <rect width="512" height="512" fill="#242822"/>
+  <path d="M256 190 V240 C256 290 170 270 170 318 M256 240 C256 290 342 270 342 318" fill="none" stroke="#6f8a57" stroke-width="22" stroke-linecap="round"/>
+  <circle cx="256" cy="150" r="52" fill="#d5f594"/>
+  <circle cx="170" cy="362" r="34" fill="none" stroke="#d5f594" stroke-width="20"/>
+  <circle cx="342" cy="362" r="34" fill="none" stroke="#d5f594" stroke-width="20"/>
+</svg>
