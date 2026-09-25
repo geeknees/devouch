@@ -2,14 +2,14 @@
 
 対象 repo は [geeknees/devouch](https://github.com/geeknees/devouch)、
 エージェントの PR 作者は [masusanou](https://github.com/masusanou)（数値 ID `287365775`）。
-この ID と repo の状態は GitHub API で確認済み。repo は現在 private、既定 branch は main。
-2026-09-26のユーザー訂正に従った送信先。ユーザーはデモ時に公開すると指定済み。
-承認された準備用branchのpushと [draft PR #1](https://github.com/geeknees/devouch/pull/1) は実施済み。公開・deploy・推薦付きの実fork PRは未実施。
+この ID と repo の状態は GitHub API で確認済み。repo はpublic、既定 branch はmain。
+2026-09-26のユーザー訂正に従った送信先。同日の承認に基づき [PR #1](https://github.com/geeknees/devouch/pull/1) をmergeし、repoとPagesを公開した。
+公開結果は [検証記録](release-evidence.md)。推薦付きの実fork PRは未実施。
 人間名義の実 PR も要件に残るが、アカウントは未指定。
 
 ENS名・所有者・初期化済みresolverは確認済み。Actionのローカル固定SHAと手動の公開workflowも準備済み。
 推薦の公開取引とCLIのA/B方針比較は [実Sepoliaで確認済み](demo-evidence.md)。
-失効取引、Action commitの公開取得、live URL、推薦付きfork PR/run URL は未確認。
+Action commitの匿名取得、live URLと公開画面からのENS取得は確認済み。失効取引と推薦付きfork PR/run URLは未確認。
 以下の欄が埋まるまで実機デモ完了とは扱わない。
 
 ## 起動と準備
@@ -40,8 +40,8 @@ Sepolia に接続した本人のウォレットで直接 `name.eth` を取得す
 | 推薦公開 | block `11780510`、receipt成功。[取引・原本・検証結果](demo-evidence.md) |
 | 推薦の期限 | `2026-10-02T16:45:00Z`（10月3日01:45 JST） |
 | 人間名義 subject | 未定 |
-| Action配布先 / 40桁SHA | `geeknees/devouch@9ce4525f269f590d4d8fd0e123ff35d33dce8efa`。ローカル検証済み、公開取得は未確認 |
-| 静的 live URL | 未公開。標準候補は `https://geeknees.github.io/devouch/` |
+| Action配布先 / 40桁SHA | `geeknees/devouch@9ce4525f269f590d4d8fd0e123ff35d33dce8efa`。ローカル検証と認証なしの公開取得を確認済み |
+| 静的 live URL | https://geeknees.github.io/devouch/ 。配信ファイルとブラウザ操作を確認済み |
 
 この名前は対応実装・recordId 1で推薦を公開済み。追加のresolver配備や再公開は不要。
 準備時の未送信requestとは別に、画面で準備した上記期限の原本が公開された。

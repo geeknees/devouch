@@ -22,7 +22,7 @@ Building from Scratch の適格性を運営が確認したとは扱わない。
 | 管理者・エージェント両名義の実 fork PR と失効後再実行 | 対象 PR と Action run の URL | 公開情報・外部操作待ち |
 | 運営者不在でローカル UI と別 RPC から操作 | ローカル配布物での通し確認 | ローカルUI経由の本人公開、2社RPCで同じ原本の検証を確認。別ホストからの実操作は未実施 |
 | README、導入手順、ライセンス、提出・デモ資料 | コマンド再実行とリンク検査 | 作成・更新済み。提出画像草案5点。動画は別エージェントの作業で完成したとユーザー確認（2026-09-26）。提出URLは未記録 |
-| 公開コード・配布 SHA・静的 live URL | 公開先の readback | Action固定SHAと手動Pages workflowを準備。公開・配布・hostingは未実施 |
+| 公開コード・配布 SHA・静的 live URL | 公開先の readback | repoとPagesを公開。固定Actionの匿名取得、配信5ファイルの一致、公開画面からのENS原本取得を確認 |
 
 ## 採用範囲
 
@@ -38,7 +38,7 @@ Ruby CLI、TypeScript/viem の検証補助、静的ウォレット UI、GitHub A
 
 ## 実機の公開情報
 
-2026-09-26 JST: デモ先はユーザー訂正により `geeknees/devouch`（現状private、デモ時に公開）。
+2026-09-26 JST: デモ先はユーザー訂正により `geeknees/devouch`。ユーザー承認後にpublicへ変更済み。
 送信者は `masusanou`、GitHub数値ID `287365775`。
 ENS名はユーザー指定の `masusanou-dev.eth`、取得先は https://app.ens.dev/。
 World sandboxは https://sandbox.auth.world.org/。World認証は未統合。
@@ -104,7 +104,10 @@ PR Testは依存の固定インストール、Ruby/Bun/結合テスト、型・�
 予定の `/devouch/` 配下でChromeを使い、配布物・操作タブ・walletなしの表示・mobile表示・console errorなしを確認した。
 ユーザー承認後、private repoへ `codex/demo-release-20260926` をpushし、[draft PR #1](https://github.com/geeknees/devouch/pull/1) をgeeknees名義で作成した。
 本文一致、draft状態、base main、head `5e1afca6aa3d72567e4c7ab70f9b8d851544aca2` を読み戻して確認した。
-visibility変更・Pages有効化・deploy・mergeは未実施。[公開手順](release-runbook.md)を参照する。
+その後、ユーザー承認に基づきPR #1をmerge、repoをpublicへ変更し、Pagesを公開した。
+公開commit `3214991e616e118d921ea9575d06d5e121b584f4` のCIとPages配信が成功。
+固定Actionの匿名取得、公開した5ファイルの一致、公開画面からの785 bytesの推薦原本取得を確認した。
+URL・run・digestは [公開の検証記録](release-evidence.md)、再配信は [公開手順](release-runbook.md)を参照する。
 
 準備PRの [Devouch run](https://github.com/geeknees/devouch/actions/runs/36160022078) は成功。
 PR作者 `github:701242`、base `66973289d637db0ae4e3eb549aa62cb88233e0ac`、head上記SHAに対し、
@@ -124,5 +127,5 @@ Gitのauthor・committer情報にも氏名と個人メールアドレスがあ�
 2026-09-26にユーザーから公開してよい旨の確認を得た。既存履歴は維持する。
 スキャンはパターン照合であり、秘密情報がないことの数学的保証ではない。
 
-固定Action commitの公開取得、推薦付き実PR、静的公開先、本人walletによる実失効が残る。
+推薦付き実PRと本人walletによる実失効が残る。
 この記録を「ハッカソンの実機デモ全体が完成」とは扱わない。

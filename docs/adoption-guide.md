@@ -1,6 +1,6 @@
 # Devouch 導入マニュアル
 
-更新：2026-09-26。推薦版の [Action](../action.yml)・[CLI](../exe/devouch)・静的画面を新規実装し、ローカル通しテストを実施しました。**下記の固定commitはローカル検証済みですが、公開取得と実 fork PR は未確認です。** [公開手順](release-runbook.md)の完了後に利用してください。最新の確認範囲は [実装状況](implementation-status.md)、起動方法は [README](../README.md)を参照してください。
+更新：2026-09-26。推薦版の [Action](../action.yml)・[CLI](../exe/devouch)・静的画面を新規実装し、ローカル通しテストを実施しました。**下記の固定commitの匿名取得とPages公開を確認済みです。推薦付き実fork PRは未確認です。** [公開の検証記録](release-evidence.md)、最新の確認範囲は [実装状況](implementation-status.md)、起動方法は [README](../README.md)を参照してください。
 
 公開 OSS リポジトリのメンテナー向けに、まず PR 作者の推薦を Actions の結果に表示するところまでを扱います。メンテナーは設定と workflow の2ファイルを追加し、推薦を持つ貢献者は初回だけ推薦 JSON を追加します。推薦結果を読み、レビューへ進めるかはメンテナーが決めます。
 
@@ -74,7 +74,7 @@ resolver の公開アドレスは導入者が確認します。画面の公開�
 
 ## 2. GitHub Actions の workflow を追加する
 
-`.github/workflows/devouch.yml` を作ります。配布先は `geeknees/devouch`、デモ時に公開予定です。ローカル検証済みの40桁SHAで固定した [workflow](../.github/workflows/devouch.yml)を用意しました。repoとそのcommitの公開取得を確認してから利用します。
+`.github/workflows/devouch.yml` を作ります。配布先は公開済みの `geeknees/devouch` です。ローカル検証済みの40桁SHAで固定した [workflow](../.github/workflows/devouch.yml)を用意し、repoと固定commitの匿名取得を確認しました。
 
 ```yaml
 # ABOUTME: Reports the pull request author's portable endorsement.

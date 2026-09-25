@@ -1,12 +1,13 @@
 # デモ公開の手順
 
 公開対象は `geeknees/devouch` と `dist/web/` の静的画面。
-ユーザー指定は「デモ時に公開」。以下は準備済みの操作手順で、公開・deployの実施記録ではない。
-確認時点のrepoはprivate、GitHub Pagesは未設定。
+ユーザー承認に基づき2026-09-26 JSTにrepoとGitHub Pagesを公開した。
+実施結果は [公開の検証記録](release-evidence.md)。以下は再配信にも使う操作手順。
 
 準備用の `codex/demo-release-20260926` はユーザー承認後にpushし、[draft PR #1](https://github.com/geeknees/devouch/pull/1) を作成した。
 そのhead `5e1afca6aa3d72567e4c7ab70f9b8d851544aca2` のTestと、推薦ファイルなしのAction reportはGitHub上で成功した。
-merge・visibility変更・Pages公開はまだ行っていない。
+最終head `28409191fa62e17b1e8c22e413fac994c2237943` の全チェック成功後、ユーザー承認を得てmergeした。
+merge commit `3214991e616e118d921ea9575d06d5e121b584f4` のCIとPages配信も成功した。
 
 ## 配布物
 
@@ -17,9 +18,9 @@ merge・visibility変更・Pages公開はまだ行っていない。
 | 導入workflow | [`.github/workflows/devouch.yml`](../.github/workflows/devouch.yml) |
 | 静的画面 | `dist/web/` の5ファイルだけ |
 | 公開workflow | [`.github/workflows/pages.yml`](../.github/workflows/pages.yml) |
-| 標準URLの候補 | `https://geeknees.github.io/devouch/`。まだ公開URLとして未確認 |
+| 公開URL | https://geeknees.github.io/devouch/ 。認証なしの取得とブラウザ操作を確認済み |
 
-固定したAction commitはローカルで検証済み。公開先に存在して誰でも取得できることは、公開時に確認する。
+固定したAction commitはローカルで検証済み。認証なしで公開ファイルを取得し、検証済み内容との一致も確認した。
 その後の文書や公開workflowのcommitと、検証Actionの固定commitは別でよい。
 Actionを更新するときは、ソース・配布物の一致とテストを確認し、固定先を更新する。
 

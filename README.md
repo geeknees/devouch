@@ -16,8 +16,10 @@ It uses Sepolia's official Permissioned Resolver. There is no Devouch API, datab
 The issuer published masusanou's endorsement on Sepolia. The CLI accepted the same original under two policies
 and rejected it under a policy declining the issuer, using Tenderly and ethPandaOps at the same chain snapshot.
 See the [public-chain evidence](docs/demo-evidence.md) and [implementation record](docs/implementation-status.md).
-Real-wallet withdrawal, live hosting, a published Action commit, and endorsed fork-PR runs remain to be completed.
-The corrected lockfile passes a clean frozen install and the [GitHub test workflow](https://github.com/geeknees/devouch/actions/runs/36160022026).
+The [live workspace](https://geeknees.github.io/devouch/) is published, and the pinned Action is available without authentication.
+The [release verification](docs/release-evidence.md) covers the published files and real ENS retrieval from the hosted browser UI.
+Real-wallet withdrawal and endorsed fork-PR runs remain to be completed.
+The published commit passes the [GitHub test workflow](https://github.com/geeknees/devouch/actions/runs/36170464968).
 The private preparation PR's Action reported missing evidence correctly; this is not yet an endorsed fork-PR demonstration.
 
 ## Development history
@@ -29,6 +31,8 @@ The step-by-step checks made during that period are recorded in the [verificatio
 AI tool use is disclosed in the [submission draft](docs/submission.md#ai-tool-disclosure).
 
 ## Run the workspace
+
+Open the [hosted workspace](https://geeknees.github.io/devouch/), or run the same static files locally:
 
 Use Node.js 24 and Ruby 3.4 or newer. Bundled distribution files are included; running the CLI or workspace does not install JavaScript dependencies.
 
@@ -50,12 +54,12 @@ The [release runbook](docs/release-runbook.md) covers the prepared manual GitHub
 
 The demo account is [masusanou](https://github.com/masusanou), numeric ID `287365775`.
 The planned receiving repository is [geeknees/devouch](https://github.com/geeknees/devouch).
-It is currently private and will be made public for the demo, as requested by the owner.
-Public distribution and fork-PR validation have not yet been performed.
+The repository and workspace were made public on 2026-09-26 with the owner's approval.
+Public distribution is verified; endorsed fork-PR validation remains pending.
 The chosen ENS name is `masusanou-dev.eth`; the published endorsement expires at `2026-10-02T16:45:00Z`.
 The [demo examples](examples/demo/README.md) retrieve its original JSON using the recorded public transaction.
 The adoption workflow pins the locally tested Action commit;
-its public availability remains unverified.
+its public availability is verified in the [release record](docs/release-evidence.md).
 
 ## CLI
 

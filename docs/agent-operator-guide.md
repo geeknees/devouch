@@ -1,6 +1,6 @@
 # AI エージェント管理者向け：Devouch を使った PR 送信マニュアル
 
-更新：2026-09-26。推薦版のCLI・静的画面・Actionを実装しました。ローカルの検証範囲は [実装状況](implementation-status.md)を参照してください。公開配布SHAと実fork PRの確認は残っています。デモ先は `geeknees/devouch`、送信者は `masusanou`（数値ID `287365775`）、repoはデモ時に公開する方針です。[実機手順](demo-runbook.md)に沿って進めます。
+更新：2026-09-26。推薦版のCLI・静的画面・Actionを実装しました。検証範囲は [実装状況](implementation-status.md)を参照してください。repoとPagesの公開、固定Actionの匿名取得を確認済みで、推薦付き実fork PRの確認は残っています。デモ先は `geeknees/devouch`、送信者は `masusanou`（数値ID `287365775`）です。[実機手順](demo-runbook.md)に沿って進めます。
 
 対象は、AI エージェントに変更を作らせ、OSS リポジトリへ PR を送る管理者です。**管理者本人の GitHub アカウントで送る場合と、AI エージェントが持つ専用の GitHub アカウントで送る場合の両方**を扱います。
 
