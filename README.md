@@ -3,16 +3,22 @@
 Portable contributor endorsements, published and withdrawn by their issuer on ENSv2.
 One signed recommendation can be evaluated by multiple repositories; each maintainer chooses whom to trust.
 
+Inspired by [Mitchell Hashimoto's vouch](https://github.com/mitchellh/vouch), which asks whether a trusted person
+has vouched for a contributor before a maintainer spends time reviewing their work.
+vouch already supports sharing contributor lists across repositories. Devouch explores issuer-signed endorsements
+with an expiry and a withdrawal history on ENSv2, while keeping each repository's acceptance policy independent.
+It is a separate implementation; it does not embed vouch. See the [source comparison](docs/hackathon-research.md#vouch-が扱っている信頼).
+
 This hackathon implementation contains a Ruby CLI, a static wallet workspace, and a read-only GitHub Action.
 It uses Sepolia's official Permissioned Resolver. There is no Devouch API, database, shared publisher key, or new registry contract.
 
 **Current evidence:** local browser, CLI, and official-contract integration tests pass.
-Public Sepolia deployment-history reads work through Tenderly and ethPandaOps.
-One real-wallet publication on Sepolia (`masusanou-dev.eth`) was read back and verified as accepted by one policy and rejected by another; see [Sepolia evidence](docs/submission.md#sepolia-evidence).
-Withdrawal on Sepolia, live hosting, a published Action commit, and real fork-PR runs remain to be completed.
-See the [verification record](docs/implementation-status.md); local tests are not public-chain demo evidence.
-A GitHub test run stopped on missing gem checksums. The corrected lockfile passes a clean frozen install;
-the remote rerun remains pending.
+The issuer published masusanou's endorsement on Sepolia. The CLI accepted the same original under two policies
+and rejected it under a policy declining the issuer, using Tenderly and ethPandaOps at the same chain snapshot.
+See the [public-chain evidence](docs/demo-evidence.md) and [implementation record](docs/implementation-status.md).
+Real-wallet withdrawal, live hosting, a published Action commit, and endorsed fork-PR runs remain to be completed.
+The corrected lockfile passes a clean frozen install and the [GitHub test workflow](https://github.com/geeknees/devouch/actions/runs/36160022026).
+The private preparation PR's Action reported missing evidence correctly; this is not yet an endorsed fork-PR demonstration.
 
 ## Development history
 
@@ -46,8 +52,9 @@ The demo account is [masusanou](https://github.com/masusanou), numeric ID `28736
 The planned receiving repository is [geeknees/devouch](https://github.com/geeknees/devouch).
 It is currently private and will be made public for the demo, as requested by the owner.
 Public distribution and fork-PR validation have not yet been performed.
-The chosen ENS name is `masusanou-dev.eth`; its public owner and compatible initialized resolver were verified.
-An unsigned request is prepared locally. The adoption workflow pins the locally tested Action commit;
+The chosen ENS name is `masusanou-dev.eth`; the published endorsement expires at `2026-10-02T16:45:00Z`.
+The [demo examples](examples/demo/README.md) retrieve its original JSON using the recorded public transaction.
+The adoption workflow pins the locally tested Action commit;
 its public availability remains unverified.
 
 ## CLI

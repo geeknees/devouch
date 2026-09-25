@@ -1,6 +1,6 @@
 # ETHGlobal Tokyo 2026：ENS を中心とする応募方針
 
-実装追記（2026-09-26）: ENS推薦版のローカル実装・テストは完了。Sepolia実取引・公開配布・実fork PRは未確認、Worldは未統合。[提出草案](submission.md)と [実装状況](implementation-status.md)を現在の進捗として参照する。repoはデモ時に公開する方針。
+実装追記（2026-09-26）: ENS推薦版のローカル実装・テストとGitHub CIが成功し、本人walletのSepolia公開・CLI方針比較を [検証済み](demo-evidence.md)。実Sepolia失効・公開配布・推薦付き実fork PRは未実施、Worldは未統合。[提出草案](submission.md)と [実装状況](implementation-status.md)を現在の進捗として参照する。repoはデモ時に公開する方針。
 
 更新：2026-09-25。Building from Scratch。推薦の発行・失効・再利用を8時間版の中心にする。**ユーザーは分散性を優先し、World賞は両立できた場合に狙う方針を選択した。** 中央のバックエンドと共通発行鍵を必須にした前案は撤回した。
 

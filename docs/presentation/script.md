@@ -60,7 +60,7 @@ ETHGlobal Tokyo 2026 finalist judging: **7 minutes = 4 min demo + 3 min Q&A.**
 >
 > Mitchell Hashimoto made **vouch**. / The idea is simple:
 > before a review, / ask one question. / "Does **someone I trust** / vouch for this person?"
-> But that trust / stays in **one** repository. / A new project / starts from **zero**.
+> Vouch already / shares lists across projects. / Devouch adds / **signatures, expiry, and withdrawal history.**
 
 ### 0:45 — Idea (30s)
 
@@ -104,7 +104,7 @@ ETHGlobal Tokyo 2026 finalist judging: **7 minutes = 4 min demo + 3 min Q&A.**
 `[DEMO]` Web app → **Withdraw** → load `vouch.json` → confirm → send from the wallet.
 
 > Trust must be / **easy to take back.**
-> I clear the record / from my wallet. / Only I can do this.
+> I clear the record / from my wallet. / **No Devouch approval needed.**
 
 While waiting for two blocks (about 24 seconds):
 
@@ -116,7 +116,7 @@ While waiting for two blocks (about 24 seconds):
 `[DEMO]` Run commands 2 and 3 again.
 
 > Now both say / **revoked.**
-> One transaction. / Every repository / sees it.
+> One transaction. / Each repository sees it / **on its next check.**
 
 `[FALLBACK]` If Sepolia is slow, say "This is a recording of the same steps," and play the matching clip from the demo video.
 
@@ -148,7 +148,7 @@ While waiting for two blocks (about 24 seconds):
 >
 > Mitchell Hashimoto の vouch は、シンプルな考え方です。
 > レビューの前に、一つだけ問う。「信頼している誰かが、この人を推薦しているか？」
-> でもその信頼は、一つのリポジトリの中に閉じています。新しいプロジェクトでは、ゼロからです。
+> vouch には、別のリポジトリのリストを参照する機能もあります。Devouch は、署名・期限・取り消しの履歴を加えます。
 
 ### 0:45 — アイデア（30秒）
 
@@ -192,7 +192,7 @@ While waiting for two blocks (about 24 seconds):
 `[DEMO]` Web アプリ → **Withdraw** → `vouch.json` を読み込む → 確認 → ウォレットから送信する。
 
 > 信頼は、簡単に取り消せなければいけません。
-> 自分のウォレットから、記録を空にします。これができるのは私だけです。
+> 自分のウォレットから、記録を空にします。Devouch 運営者の承認は要りません。
 
 2ブロック（約24秒）待つ間に:
 
@@ -204,7 +204,7 @@ While waiting for two blocks (about 24 seconds):
 `[DEMO]` コマンド 2 と 3 をもう一度実行する。
 
 > どちらも revoked になりました。
-> 一回のトランザクションで、すべてのリポジトリに届きます。
+> 各リポジトリが次に検証した時に、取り消しが反映されます。
 
 `[FALLBACK]` Sepolia が遅いときは「同じ手順の録画です」と言って、デモ動画の該当場面を流す。
 
@@ -222,26 +222,28 @@ While waiting for two blocks (about 24 seconds):
 
 ## Live demo commands
 
-本番で端末に打つコマンド。repo のルートで実行する。ファイルは `.devouch/local/demo/`（Git 管理外）に置く。
+本番で端末に打つコマンド。repo のルートで実行する。推薦の原本と公開位置は `.devouch/local/demo/`（Git 管理外）に置き、方針は `examples/demo/` のファイルを使う。
 
 | ファイル | 用意するとき |
 | --- | --- |
-| `repo-a.json` | 用意済み。`.devouch/policy.json` と同じ推薦者・resolver を信頼する |
-| `repo-b.json` | 用意済み。`repo-a.json` から `trustedIssuers` だけ空にしたもの |
+| `examples/demo/policy-a.json` | Git管理済み。`.devouch/policy.json` と同じ推薦者・resolver を信頼する |
+| `examples/demo/policy-b-reject.json` | Git管理済み。別repoの方針例で、`trustedIssuers` は空 |
 | `vouch.json` | 審査の前に公開した推薦の原本。公開後に Web の **Download endorsement** で保存するか、下の `fetch` で取り出す |
 
 推薦は失効すると復活しない。同じ ENS 名に新しく公開すると前の推薦は置き換わる。リハーサルで失効させたら、審査の前に新しく公開し直し、`vouch.json` とデモ用 PR のファイルも差し替える。
 既定の RPC は Tenderly（`https://sepolia.gateway.tenderly.co`）。取得できないときは各コマンドに `--rpc-url https://rpc.sepolia.ethpandaops.io` を付ける（[実機デモの手順](../demo-runbook.md)）。
 
 ```sh
+mkdir -p .devouch/local/demo
+
 # 審査の前：公開した原本を置く
 mv ~/Downloads/github-287365775.json .devouch/local/demo/vouch.json
 
 # 2. repo A：valid / accepted
-./exe/devouch verify --credential .devouch/local/demo/vouch.json --policy .devouch/local/demo/repo-a.json --subject github:287365775
+./exe/devouch verify --credential .devouch/local/demo/vouch.json --policy examples/demo/policy-a.json --subject github:287365775
 
 # 3. repo B：valid / rejected（失効後は 2 と 3 とも revoked / not_evaluated）
-./exe/devouch verify --credential .devouch/local/demo/vouch.json --policy .devouch/local/demo/repo-b.json --subject github:287365775
+./exe/devouch verify --credential .devouch/local/demo/vouch.json --policy examples/demo/policy-b-reject.json --subject github:287365775
 ```
 
 ダウンロードがうまくいかないときは、チェーンから原本を取り出す。Web の **Save publication position** で保存した `publication.json`（公開したブロックとトランザクション）を使う。
@@ -257,6 +259,9 @@ mv ~/Downloads/publication.json .devouch/local/demo/publication.json
 
 Web は `github-<数値ID>.json` という名前で保存する。同名のファイルがあるとブラウザが `(1)` を付けるので、`mv` の元を合わせる。原本の JSON は整形し直さない。
 失効の直後は2ブロック（約24秒）待ってから検証する。台本の「待つ間に」のセリフでつなぐ。
+これは待ち時間の目安。snapshotが取引のblock以降になったことを結果で確認する。過去のAction結果は自動で更新されない。
+
+比較の根拠は [vouchの調査記録](../hackathon-research.md#vouch-が扱っている信頼)。他repoのリストを参照できることを前提に、署名・期限・失効履歴の違いを説明する。
 
 ## Q&A Preparation / Q&A 準備
 

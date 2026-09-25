@@ -3,11 +3,13 @@
 対象 repo は [geeknees/devouch](https://github.com/geeknees/devouch)、
 エージェントの PR 作者は [masusanou](https://github.com/masusanou)（数値 ID `287365775`）。
 この ID と repo の状態は GitHub API で確認済み。repo は現在 private、既定 branch は main。
-2026-09-26のユーザー訂正に従った送信先。ユーザーはデモ時に公開すると指定済み。公開・push・配布・実 fork PR はまだ実施していない。
+2026-09-26のユーザー訂正に従った送信先。ユーザーはデモ時に公開すると指定済み。
+承認された準備用branchのpushと [draft PR #1](https://github.com/geeknees/devouch/pull/1) は実施済み。公開・deploy・推薦付きの実fork PRは未実施。
 人間名義の実 PR も要件に残るが、アカウントは未指定。
 
 ENS名・所有者・初期化済みresolverは確認済み。Actionのローカル固定SHAと手動の公開workflowも準備済み。
-推薦の公開・失効取引、Action commitの公開取得、live URL、PR/run URL は未確認。
+推薦の公開取引とCLIのA/B方針比較は [実Sepoliaで確認済み](demo-evidence.md)。
+失効取引、Action commitの公開取得、live URL、推薦付きfork PR/run URL は未確認。
 以下の欄が埋まるまで実機デモ完了とは扱わない。
 
 ## 起動と準備
@@ -35,21 +37,23 @@ Sepolia に接続した本人のウォレットで直接 `name.eth` を取得す
 | 専用 resolver / 配備 block | `0x1C62ac64F60aDc036d184596e87c98fdFcFdb160` / `11780025` |
 | 名前の接続 | 上記resolverへ接続済み、取引hashは未記録 |
 | エージェント subject | `github:287365775` |
+| 推薦公開 | block `11780510`、receipt成功。[取引・原本・検証結果](demo-evidence.md) |
+| 推薦の期限 | `2026-10-02T16:45:00Z`（10月3日01:45 JST） |
 | 人間名義 subject | 未定 |
 | Action配布先 / 40桁SHA | `geeknees/devouch@9ce4525f269f590d4d8fd0e123ff35d33dce8efa`。ローカル検証済み、公開取得は未確認 |
 | 静的 live URL | 未公開。標準候補は `https://geeknees.github.io/devouch/` |
 
-この名前は対応実装・recordId 1・空の推薦欄まで確認済みなので、追加のresolver配備は不要。
-`.devouch/local/request-masusanou.json` に期限 2026-09-30 12:00 UTC の未送信リクエストを作成済み。
-画面のLoad CLI requestで読み込むか、現在状態を確認して新しくPrepareする。
-接続walletは上記ownerを選び、署名と公開を本人が確認する。
+この名前は対応実装・recordId 1で推薦を公開済み。追加のresolver配備や再公開は不要。
+準備時の未送信requestとは別に、画面で準備した上記期限の原本が公開された。
+まずmasusanouのPRでvalid / acceptedを確認し、その後に本人walletから失効する。
+原本の取得とCLI比較は [デモ例](../examples/demo/README.md)のコマンドを使う。
 
 PagesとActionの公開は [公開手順](release-runbook.md)に沿って行う。
 RPCの実名確認は `ready: true` まで確認する。直近runtimeだけを読むprobeの成功では代用しない。
 既定Tenderlyが取得不能なら、Connection settingsで `https://rpc.sepolia.ethpandaops.io` を選んで再確認する。
 PublicNodeは必要な過去stateを返せなかったため、今回の代替には使わない。
-785 bytesの同形式データで公開ガスを見積もった結果は664,611 gas。署名はplaceholderで、取引は未送信。
-実際の署名・手数料はwalletで確認し、公開後はreceiptのgasUsedを記録する。
+公開前の785 bytes・placeholder署名の見積もりは664,611 gasだった。
+本人が送った実取引のreceiptはgasUsed 642,290。[証拠](demo-evidence.md)では見積もりと区別する。
 
 ## 操作確認のリハーサル
 
@@ -72,6 +76,7 @@ PublicNodeは必要な過去stateを返せなかったため、今回の代替�
 公開済み Action の40桁 SHA を使う。未公開の SHAや `main` を実行済み証拠にしない。
 PR側は `.devouch/vouches/github-287365775.json` にダウンロードした原本を置く。
 JSONは整形し直さない。PR作成用のログインが実際にmasusanouであることを公開前に確認する。
+公開位置を使って取得する場合は [デモ例](../examples/demo/README.md)に従い、785 bytesと記録済みdigestを照合する。
 
 予定PRの本文:
 
