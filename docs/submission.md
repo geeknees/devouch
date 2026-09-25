@@ -1,6 +1,6 @@
 # 提出文とピッチの草案
 
-現状: ローカル実装・GitHub CI、本人walletのSepolia公開・CLI方針比較、repoとPagesの公開、masusanouの実fork PRでvalid / acceptedを検証済み。実Sepolia失効とCLIでの確認、人間名義の実fork PRは未実施。失効のPR検証は2026-09-26のユーザー指定で対象外。
+現状: ローカル実装・GitHub CI、本人walletのSepolia公開・CLI方針比較、repoとPagesの公開、masusanouの実fork PRでvalid / acceptedを検証済み。実Sepolia失効とCLIでの確認は未実施。失効のPR検証と人間名義の実PR検証は2026-09-26のユーザー指定で対象外。
 提出文の正本はこのファイル。提出フォームの画面の原本は [project-submit-form/](project-submit-form/) にある。
 下記は提出用の草案であり、提出済み・受賞要件充足とは扱わない。
 
@@ -165,7 +165,7 @@ Devouch carries a reference; it does not turn that reference into automatic appr
 | ライブデモURL | 公開済み：https://geeknees.github.io/devouch/ （2026-09-26 03:03 JST に HTTP 200 を確認）。配信5ファイルの一致と公開画面からのENS取得も確認 |
 | 動画URL | 別エージェントの作業で完成したとユーザー確認（2026-09-26）。提出URLは未記録 |
 | ENSv2の実txと失効後のreadback | 公開txと2方針の検証は取得（上記）。失効後は未取得 |
-| 人間・agent名義の実PRとAction run | masusanouのPR #2とvalid / acceptedのActionは確認済み。人間名義の実PRは未実施。失効のPR検証は対象外 |
+| agent名義の実PRとAction run | masusanouのPR #2とvalid / acceptedのActionは確認済み。人間名義の実PRと失効のPR検証は対象外 |
 | 別RPC・別ホストからの実操作 | ローカルUI経由の本人公開、2社RPCの検証を確認。別ホストの実操作は未実施 |
 | ENS の欄（使い方・コード行・評価・フィードバック） | 下書き済み（「ENS prize form fields」）。評価の1〜10とフィードバックの最終確認は提出者 |
 | 新デザインの画面画像 | ユーザー指定により後続の別作業。適用後に `node scripts/capture-assets.ts` で撮り直す |

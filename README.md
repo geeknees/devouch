@@ -20,8 +20,9 @@ The [live workspace](https://geeknees.github.io/devouch/) is published, and the 
 The [release verification](docs/release-evidence.md) covers the published files and real ENS retrieval from the hosted browser UI.
 Masusanou's [fork PR #2](https://github.com/geeknees/devouch/pull/2) reports
 `valid / accepted` in the [Devouch Action](https://github.com/geeknees/devouch/actions/runs/36172488074), and its normal CI passes.
-Real-wallet withdrawal and the human-account fork-PR demonstration remain to be completed.
-The PR demonstration ends at `valid / accepted`; withdrawal is demonstrated separately through the wallet and CLI.
+Real-wallet withdrawal remains to be completed.
+The PR demonstration uses masusanou and ends at `valid / accepted`; a separate human-account PR is outside the demo scope.
+Withdrawal is demonstrated separately through the wallet and CLI.
 The published commit passes the [GitHub test workflow](https://github.com/geeknees/devouch/actions/runs/36170464968).
 
 ## Development history

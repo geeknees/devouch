@@ -1,6 +1,6 @@
 # ETHGlobal Tokyo 2026：ENS を中心とする応募方針
 
-実装追記（2026-09-26）: ENS推薦版のローカル実装・テストとGitHub CIが成功し、本人walletのSepolia公開・CLI方針比較、masusanouの実fork PRのvalid / acceptedを [検証済み](demo-evidence.md)。repoとPagesの公開・固定Actionの匿名取得も [確認済み](release-evidence.md)。実Sepolia失効とCLIでの確認、人間名義の実fork PRは未実施、Worldは未統合。失効のPR検証は同日のユーザー指定で対象外。[提出草案](submission.md)と [実装状況](implementation-status.md)を現在の進捗として参照する。
+実装追記（2026-09-26）: ENS推薦版のローカル実装・テストとGitHub CIが成功し、本人walletのSepolia公開・CLI方針比較、masusanouの実fork PRのvalid / acceptedを [検証済み](demo-evidence.md)。repoとPagesの公開・固定Actionの匿名取得も [確認済み](release-evidence.md)。実Sepolia失効とCLIでの確認は未実施、Worldは未統合。失効のPR検証と人間名義の実PR検証は同日のユーザー指定で対象外。[提出草案](submission.md)と [実装状況](implementation-status.md)を現在の進捗として参照する。
 
 更新：2026-09-25。Building from Scratch。推薦の発行・失効・再利用を8時間版の中心にする。**ユーザーは分散性を優先し、World賞は両立できた場合に狙う方針を選択した。** 中央のバックエンドと共通発行鍵を必須にした前案は撤回した。
 
@@ -30,7 +30,7 @@
 7. 推薦者が直接失効させ、両方の CLI で `revoked / not_evaluated` を確認する。2026-09-26のユーザー指定により、失効はPRでは検証しない。
 8. 限定キーの権限・権限外拒否と、私たちのサイトを使わないローカル操作を示す。
 
-一人の推薦者・一つの用途・二つの repo 方針を使い、同時に有効な推薦は一人への一件に限定する。管理者名義の発行・実 fork PR・失効の後、エージェント名義へ新しく発行して同じ流れを繰り返す。両名義の確認も8時間内の計画に含め、実現性は未測定である。ローカルの例は合成 ID を使えるが、実 PR の照合は公開範囲を理解したテスト参加者で行う。World を統合していない経路を、人間性確認済みとは表示しない。
+一人の推薦者・一つの用途・二つの repo 方針を使い、同時に有効な推薦は一人への一件に限定する。実PRはmasusanou名義で有効な推薦を確認する。人間名義も順番に試す旧計画は、2026-09-26のユーザー指定により今回の実機確認から外した。ローカルの例は合成IDを使えるが、実PRの照合は公開範囲を理解したテスト参加者で行う。Worldを統合していない経路を、人間性確認済みとは表示しない。
 
 Action の手軽な導入はユーザーが追加した製品要件であり、ENS 賞の固有要件とは区別する。[導入マニュアル案](adoption-guide.md)を用意した。CI はメモリ・一時 JSON で処理する。
 

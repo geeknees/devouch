@@ -5,7 +5,7 @@
 この ID と repo の状態は GitHub API で確認済み。repo はpublic、既定 branch はmain。
 2026-09-26のユーザー訂正に従った送信先。同日の承認に基づき [PR #1](https://github.com/geeknees/devouch/pull/1) をmergeし、repoとPagesを公開した。
 公開結果は [検証記録](release-evidence.md)。masusanouの [実fork PR #2](https://github.com/geeknees/devouch/pull/2) は `valid / accepted` を確認済み。
-人間名義の実 PR も要件に残るが、アカウントは未指定。
+人間名義の実PR検証は2026-09-26のユーザー指定で対象外。今回の実PRデモはmasusanou名義だけを使う。
 
 ENS名・所有者・初期化済みresolverは確認済み。Actionのローカル固定SHAと手動の公開workflowも準備済み。
 推薦の公開取引とCLIのA/B方針比較は [実Sepoliaで確認済み](demo-evidence.md)。
@@ -41,7 +41,6 @@ Sepolia に接続した本人のウォレットで直接 `name.eth` を取得す
 | エージェントの実PR / Action | [PR #2](https://github.com/geeknees/devouch/pull/2) / [run 36172488074](https://github.com/geeknees/devouch/actions/runs/36172488074)、valid / accepted |
 | 推薦公開 | block `11780510`、receipt成功。[取引・原本・検証結果](demo-evidence.md) |
 | 推薦の期限 | `2026-10-02T16:45:00Z`（10月3日01:45 JST） |
-| 人間名義 subject | 未定 |
 | Action配布先 / 40桁SHA | `geeknees/devouch@9ce4525f269f590d4d8fd0e123ff35d33dce8efa`。ローカル検証と認証なしの公開取得を確認済み |
 | 静的 live URL | https://geeknees.github.io/devouch/ 。配信ファイルとブラウザ操作を確認済み |
 
@@ -70,7 +69,7 @@ PublicNodeは必要な過去stateを返せなかったため、今回の代替�
 5. **3:30–4:30: 失効。** Withdrawで本人walletから空値を送信する。2 block進んでからA/Bの CLI を実行し、revoked / not_evaluated を示す。PRでは失効を検証しない。古いチェックが自動で書き換わらないことを説明する。
 6. **4:30–5:00: 独立動作。** 公開サイトを閉じ、別のローカル配布画面・ethPandaOps RPCから取得と本人の操作を行う。運営者のAPI・鍵・DBを呼ばない。人間性未確認と通常のコードレビューを明示する。
 
-本人アカウントの fork PR でも新しい ID / nonce の推薦を発行し、同じ手順を実施する。
+人間名義のfork PRは追加しない。別の推薦を発行する場合は新しいID / nonceを使い、元の推薦は失効する。
 一つの record に二つの推薦を同時保持したとは扱わない。
 
 ## PR に含めるもの
@@ -107,7 +106,7 @@ PRの説明例:
 |---|---|
 | 配備・接続・公開・失効 | tx hash、receipt成功、block hash、対応eventとreadback |
 | A/B再利用とBのみ不採用 | 同一原本のdigest、二つのpolicy digest、各CLI JSON、終了コード |
-| 両名義のfork PR | PR URL、作者numeric ID、head/base SHA、Action run URL |
+| masusanouのfork PR | PR URL、作者numeric ID、head/base SHA、Action run URL |
 | 失効後 | CLIのrevokedとsnapshot、JSON、終了コード。PRでの検証は対象外 |
 | 他人の推薦 | 対象IDと原本subjectの相違、invalidのrun |
 | 運営者不在 | 起動した配布commit、別RPCのhost、直接操作のtx・readback |
