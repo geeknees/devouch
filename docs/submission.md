@@ -22,7 +22,7 @@
 | Languages | Ruby, TypeScript, JavaScript, HTML, CSS |
 | Web framework / Database | None / None |
 | Other tools | Bun, Node.js, GitHub Actions, Playwright, Minitest |
-| Prizes | **ENS のみ**選ぶ。説明は「ENS partner prize: why it applies」、フィードバック欄は提出者が記入。World は未統合なので選ばない |
+| Prizes | **ENS のみ**選ぶ。ENS の欄は「ENS prize form fields」を使う。World は未統合なので選ばない |
 | AI tools | 「AI tool disclosure」を貼る |
 | Video | 別エージェントの作業で完成済み（ユーザー確認）。提出URLは未記録 |
 | Future | 「Future」を貼る |
@@ -49,18 +49,6 @@ No Devouch-operated API, database, signing service, publisher key, or unique sto
 The project still depends on Ethereum/ENS, name maintenance, a wallet, GitHub for PR identity, and a reliable historical RPC provider.
 Recommendations do not prove humanity, code quality, delegation, or merge approval.
 
-## ENSv2 usage
-
-- Complete signed endorsements are ENS text records, retrievable independently of Devouch hosting.
-- Official factory-created Permissioned Resolvers give issuers direct ownership of publication and withdrawal.
-- The optional helper grant is limited to the endorsement text key; the issuer retains direct withdrawal.
-- Resolver/link/upgrade histories are checked alongside current values so temporary changes cannot silently restore trust.
-- The same endorsement works with different repository policies.
-
-The implementation uses pinned official Sepolia artifacts and unmodified contract code.
-It introduces no custom endorsement registry.
-Tests run real official bytecode on a disposable local EVM. One publication on Sepolia has been read back and verified against two policies (see "Sepolia evidence" below); withdrawal on Sepolia is still to be recorded.
-
 ## How it's made
 
 The command-line interface is Ruby and uses the standard library for bounded file handling, policy evaluation, and read-only GitHub API access.
@@ -85,11 +73,47 @@ The planning documents written before the event are included in `docs/` as the p
 The contributor demonstration uses the separate agent account masusanou; its fork PR has a verified endorsement result.
 Generated work is checked with local tests and browser runs; unperformed public-chain and GitHub checks are listed explicitly.
 
-## ENS partner prize: why it applies
+## ENS usage
 
-ENSv2 is where the endorsement lives, not a display name. Each recommender publishes the complete signed endorsement JSON to a text record on their own ENSv2 Permissioned Resolver, created through the official factory, so anyone can retrieve it from ENS without a Devouch service. Publishing and withdrawing are direct wallet transactions by the issuer. An optional helper wallet can be granted permission for only the endorsement text key, while the issuer keeps direct withdrawal. Verification reads the resolver's history, so a withdrawn or temporarily replaced record never silently restores trust. I use pinned official Sepolia deployments and add no custom registry.
+ENS をどう使っているかの詳しい控え。フォームの ENS 欄には下の「ENS prize form fields」の2文を貼り、ここはブースや Q&A、repo を読みに来た審査員のために使う。
 
-Feedback for ENS: 【提出者が記入。実際に詰まった点（例：resolver 作成から名前の接続までの手順、履歴取得に必要な RPC の要件、Sepolia の ENSv2 app のリセット）】
+ENSv2 is where the endorsement lives, not a display name.
+
+- Each recommender publishes the complete signed endorsement JSON to the `devouch.vouch` text record on their own ENSv2 Permissioned Resolver, created through the official factory. Anyone can retrieve it from ENS without a Devouch service.
+- Publishing and withdrawing are direct wallet transactions by the issuer.
+- An optional helper wallet can be granted permission for only the endorsement text key, while the issuer keeps direct withdrawal.
+- Verification reads the resolver's history (text, link and implementation changes) alongside the current value, so a withdrawn or temporarily replaced record never silently restores trust.
+- The same endorsement works with different repository policies: the evidence is shared, and each repository decides.
+
+I use pinned official Sepolia artifacts and unmodified contract code, and add no custom endorsement registry.
+Tests run the real official bytecode on a disposable local EVM. One publication on Sepolia has been read back and verified against two policies (see "Sepolia evidence" below); withdrawal on Sepolia is still to be recorded.
+
+### ENS prize form fields
+
+ENS を選ぶと出てくる欄。画面は [project-submit-form/](project-submit-form/) の 2026-09-26 03:25 のスクリーンショット。
+
+**How are you using this Protocol / API?**
+
+> Each recommender publishes the complete signed endorsement JSON as the `devouch.vouch` text record on their own ENSv2 Permissioned Resolver, and withdraws it by clearing that record. Devouch's CLI and GitHub Action read the record and its resolver history straight from ENS on Sepolia, so any repository can verify an endorsement without a Devouch server.
+
+**Link to the line of code where the tech is used**
+
+https://github.com/geeknees/devouch/blob/3214991e616e118d921ea9575d06d5e121b584f4/web/wallet.ts#L52-L53
+
+（推薦の JSON を ENSv2 の `setText` で公開する行。読み取り側は [src/chain.ts#L97-L100](https://github.com/geeknees/devouch/blob/3214991e616e118d921ea9575d06d5e121b584f4/src/chain.ts#L97-L100)）
+
+**How easy is it to use the API / Protocol? (1–10)**
+
+提出者が選ぶ。
+
+**Additional feedback for the Sponsor**（下書き。開発中の記録 [gotchas.md](../gotchas.md) から。提出者が確認・修正する）
+
+> - The ENSv2 text setter takes a DNS wire-format name (`setText(bytes name, …)`), while ENSv1 resolvers take a node hash. A short migration note with an example call would have saved time.
+> - A current text value alone cannot tell whether a record was cleared and restored. We had to read resolver history, link and implementation changes. A documented recipe for "was this record ever changed since block N" would help apps that treat records as revocable claims.
+> - Public Sepolia RPCs differ in how much historical state they keep; one provider stopped returning the state we needed. Guidance on RPC requirements for ENSv2 history reads would help.
+> - A setter grant on a Permissioned Resolver applies to that key for every name on the resolver, not to one name. This is reasonable, but easy to miss; we now require a dedicated resolver per issuer.
+> - Registry token IDs carry a 32-bit generation in the low bits, so matching events to a label needs care. An example in the docs would help.
+> - The Sepolia ENSv2 app notes that its state may be reset during development, which is a risk for hackathon demos; a note on expected stability would help planning.
 
 ## Future
 
@@ -138,14 +162,14 @@ Devouch carries a reference; it does not turn that reference into automatic appr
 | 項目 | 状態 |
 |---|---|
 | 公開コード / license / 配布SHA | MITあり、固定Actionの匿名取得を確認済み。[公開の検証記録](release-evidence.md) |
-| ライブデモURL | https://geeknees.github.io/devouch/ 。配信5ファイルの一致と公開画面からのENS取得を確認 |
+| ライブデモURL | 公開済み：https://geeknees.github.io/devouch/ （2026-09-26 03:03 JST に HTTP 200 を確認）。配信5ファイルの一致と公開画面からのENS取得も確認 |
 | 動画URL | 別エージェントの作業で完成したとユーザー確認（2026-09-26）。提出URLは未記録 |
 | ENSv2の実txと失効後のreadback | 公開txと2方針の検証は取得（上記）。失効後は未取得 |
 | 人間・agent名義の実PRとAction run | masusanouのPR #2とvalid / acceptedのActionは確認済み。人間名義の実PRは未実施。失効のPR検証は対象外 |
 | 別RPC・別ホストからの実操作 | ローカルUI経由の本人公開、2社RPCの検証を確認。別ホストの実操作は未実施 |
-| ENS へのフィードバック | 未記入。提出者が書く |
+| ENS の欄（使い方・コード行・評価・フィードバック） | 下書き済み（「ENS prize form fields」）。評価の1〜10とフィードバックの最終確認は提出者 |
 | 新デザインの画面画像 | ユーザー指定により後続の別作業。適用後に `node scripts/capture-assets.ts` で撮り直す |
-| repo の公開 | public。2026-09-26にユーザー承認後に公開 |
+| repo の公開 | public。ユーザー承認後に公開（2026-09-26 03:03 JST に確認） |
 | World Agents統合・失敗経路・feedback | 未実装、条件付き候補 |
 | イベント期間・Building from Scratch適格性 | 運営未確認 |
 
