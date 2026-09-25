@@ -82,6 +82,27 @@ Devouchのjobは読み取り専用のGitHub提供tokenと認証不要のRPCを�
 別jobの通常CIは依存の固定インストール、Ruby/Bun/結合テスト、型・構文検査、配布物の再build一致まで成功した。
 この確認時点でPR #2はopen、未merge。推薦の採否はマージ承認やコード品質の証明ではない。
 
+## 提出前の読み取り再確認
+
+2026-09-26 04:53–04:55 JST、記録済みの公開位置から同じ原本を再取得した。
+785 bytes、SHA-256 `744713f4d8d2b1685054969db5358d527cb1c6c6a12bca362160f742ef744256` が一致した。
+方針と原本を変えず、現在のsnapshotを使う実Ruby CLIで次を確認した。
+
+| 方針 | 判定 / 終了コード | RPC | Snapshot |
+| --- | --- | --- | --- |
+| A | valid / accepted、0 | Tenderly | 11781420 |
+| B | valid / accepted、0 | ethPandaOps | 11781423 |
+| B・推薦者不採用 | valid / rejected、1、issuer_not_trusted | ethPandaOps | 11781423 |
+
+Aのblock hashは `0x0b42922e3149384f0ae7571db7c7a9bc5b9ec6b70fc2cb2416a46b653142a73a`、
+Bの2判定は `0xb9b27b10551e409e652998843fa682ab224ba9422ca1158fb56f36adad25a42e`。
+全判定でerrorはnull、human_verificationはnot_included、policy digestは上表と同じ。
+この再確認ではAとBのsnapshotは異なる。両RPCで同じsnapshotを検証した最初の記録とは区別する。
+
+修正版のローカル静的UIからもウォレットなしで原本を取得し、ダウンロードの785 bytesとdigestを照合した。
+推薦者・対象ID・期限と公開取引の表示が一致した。通信は静的ファイルのGETとTenderlyへの読み取りRPCだけで、
+署名要求・取引送信はない。この再確認は公開サイトへの新しい配布や、PRのAction再実行の証拠ではない。
+
 ## 残る実機確認
 
 2026-09-26のユーザー指定により、失効はPRでは検証しない。
