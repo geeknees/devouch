@@ -91,6 +91,11 @@ GitHubの [Test run](https://github.com/geeknees/devouch/actions/runs/3615561220
 commit `5e1afca6aa3d72567e4c7ab70f9b8d851544aca2` の [push Test](https://github.com/geeknees/devouch/actions/runs/36159498575) と [PR Test](https://github.com/geeknees/devouch/actions/runs/36160022026) も成功した。
 PR Testは依存の固定インストール、Ruby/Bun/結合テスト、型・構文検査、配布物の再build一致まで全stepのsuccessを確認した。
 
+その後のロゴ更新commit `cf4c159a6da946466146313ef0e5d5897e6d6110` の
+[Test run](https://github.com/geeknees/devouch/actions/runs/36167692283) は、最後の配布物一致検査で失敗した。
+`assets/devouch-logo.svg` に対し `dist/web/devouch-logo.svg` が古かったため、既存のbuildで配布用SVGを再生成した。
+機能実装やデザイン案は変更せず、採用済みの元データと配布物を一致させた。
+
 ## 公開準備
 
 `.github/workflows/devouch.yml` はローカル検証済みcommit `9ce4525f269f590d4d8fd0e123ff35d33dce8efa` を固定した。
@@ -113,8 +118,8 @@ privacy-checkのパターンで追跡中・未追跡の対象ファイルと既�
 第三者ライセンスの公開連絡先と、公式GitHub docs URLの一部は誤検知として区別した。
 発表台本の氏名は現在placeholderだが、追加・削除した既存コミットの差分には残っている。
 Gitのauthor・committer情報にも氏名と個人メールアドレスがある。
-追跡中のPNG 10点を目視し、提出フォーム画像5点にログインアイコンのイニシャルを確認した。
-PNGのtext・Exifメタデータはなく、秘密鍵などを保存する典型的なファイル名も現在・履歴ともに見つからなかった。
+現在のPNG 10点と履歴の旧版3点を目視し、提出フォーム画像5点にログインアイコンのイニシャルを確認した。
+全13点にtext・Exifメタデータはなく、秘密鍵などを保存する典型的なファイル名も現在・履歴ともに見つからなかった。
 これらの個人情報を公開してよいかの判断が必要。履歴の変更・削除は行っていない。
 スキャンはパターン照合であり、秘密情報がないことの数学的保証ではない。
 
