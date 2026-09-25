@@ -1,8 +1,12 @@
 # デモ公開の手順
 
 公開対象は `geeknees/devouch` と `dist/web/` の静的画面。
-ユーザー指定は「デモ時に公開」。以下は準備済みの操作手順で、公開・push・deployの実施記録ではない。
+ユーザー指定は「デモ時に公開」。以下は準備済みの操作手順で、公開・deployの実施記録ではない。
 確認時点のrepoはprivate、GitHub Pagesは未設定。
+
+準備用の `codex/demo-release-20260926` はユーザー承認後にpushし、[draft PR #1](https://github.com/geeknees/devouch/pull/1) を作成した。
+そのhead `5e1afca6aa3d72567e4c7ab70f9b8d851544aca2` のTestと、推薦ファイルなしのAction reportはGitHub上で成功した。
+merge・visibility変更・Pages公開はまだ行っていない。
 
 ## 配布物
 
@@ -23,6 +27,7 @@ Actionを更新するときは、ソース・配布物の一致とテストを�
 
 1. 公開するcommitと差分を確認し、privacy-checkの全ファイル・履歴検査を行う。
    ローカルの `.devouch/local/`、鍵、token、rawログを公開物へ追加しない。
+   台本の氏名は現在placeholderだが既存履歴には残る。履歴を含めて公開するかを確定する。自動で履歴を書き換えない。
 2. 保護branchへ直接pushせず、通常のreview経路で公開対象の変更をremoteへ反映する。
    リポジトリのvisibility変更は、ユーザーが指定したデモ時の操作として別に実行する。
 3. 公開repoと固定Action commitが未認証で取得できることを確認し、公開commitのTest workflow成功を確認する。
@@ -43,5 +48,7 @@ Pagesは [GitHub公式のcustom workflow手順](https://docs.github.com/en/pages
 
 公開後、メンテナーがpolicyとworkflowを確認した既定branchへmasusanouのfork PRを送る。
 推薦原本は `.devouch/vouches/github-287365775.json`。
+本人walletでの公開とCLI比較は [Sepolia検証記録](demo-evidence.md)に記録済み。
+有効推薦のPR結果を確認してから、本人が失効する。
 PR作者、head/base SHA、同一原本のdigest、Action Summary、再実行後の失効を確認する。
 これは公開workflowの準備だけでは達成しない。[実機手順](demo-runbook.md)に証拠を残す。
