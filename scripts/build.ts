@@ -11,6 +11,9 @@ if (!web.success) { console.error(web.logs); process.exit(1); }
 await Bun.write('dist/web/index.html', Bun.file('web/index.html'));
 await Bun.write('dist/web/style.css', Bun.file('web/style.css'));
 await Bun.write('dist/web/devouch-logo.svg', Bun.file('assets/devouch-logo.svg'));
+for (const font of new Bun.Glob('*.woff2').scanSync('web/fonts')) {
+  await Bun.write('dist/web/fonts/' + font, Bun.file('web/fonts/' + font));
+}
 const notices = Bun.spawnSync(['ruby', 'scripts/notices.rb'], { stdout: 'inherit', stderr: 'inherit' });
 if (notices.exitCode !== 0) process.exit(notices.exitCode);
 console.log('Built dist/web');

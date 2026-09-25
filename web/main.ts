@@ -33,10 +33,10 @@ const submission = new Submission(value => {
   update();
 }, restorePending());
 
-function status(message: string, error = false) {
+function status(message: string, tone: 'neutral' | 'success' | 'error' | 'withdrawn' = 'neutral') {
   const target = element('status');
   target.hidden = false;
-  target.classList.toggle('error', error);
+  for (const value of ['success', 'error', 'withdrawn']) target.classList.toggle(value, tone === value);
   target.textContent = message;
 }
 function update() {
@@ -91,7 +91,11 @@ function errorMessage(error: unknown) {
 async function run(message: string, work: () => Promise<void>) {
   if (busy) return;
   busy = true; update(); status(message);
-  try { await work(); } catch (error) { status(errorMessage(error), true); }
+  try { await work(); } catch (error) {
+    const unavailable = error instanceof EvidenceError &&
+      ['rpc_unavailable', 'wallet_unavailable', 'submission_unknown', 'pending_transaction'].includes(error.code);
+    status(errorMessage(error), unavailable ? 'neutral' : 'error');
+  }
   finally { busy = false; update(); }
 }
 function wallet() {
@@ -155,24 +159,25 @@ async function completed(result: Awaited<ReturnType<WalletSession['recover']>>) 
   if (result.pending.kind === 'publish') {
     await downloads(result.pending.raw!, result.publication);
     signedRaw = null;
-    status('Published. The successful receipt and ENS readback match. Allow two more blocks before verifying with the CLI or Action. Gas used: ' + result.receipt.gasUsed.toString() + '.');
+    status('Published. The successful receipt and ENS readback match. Allow two more blocks before verifying with the CLI or Action. Gas used: ' + result.receipt.gasUsed.toString() + '.', 'success');
   } else if (result.pending.kind === 'revoke') {
     revokeRequest = null; element('revoke-review').hidden = true;
-    status('Withdrawn. The receipt and empty ENS record are confirmed. Rerun the CLI or GitHub Action after two more blocks.');
+    status('Withdrawn. The receipt and empty ENS record are confirmed. Rerun the CLI or GitHub Action after two more blocks.', 'withdrawn');
   } else if (result.pending.kind === 'deploy') {
     input('resolver-address').value = result.resolver!;
-    status('Dedicated resolver created. Review and connect the ENS name in step 2. Gas used: ' + result.receipt.gasUsed.toString() + '.');
+    status('Dedicated resolver created. Review and connect the ENS name in step 2. Gas used: ' + result.receipt.gasUsed.toString() + '.', 'success');
   } else if (result.pending.kind === 'bind') {
     input('publish-name').value = result.pending.name;
-    status('The ENS name now points to your resolver. After two more blocks, prepare an endorsement in Publish.');
-  } else status(result.pending.kind === 'grant' ? 'The endorsement key grant is confirmed.' : 'The endorsement key grant has been revoked. Existing endorsements remain published until withdrawn.');
+    status('The ENS name now points to your resolver. After two more blocks, prepare an endorsement in Publish.', 'success');
+  } else status(result.pending.kind === 'grant' ? 'The endorsement key grant is confirmed.' : 'The endorsement key grant has been revoked. Existing endorsements remain published until withdrawn.',
+    result.pending.kind === 'grant' ? 'success' : 'withdrawn');
 }
 
 document.querySelectorAll<HTMLButtonElement>('[data-tab]').forEach(target => target.addEventListener('click', () => activate(target.dataset.tab!)));
 document.querySelectorAll<HTMLButtonElement>('[data-go]').forEach(target => target.addEventListener('click', () => activate(target.dataset.go!)));
 for (const id of ['consent', 'revoke-consent', 'bind-consent']) input(id).addEventListener('change', update);
 button('connect').addEventListener('click', () => run('Connecting to your Sepolia wallet…', async () => {
-  await wallet().connect(); status('Wallet connected. Your private key stays in your wallet.');
+  await wallet().connect(); status('Wallet connected. Your private key stays in your wallet.', 'success');
 }));
 element('prepare-form').addEventListener('submit', event => {
   event.preventDefault();
@@ -193,7 +198,7 @@ button('sign').addEventListener('click', () => run('Confirm the endorsement in y
   insist(publishRequest && input('consent').checked, 'consent_required');
   signedRaw = await (await connected()).sign(publishRequest);
   element('signature-status').textContent = 'Signed. The endorsement is still unpublished. Publish it with a separate wallet transaction.';
-  status('Signature checked. Publish to make this endorsement available on ENS.');
+  status('Signature checked. Publish to make this endorsement available on ENS.', 'success');
 }));
 button('publish').addEventListener('click', () => run('Rechecking the public record before sending…', async () => {
   insist(publishRequest && signedRaw && input('consent').checked, 'consent_required');
@@ -205,7 +210,7 @@ element('fetch-form').addEventListener('submit', event => {
     const hint = input('publication-file').files?.length ? publicationHint(strictJson(await fileText('publication-file', 2048))) : undefined;
     const fetched = await new ChainReader(rpcUrl).fetch(input('fetch-name').value.trim(), hint);
     await downloads(fetched.raw, fetched.publication);
-    status('Retrieved exact published bytes. Use the CLI or Action to evaluate current evidence against a repository policy.');
+    status('Retrieved exact published bytes. Use the CLI or Action to evaluate current evidence against a repository policy.', 'success');
   });
 });
 input('revoke-file').addEventListener('change', () => run('Checking the exact endorsement to withdraw…', async () => {
@@ -248,7 +253,7 @@ input('recovery-file').addEventListener('change', () => run('Loading the saved p
 button('download-vouch').addEventListener('click', () => run('Preparing the original endorsement file…', async () => {
   const parsed = await parseCredential(downloadedRaw!);
   download('github-' + parsed.message.subject.split(':')[1] + '.json', downloadedRaw!);
-  status('Downloaded the exact published bytes. Include this file in the contributor’s PR.');
+  status('Downloaded the exact published bytes. Include this file in the contributor’s PR.', 'success');
 }));
 button('download-publication').addEventListener('click', () => {
   if (downloadedPublication) download('publication.json', JSON.stringify(downloadedPublication, null, 2) + '\n');
@@ -260,13 +265,13 @@ button('download-policy').addEventListener('click', () => run('Preparing a repos
   download('policy.json', JSON.stringify({ repositoryId: repository, chainId: 11155111,
     trustedIssuers: [parsed.message.issuer], allowedScopes: [parsed.message.scope],
     allowedResolvers: [{ address: parsed.message.resolver, implementation: RESOLVER_IMPL }], requiredIssuers: 1 }, null, 2) + '\n');
-  status('Policy example downloaded. The receiving maintainer must independently approve this issuer.');
+  status('Policy example downloaded. The receiving maintainer must independently approve this issuer.', 'success');
 }));
 button('apply-rpc').addEventListener('click', () => run('Changing the read connection…', async () => {
   const selected = input('rpc-url').value.trim();
   await new ChainReader(selected).snapshot();
   rpcUrl = selected; session = null; signedRaw = null;
-  status('Sepolia connection checked. Reconnect the wallet before writing. Pending recovery data has been preserved.');
+  status('Sepolia connection checked. Reconnect the wallet before writing. Pending recovery data has been preserved.', 'success');
 }));
 window.ethereum?.on?.('accountsChanged', () => { session = null; signedRaw = null; update(); status('Wallet changed. Reconnect and review the operation again.'); });
 window.ethereum?.on?.('chainChanged', () => { session = null; signedRaw = null; update(); });

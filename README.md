@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/devouch-logo.svg" alt="Devouch logo: a lowercase d whose stem forks in two" width="120" height="120">
+</p>
+
 # Devouch
 
 Portable contributor endorsements, published and withdrawn by their issuer on ENSv2.
