@@ -1,0 +1,572 @@
+<title>Devouch Depths</title>
+<!-- ABOUTME: A self-contained "powers of ten" zoom from the open-source graph down to Keccak state bits. -->
+<!-- ABOUTME: Every hash, namehash, and curve point shown is computed live in the page, not hard-coded. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root {
+    color-scheme: dark;
+    --void: #0b0e0a;
+    --panel: #151a13;
+    --bone: #e8ecdd;
+    --dim: #8e9a82;
+    --moss: #7f9a66;
+    --lime: #d5f594;
+    --ember: #e08a6d;
+    --serif: "Instrument Serif", "Iowan Old Style", Georgia, serif;
+    --sans: "IBM Plex Sans", -apple-system, "Segoe UI", sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  }
+  html, body { height: 100%; }
+  body { background: var(--void); color: var(--bone); font-family: var(--sans); overflow: hidden; }
+  canvas { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
+  .caption {
+    position: fixed; left: max(16px, 4vw); bottom: calc(max(16px, 5vh) + env(safe-area-inset-bottom, 0px));
+    max-width: min(34rem, calc(100% - 32px)); display: grid; gap: 10px; pointer-events: none;
+  }
+  .eyebrow { font: 500 11px/1.4 var(--mono); letter-spacing: .16em; text-transform: uppercase; color: var(--moss); margin: 0; }
+  .title { font: 400 clamp(34px, 5.2vw, 64px)/1.02 var(--serif); letter-spacing: -.01em; margin: 0; text-wrap: balance; }
+  .title em { color: var(--lime); }
+  .body { font-size: 15px; line-height: 1.6; color: #c3cab7; margin: 0; max-width: 30rem; }
+  .readout { font: 12px/1.6 var(--mono); color: var(--dim); margin: 0; overflow-wrap: anywhere; }
+  .caption > * { transition: opacity .6s ease, transform .6s ease; }
+  .caption.swap > * { opacity: 0; transform: translateY(6px); }
+  .ruler {
+    position: fixed; right: max(16px, 3vw); top: 50%; transform: translateY(-50%);
+    display: grid; gap: 6px; list-style: none; margin: 0; padding: 0;
+  }
+  .ruler button {
+    all: unset; cursor: pointer; display: flex; align-items: center; justify-content: flex-end; gap: 10px;
+    font: 11px/1 var(--mono); color: #5d6755; letter-spacing: .06em; padding: 4px 0;
+  }
+  .ruler button::after { content: ""; width: 14px; height: 1px; background: currentColor; transition: width .4s; }
+  .ruler button[aria-current="true"] { color: var(--lime); }
+  .ruler button[aria-current="true"]::after { width: 34px; }
+  .ruler button:focus-visible { outline: 2px solid var(--lime); outline-offset: 4px; }
+  .ruler span { opacity: 0; transition: opacity .3s; }
+  .ruler button:hover span, .ruler button:focus-visible span, .ruler button[aria-current="true"] span { opacity: 1; }
+  .controls {
+    position: fixed; right: max(16px, 3vw); bottom: calc(max(16px, 5vh) + env(safe-area-inset-bottom, 0px));
+    display: flex; gap: 8px;
+  }
+  .controls button {
+    font: 500 12px/1 var(--mono); color: var(--bone); background: rgba(21, 26, 19, .78);
+    border: 1px solid #2c3428; border-radius: 999px; padding: 10px 14px; cursor: pointer;
+  }
+  .controls button:hover { border-color: var(--moss); }
+  .controls button:focus-visible { outline: 2px solid var(--lime); outline-offset: 2px; }
+  .finale {
+    position: fixed; inset: 0; display: grid; place-content: center; text-align: center; gap: 14px;
+    pointer-events: none; opacity: 0; transition: opacity 1.4s ease; padding-inline: 16px;
+  }
+  .finale.on { opacity: 1; }
+  .finale p { margin: 0; }
+  .finale .big { font: 400 clamp(40px, 7vw, 92px)/1.02 var(--serif); text-wrap: balance; }
+  .finale .big em { color: var(--lime); }
+  .finale .small { font: 12px/1.6 var(--mono); letter-spacing: .14em; color: var(--dim); text-transform: uppercase; }
+  @media (max-width: 640px) {
+    .ruler span { display: none; }
+    .body { font-size: 14px; }
+    .caption { bottom: calc(76px + env(safe-area-inset-bottom, 0px)); }
+    .controls { left: 16px; right: 16px; justify-content: flex-end; }
+  }
+</style>
+
+<canvas id="scene" role="img" aria-label="Animated zoom from the open-source graph down to the bits of a Keccak hash"></canvas>
+
+<div class="caption" id="caption" aria-live="polite">
+  <p class="eyebrow" id="eyebrow"></p>
+  <h1 class="title" id="title"></h1>
+  <p class="body" id="body"></p>
+  <p class="readout" id="readout"></p>
+</div>
+
+<ol class="ruler" id="ruler" aria-label="Depth"></ol>
+
+<div class="controls">
+  <button id="prev" type="button" aria-label="Zoom out one level">←</button>
+  <button id="play" type="button">Pause</button>
+  <button id="next" type="button" aria-label="Zoom in one level">→</button>
+</div>
+
+<div class="finale" id="finale" aria-hidden="true">
+  <p class="small">devouch · portable endorsements on ENSv2</p>
+  <p class="big">Endorse once.<br><em>Let each community decide.</em></p>
+</div>
+
+<script>
+// ---------- Real cryptography: Keccak-f[1600], keccak256, ENS namehash ----------
+const M64 = (1n << 64n) - 1n;
+const RC = [0x0000000000000001n, 0x0000000000008082n, 0x800000000000808An, 0x8000000080008000n,
+  0x000000000000808Bn, 0x0000000080000001n, 0x8000000080008081n, 0x8000000000008009n,
+  0x000000000000008An, 0x0000000000000088n, 0x0000000080008009n, 0x000000008000000An,
+  0x000000008000808Bn, 0x800000000000008Bn, 0x8000000000008089n, 0x8000000000008003n,
+  0x8000000000008002n, 0x8000000000000080n, 0x000000000000800An, 0x800000008000000An,
+  0x8000000080008081n, 0x8000000000008080n, 0x0000000080000001n, 0x8000000080008008n];
+// ROT[x][y], lane (x, y) lives at index x + 5y.
+const ROT = [[0, 36, 3, 41, 18], [1, 44, 10, 45, 2], [62, 6, 43, 15, 61], [28, 55, 25, 21, 56], [27, 20, 39, 8, 14]];
+const rotl = (v, n) => n === 0 ? v : ((v << BigInt(n)) | (v >> BigInt(64 - n))) & M64;
+
+const STEPS = {
+  'θ theta': A => {
+    const C = [0, 1, 2, 3, 4].map(x => A[x] ^ A[x + 5] ^ A[x + 10] ^ A[x + 15] ^ A[x + 20]);
+    for (let x = 0; x < 5; x++) {
+      const D = C[(x + 4) % 5] ^ rotl(C[(x + 1) % 5], 1);
+      for (let y = 0; y < 5; y++) A[x + 5 * y] ^= D;
+    }
+  },
+  'ρ π rho-pi': A => {
+    const B = new Array(25);
+    for (let x = 0; x < 5; x++) for (let y = 0; y < 5; y++) B[y + 5 * ((2 * x + 3 * y) % 5)] = rotl(A[x + 5 * y], ROT[x][y]);
+    for (let i = 0; i < 25; i++) A[i] = B[i];
+  },
+  'χ chi': A => {
+    const B = A.slice();
+    for (let y = 0; y < 5; y++) for (let x = 0; x < 5; x++)
+      A[x + 5 * y] = B[x + 5 * y] ^ ((~B[(x + 1) % 5 + 5 * y] & M64) & B[(x + 2) % 5 + 5 * y]);
+  },
+  'ι iota': (A, round) => { A[0] ^= RC[round]; },
+};
+const STEP_NAMES = Object.keys(STEPS);
+function keccakF(A) { for (let r = 0; r < 24; r++) for (const s of STEP_NAMES) STEPS[s](A, r); }
+
+function absorbOneBlock(bytes) {
+  // keccak256: rate 136 bytes, padding 0x01 ... 0x80. Inputs here fit in one block.
+  const block = new Uint8Array(136);
+  block.set(bytes);
+  block[bytes.length] ^= 0x01;
+  block[135] ^= 0x80;
+  const A = new Array(25).fill(0n);
+  for (let i = 0; i < 17; i++) {
+    let lane = 0n;
+    for (let b = 7; b >= 0; b--) lane = (lane << 8n) | BigInt(block[i * 8 + b]);
+    A[i] = lane;
+  }
+  return A;
+}
+function squeeze(A) {
+  const out = new Uint8Array(32);
+  for (let i = 0; i < 32; i++) out[i] = Number((A[i >> 3] >> BigInt(8 * (i & 7))) & 0xffn);
+  return out;
+}
+function keccak256(bytes) { const A = absorbOneBlock(bytes); keccakF(A); return squeeze(A); }
+const utf8 = s => new TextEncoder().encode(s);
+const hex = b => '0x' + Array.from(b, x => x.toString(16).padStart(2, '0')).join('');
+const short = h => h.slice(0, 10) + '…' + h.slice(-6);
+function namehash(name) {
+  let node = new Uint8Array(32);
+  if (!name) return node;
+  for (const label of name.split('.').reverse()) {
+    const joined = new Uint8Array(64);
+    joined.set(node); joined.set(keccak256(utf8(label)), 32);
+    node = keccak256(joined);
+  }
+  return node;
+}
+
+const NAME = 'your-name.eth';
+const TEXT_KEY = 'devouch.vouch';
+const NH = { root: hex(namehash('')), eth: hex(namehash('eth')), name: hex(namehash(NAME)) };
+const TYPE_STRING = 'Endorsement(string version,bytes32 id,address issuer,string subject,string scope,uint64 issuedAt,uint64 expiresAt,bytes32 requestNonce,string recordName,address resolver,uint256 recordId,uint256 anchorStartBlock)';
+const TYPEHASH = hex(keccak256Long(utf8(TYPE_STRING)));
+function keccak256Long(bytes) {
+  // Multi-block absorb for inputs longer than the 136-byte rate.
+  const rate = 136, padded = new Uint8Array(Math.ceil((bytes.length + 1) / rate) * rate);
+  padded.set(bytes); padded[bytes.length] ^= 0x01; padded[padded.length - 1] ^= 0x80;
+  const A = new Array(25).fill(0n);
+  for (let off = 0; off < padded.length; off += rate) {
+    for (let i = 0; i < 17; i++) {
+      let lane = 0n;
+      for (let b = 7; b >= 0; b--) lane = (lane << 8n) | BigInt(padded[off + i * 8 + b]);
+      A[i] ^= lane;
+    }
+    keccakF(A);
+  }
+  return squeeze(A);
+}
+
+// ---------- Small-field model of secp256k1: y² = x³ + 7 over F_127 ----------
+const P = 127;
+const mod = (a, m = P) => ((a % m) + m) % m;
+const inv = a => { let r = 1, b = mod(a), e = P - 2; while (e) { if (e & 1) r = r * b % P; b = b * b % P; e >>= 1; } return r; };
+const CURVE = [];
+for (let x = 0; x < P; x++) for (let y = 0; y < P; y++) if (mod(y * y - (x * x * x + 7)) === 0) CURVE.push([x, y]);
+function add(p, q) {
+  if (!p) return q; if (!q) return p;
+  if (p[0] === q[0] && mod(p[1] + q[1]) === 0) return null;
+  const l = p[0] === q[0] ? mod(3 * p[0] * p[0] * inv(2 * p[1])) : mod((q[1] - p[1]) * inv(q[0] - p[0]));
+  const x = mod(l * l - p[0] - q[0]);
+  return [x, mod(l * (p[0] - x) - p[1])];
+}
+const G = CURVE.reduce((best, pt) => {
+  let n = 1, r = pt; while (r) { r = add(r, pt); n++; } return n > best.n ? { pt, n } : best;
+}, { pt: CURVE[0], n: 0 });
+const MULTIPLES = []; for (let r = G.pt; r; r = add(r, G.pt)) MULTIPLES.push(r);
+
+// ---------- Deterministic randomness ----------
+function rng(seed) { return () => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 4294967296; }; }
+
+// ---------- Palette for canvas ----------
+const C = { void: '#0b0e0a', panel: '#151a13', line: '#2b3326', bone: '#e8ecdd', dim: '#8e9a82', faint: '#4a5543',
+  moss: '#7f9a66', lime: '#d5f594', ember: '#e08a6d' };
+const MONO = '"IBM Plex Mono", ui-monospace, Menlo, monospace';
+const SERIF = '"Instrument Serif", Georgia, serif';
+const font = (size, fam = MONO, w = 400) => `${w} ${size}px ${fam}`;
+
+// ---------- Scenes. Each draws in local units; the next scene lives at (0,0) within ±16 units. ----------
+const graph = (() => {
+  const r = rng(7), nodes = [[0, 0, 1]], edges = [];
+  for (let i = 0; i < 900; i++) {
+    const arm = i % 4, t = r() * 1, a = arm * Math.PI / 2 + t * 5.2 + (r() - .5) * .7, d = 30 + t * 470 + (r() - .5) * 40;
+    nodes.push([Math.cos(a) * d, Math.sin(a) * d * .82, .3 + r() * .7]);
+  }
+  for (let i = 1; i < nodes.length; i++) {
+    let best = -1, bd = 1e9;
+    for (let j = 0; j < i; j++) { const dx = nodes[i][0] - nodes[j][0], dy = nodes[i][1] - nodes[j][1], dd = dx * dx + dy * dy; if (dd < bd) { bd = dd; best = j; } }
+    if (bd < 3600) edges.push([i, best]);
+  }
+  return { nodes, edges };
+})();
+
+const prs = (() => { const r = rng(21); return Array.from({ length: 340 }, () => ({ a: r() * Math.PI * 2, s: .05 + r() * .09, o: r(), lit: r() < .06 })); })();
+
+const JSON_LINES = [
+  ['{', ''],
+  ['  "version": ', '"0.1.0",'],
+  ['  "id": ', '"0x6c1e…a09b",'],
+  ['  "issuer": ', '"0x9f3a…41d2",'],
+  ['  "subject": ', '"github:287365775",'],
+  ['  "scope": ', '"oss-contribution",'],
+  ['  "issuedAt": ', '1790380800,'],
+  ['  "expiresAt": ', '1790985600,'],
+  ['  "requestNonce": ', '"0x2b7d…e31c",'],
+  ['  "recordName": ', `"${NAME}",`],
+  ['  "resolver": ', '"0x51c0…77aa",'],
+  ['  "recordId": ', '"…",'],
+  ['  "anchorStartBlock": ', '"…",'],
+  ['  "signature": ', '"0x…65 bytes"'],
+  ['}', ''],
+];
+
+const keccakAnim = { A: absorbOneBlock(utf8(TEXT_KEY)), round: 0, step: 0, last: 0, done: false, hash: '' };
+function advanceKeccak(now) {
+  if (now - keccakAnim.last < 110) return;
+  keccakAnim.last = now;
+  if (keccakAnim.done) {
+    if (now - keccakAnim.doneAt > 4200) Object.assign(keccakAnim, { A: absorbOneBlock(utf8(TEXT_KEY)), round: 0, step: 0, done: false });
+    return;
+  }
+  STEPS[STEP_NAMES[keccakAnim.step]](keccakAnim.A, keccakAnim.round);
+  if (++keccakAnim.step === 4) { keccakAnim.step = 0; if (++keccakAnim.round === 24) { keccakAnim.done = true; keccakAnim.doneAt = now; keccakAnim.hash = hex(squeeze(keccakAnim.A)); } }
+}
+
+function ring(ctx, r, color, w) { ctx.strokeStyle = color; ctx.lineWidth = w; ctx.beginPath(); ctx.arc(0, 0, r, 0, Math.PI * 2); ctx.stroke(); }
+function rrect(ctx, x, y, w, h, r) { ctx.beginPath(); ctx.roundRect(x, y, w, h, r); }
+function label(ctx, text, x, y, size, color, align = 'left', fam = MONO, w = 400) {
+  ctx.font = font(size * 1.2, fam, w); ctx.fillStyle = color; ctx.textAlign = align; ctx.textBaseline = 'middle'; ctx.fillText(text, x, y);
+}
+
+const SCENES = [
+  {
+    key: 'ecosystem', eyebrow: 'Open source · millions of repositories', title: 'A graph of <em>people</em> and projects',
+    body: 'Contributors move between repositories. Trust earned in one place usually does not come with them.',
+    readout: () => 'scale ≈ the whole ecosystem · one highlighted repository',
+    draw(ctx, t) {
+      ctx.lineWidth = .6; ctx.strokeStyle = 'rgba(127,154,102,.22)'; ctx.beginPath();
+      for (const [i, j] of graph.edges) { ctx.moveTo(graph.nodes[i][0], graph.nodes[i][1]); ctx.lineTo(graph.nodes[j][0], graph.nodes[j][1]); }
+      ctx.stroke();
+      graph.nodes.forEach(([x, y, w], i) => {
+        if (i === 0) return;
+        const tw = .55 + .45 * Math.sin(t * .0012 + i * 1.7);
+        ctx.fillStyle = `rgba(232,236,221,${(.25 + .5 * w) * tw})`;
+        ctx.beginPath(); ctx.arc(x, y, 1.1 + w * 2.2, 0, Math.PI * 2); ctx.fill();
+      });
+      ctx.fillStyle = C.lime; ctx.beginPath(); ctx.arc(0, 0, 5, 0, Math.PI * 2); ctx.fill();
+      ring(ctx, 16, C.lime, 1.2);
+      ring(ctx, 16 + 6 * (1 + Math.sin(t * .003)), 'rgba(213,245,148,.3)', .8);
+    },
+  },
+  {
+    key: 'repository', eyebrow: 'One repository · the review queue', title: 'Code got <em>cheap</em>. Attention did not.',
+    body: 'Pull requests arrive from everywhere, many written by AI. A maintainer needs a reason to start reading one.',
+    readout: () => 'each dot · one pull request · lime: arrives with an endorsement',
+    draw(ctx, t) {
+      ctx.setLineDash([2, 6]); ring(ctx, 430, C.faint, 1); ctx.setLineDash([]);
+      label(ctx, 'maintainer review capacity', 0, -445, 12, C.dim, 'center');
+      for (const p of prs) {
+        const ph = (p.o + t * .00004 * (1 + p.s * 4)) % 1, d = 480 * (1 - ph) + 40, a = p.a + ph * 2.4;
+        const x = Math.cos(a) * d, y = Math.sin(a) * d;
+        ctx.fillStyle = p.lit ? C.lime : `rgba(142,154,130,${.2 + .5 * ph})`;
+        ctx.fillRect(x - 2.5, y - 1.8, 5, 3.6);
+      }
+      rrect(ctx, -16, -11, 32, 22, 3); ctx.fillStyle = C.panel; ctx.fill(); ctx.strokeStyle = C.lime; ctx.lineWidth = 1.2; ctx.stroke();
+      label(ctx, 'PR by github:287365775', 24, 0, 8, C.lime);
+    },
+  },
+  {
+    key: 'pull request', eyebrow: 'One pull request · files changed', title: 'The contributor <em>carries</em> a recommendation',
+    body: 'Alongside the change sits one small JSON file: an endorsement someone else signed for this account.',
+    readout: () => '.devouch/vouches/github-287365775.json · the Action reads it from the head commit, never runs the code',
+    draw(ctx) {
+      rrect(ctx, -380, -300, 760, 560, 10); ctx.fillStyle = C.panel; ctx.fill(); ctx.strokeStyle = C.line; ctx.lineWidth = 1.5; ctx.stroke();
+      label(ctx, 'Fix date parsing in the router', -350, -262, 26, C.bone, 'left', SERIF);
+      label(ctx, 'masusanou wants to merge 2 commits into main', -350, -226, 11, C.dim);
+      const rows = [['src/router/parse.ts', 18, 6], ['test/router/parse.test.ts', 42, 0]];
+      rows.forEach(([f, add, del], i) => {
+        const y = -150 + i * 44;
+        label(ctx, f, -330, y, 13, C.bone);
+        label(ctx, `+${add} −${del}`, 330, y, 12, C.moss, 'right');
+      });
+      ctx.strokeStyle = C.line; ctx.beginPath(); ctx.moveTo(-350, -40); ctx.lineTo(350, -40); ctx.stroke();
+      rrect(ctx, -14, -16, 28, 32, 2); ctx.fillStyle = '#1d2419'; ctx.fill(); ctx.strokeStyle = C.lime; ctx.lineWidth = 1.2; ctx.stroke();
+      label(ctx, '.devouch/vouches/github-287365775.json', 28, 0, 13, C.lime);
+      label(ctx, '+1 file', 330, 0, 12, C.moss, 'right');
+      rrect(ctx, -350, 110, 700, 110, 8); ctx.fillStyle = '#10140e'; ctx.fill(); ctx.strokeStyle = C.line; ctx.stroke();
+      label(ctx, 'Devouch endorsement report', -325, 138, 13, C.bone, 'left', MONO, 500);
+      label(ctx, 'Evidence', -325, 170, 12, C.dim); label(ctx, 'valid', -200, 170, 12, C.lime);
+      label(ctx, 'Repository policy', -325, 196, 12, C.dim); label(ctx, 'accepted', -200, 196, 12, C.lime);
+      label(ctx, 'human_verification: not_included', 325, 196, 11, C.faint, 'right');
+    },
+  },
+  {
+    key: 'endorsement', eyebrow: 'The file · an EIP-712 typed message', title: 'Who, for whom, for <em>what</em>, until when',
+    body: 'The issuer signs the account ID, a purpose, an expiry, and where the record is published. Example values shown.',
+    readout: () => `typehash = keccak256("Endorsement(…)") = ${short(TYPEHASH)}`,
+    draw(ctx) {
+      const lh = 30, top = -9 * lh;
+      JSON_LINES.forEach(([k, v], i) => {
+        const y = top + i * lh;
+        const hl = k.includes('recordName');
+        if (hl) {
+          rrect(ctx, -16, -12, 32, 24, 4); ctx.fillStyle = 'rgba(213,245,148,.12)'; ctx.fill();
+          ctx.strokeStyle = C.lime; ctx.lineWidth = 1; ctx.stroke();
+        }
+        ctx.font = font(16 * 1.2);
+        const kw = ctx.measureText(k).width;
+        label(ctx, k, hl ? -kw - 22 : -300, hl ? 0 : y, 16, hl ? C.bone : C.dim);
+        label(ctx, v, hl ? 22 : -300 + kw, hl ? 0 : y, 16, hl ? C.lime : (k.includes('subject') || k.includes('scope') ? C.bone : C.moss));
+      });
+      label(ctx, 'digest = keccak256(0x1901 ‖ domainSeparator ‖ hashStruct(message))', 0, 205, 12, C.dim, 'center');
+      label(ctx, 'domain: name "Devouch" · version "1" · chainId 11155111 · verifyingContract = resolver', 0, 228, 11, C.faint, 'center');
+    },
+  },
+  {
+    key: 'ens name', eyebrow: 'ENSv2 · the issuer’s own name', title: 'Published where <em>only the issuer</em> can write',
+    body: 'The whole signed JSON is a text record on a resolver the issuer controls. No Devouch server holds it.',
+    readout: () => `namehash("${NAME}") = ${short(NH.name)}`,
+    draw(ctx) {
+      const nodes = [
+        [0, -400, '[root]', NH.root], [0, -300, 'eth', NH.eth], [0, -200, NAME, NH.name],
+        [0, -100, 'PermissionedResolver', 'issuer is admin'],
+      ];
+      ctx.strokeStyle = C.moss; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.moveTo(0, -400); ctx.lineTo(0, -16); ctx.stroke();
+      [[-130, -300, 'dao.eth'], [140, -200, 'other.eth'], [-150, -200, 'alice.eth']].forEach(([x, y, n]) => {
+        ctx.strokeStyle = C.faint; ctx.beginPath(); ctx.moveTo(0, y - 100); ctx.lineTo(x, y); ctx.stroke();
+        ctx.fillStyle = C.faint; ctx.beginPath(); ctx.arc(x, y, 4, 0, Math.PI * 2); ctx.fill();
+        label(ctx, n, x, y + 16, 10, C.faint, 'center');
+      });
+      nodes.forEach(([x, y, n, h]) => {
+        ctx.fillStyle = C.void; ctx.strokeStyle = C.moss; ctx.beginPath(); ctx.arc(x, y, 7, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+        label(ctx, n, x + 20, y - 7, 14, C.bone);
+        label(ctx, h.startsWith('0x') ? short(h) : h, x + 20, y + 11, 10, C.dim);
+      });
+      rrect(ctx, -16, -16, 32, 32, 4); ctx.fillStyle = 'rgba(213,245,148,.14)'; ctx.fill(); ctx.strokeStyle = C.lime; ctx.lineWidth = 1.2; ctx.stroke();
+      label(ctx, `text("${TEXT_KEY}")`, 28, -7, 14, C.lime);
+      label(ctx, 'signed endorsement JSON · ≤ 4 KiB', 28, 11, 10, C.dim);
+      label(ctx, 'namehash(label.parent) = keccak256(namehash(parent) ‖ keccak256(label))', 0, 110, 12, C.dim, 'center');
+      label(ctx, 'a helper key may be granted this one text key only · the issuer can always withdraw', 0, 134, 11, C.faint, 'center');
+    },
+  },
+  {
+    key: 'history', eyebrow: 'Sepolia · chainId 11155111 · one slot every 12 s', title: 'Withdrawal is part of the <em>record</em>',
+    body: 'Verification reads the record’s history, not just its value. Once cleared, restoring the old JSON never counts again.',
+    readout: () => 'checked at a snapshot two blocks behind head · not finality',
+    draw(ctx, t) {
+      const n = 13, sp = 58;
+      for (let i = -6; i <= 6; i++) {
+        const x = i * sp;
+        if (i > -6) { ctx.strokeStyle = C.faint; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(x - sp + 16, 0); ctx.lineTo(x - 16, 0); ctx.stroke(); }
+        rrect(ctx, x - 16, -16, 32, 32, 3);
+        ctx.fillStyle = i === 0 ? '#1d2419' : C.panel; ctx.fill();
+        ctx.strokeStyle = i === 0 ? C.lime : i === 3 ? C.ember : C.line; ctx.lineWidth = i === 0 || i === 3 ? 1.2 : 1; ctx.stroke();
+      }
+      label(ctx, 'TextChanged · published', 0, -40, 11, C.lime, 'center');
+      label(ctx, 'TextChanged · cleared', 3 * sp, 40, 11, C.ember, 'center');
+      label(ctx, 'head', 6 * sp, -40, 11, C.dim, 'center');
+      label(ctx, 'snapshot = head − 2', 4 * sp, -64, 11, C.dim, 'center');
+      ctx.strokeStyle = C.dim; ctx.setLineDash([3, 4]); ctx.beginPath(); ctx.moveTo(4 * sp, -54); ctx.lineTo(4 * sp, -20); ctx.stroke(); ctx.setLineDash([]);
+      label(ctx, 'repo A → revoked · repo B → revoked', 3 * sp, 64, 11, C.dim, 'center');
+      const pulse = (t * .0004) % 1;
+      ctx.fillStyle = `rgba(213,245,148,${.5 * (1 - pulse)})`; ctx.beginPath(); ctx.arc(pulse * 6 * sp, 0, 3, 0, Math.PI * 2); ctx.fill();
+      void n;
+    },
+  },
+  {
+    key: 'transaction', eyebrow: 'Inside the block · the issuer’s transaction', title: 'Every write is <em>signed</em> by the issuer’s key',
+    body: 'Publishing and withdrawing are ordinary transactions from the issuer’s own wallet. Nobody else can send them.',
+    readout: () => 'signature = (r, s, v) · 32 + 32 + 1 bytes · ECDSA over secp256k1',
+    draw(ctx) {
+      rrect(ctx, -330, -330, 660, 560, 10); ctx.fillStyle = C.panel; ctx.fill(); ctx.strokeStyle = C.line; ctx.lineWidth = 1.5; ctx.stroke();
+      label(ctx, 'block header', -300, -296, 11, C.moss);
+      ['parentHash', 'stateRoot', 'transactionsRoot', 'receiptsRoot', 'number', 'timestamp'].forEach((f, i) =>
+        label(ctx, f, -300 + (i % 3) * 210, -264 + Math.floor(i / 3) * 24, 12, C.dim));
+      ctx.strokeStyle = C.line; ctx.beginPath(); ctx.moveTo(-300, -200); ctx.lineTo(300, -200); ctx.stroke();
+      label(ctx, 'transactions', -300, -176, 11, C.moss);
+      for (let i = 0; i < 3; i++) label(ctx, `tx ${i} · …`, -300, -148 + i * 22, 12, C.faint);
+      label(ctx, 'to  PermissionedResolver', -300, -64, 13, C.bone);
+      label(ctx, `data  setText(namehash("${NAME}"), "${TEXT_KEY}", json)`, -300, -40, 13, C.bone);
+      label(ctx, 'v', -300, 0, 13, C.dim);
+      label(ctx, 'r', -40, 0, 13, C.lime);
+      rrect(ctx, -16, -12, 32, 24, 3); ctx.strokeStyle = C.lime; ctx.lineWidth = 1.2; ctx.stroke();
+      label(ctx, '32 bytes', 28, 0, 12, C.lime);
+      label(ctx, 's', 150, 0, 13, C.dim);
+      for (let i = 0; i < 65; i++) {
+        const x = -300 + (i % 33) * 18.2, y = 60 + Math.floor(i / 33) * 22;
+        ctx.fillStyle = i < 32 ? 'rgba(213,245,148,.55)' : i < 64 ? 'rgba(127,154,102,.55)' : C.ember;
+        ctx.fillRect(x, y, 14, 16);
+      }
+      label(ctx, 'r (32)', -300, 124, 11, C.lime); label(ctx, 's (32)', -120, 124, 11, C.moss); label(ctx, 'v (1)', 290, 124, 11, C.ember, 'right');
+      label(ctx, 'the endorsement’s own EIP-712 signature uses the same curve', 0, 176, 11, C.faint, 'center');
+    },
+  },
+  {
+    key: 'curve', eyebrow: 'secp256k1 · y² = x³ + 7', title: 'A point on a curve <em>anyone</em> can check',
+    body: 'A public key is k·G for a secret k. Verifying a signature needs only public points. Drawn here over a tiny field so the points are visible.',
+    readout: () => `shown over 𝔽₁₂₇ (${CURVE.length} points + ∞, G of order ${G.n}) · real p = 2²⁵⁶ − 2³² − 977`,
+    draw(ctx, t) {
+      const scale = 6.2, qi = MULTIPLES.reduce((b, p, i) => Math.hypot(p[0] - 63, p[1] - 63) < Math.hypot(MULTIPLES[b][0] - 63, MULTIPLES[b][1] - 63) ? i : b, 0), [gx, gy] = MULTIPLES[qi];
+      const X = x => (x - gx) * scale, Y = y => -(y - gy) * scale;
+      ctx.strokeStyle = C.line; ctx.lineWidth = 1; ctx.strokeRect(X(0), Y(P - 1), (P - 1) * scale, (P - 1) * scale);
+      label(ctx, '0', X(0) - 8, Y(0) + 10, 10, C.faint, 'right'); label(ctx, '126', X(126), Y(0) + 14, 10, C.faint, 'center');
+      label(ctx, 'x', X(63), Y(0) + 28, 11, C.dim, 'center'); label(ctx, 'y', X(0) - 22, Y(63), 11, C.dim, 'center');
+      for (const [x, y] of CURVE) { ctx.fillStyle = 'rgba(232,236,221,.45)'; ctx.beginPath(); ctx.arc(X(x), Y(y), 1.8, 0, Math.PI * 2); ctx.fill(); }
+      const k = Math.floor(t / 420) % MULTIPLES.length, trail = 10;
+      for (let j = Math.max(0, k - trail); j < k; j++) {
+        const [a, b] = MULTIPLES[j], [c, d] = MULTIPLES[j + 1];
+        ctx.strokeStyle = `rgba(213,245,148,${.08 + .5 * (j - k + trail) / trail})`; ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.moveTo(X(a), Y(b)); ctx.lineTo(X(c), Y(d)); ctx.stroke();
+      }
+      const [kx, ky] = MULTIPLES[k];
+      ctx.fillStyle = C.lime; ctx.beginPath(); ctx.arc(X(kx), Y(ky), 4, 0, Math.PI * 2); ctx.fill();
+      label(ctx, `${k + 1}·G = (${kx}, ${ky})`, X(kx) + 10, Y(ky) - 12, 11, C.lime);
+      ring(ctx, 16, C.lime, 1.2);
+      label(ctx, `Q = ${qi + 1}·G = (${gx}, ${gy})`, 24, 22, 12, C.bone); label(ctx, `G = (${MULTIPLES[0][0]}, ${MULTIPLES[0][1]})`, 24, 40, 11, C.dim);
+    },
+  },
+  {
+    key: 'keccak', eyebrow: 'Keccak-f[1600] · 5 × 5 lanes × 64 bits', title: 'At the bottom, <em>bits</em> anyone can recompute',
+    body: 'Every check above ends in a hash. This is keccak256("devouch.vouch") running live: 24 rounds of θ ρ π χ ι.',
+    readout: () => keccakAnim.done ? `keccak256("${TEXT_KEY}") = ${keccakAnim.hash}` : `round ${keccakAnim.round + 1} / 24 · step ${STEP_NAMES[keccakAnim.step]}`,
+    draw(ctx, t, live) {
+      if (live) advanceKeccak(t);
+      const cell = 7.2, lane = cell * 8, gap = 14, span = 5 * lane + 4 * gap, o = -span / 2;
+      for (let y = 0; y < 5; y++) for (let x = 0; x < 5; x++) {
+        const v = keccakAnim.A[x + 5 * y], lx = o + x * (lane + gap), ly = o + (4 - y) * (lane + gap);
+        for (let b = 0; b < 64; b++) {
+          const on = (v >> BigInt(b)) & 1n;
+          ctx.fillStyle = on ? (x + 5 * y < 4 && keccakAnim.done ? C.lime : 'rgba(213,245,148,.78)') : 'rgba(127,154,102,.13)';
+          ctx.fillRect(lx + (b % 8) * cell + .6, ly + Math.floor(b / 8) * cell + .6, cell - 1.2, cell - 1.2);
+        }
+        if (y === 0) label(ctx, `x=${x}`, lx + lane / 2, o + span + 16, 9, C.faint, 'center');
+      }
+      label(ctx, 'rate 1088 bits · capacity 512 bits · output = first 256 bits', 0, o - 22, 11, C.dim, 'center');
+    },
+  },
+];
+
+// ---------- Engine ----------
+const canvas = document.getElementById('scene'), ctx = canvas.getContext('2d');
+const ZOOM = 30, HOLD = 5200, ZOOM_MS = 3600;
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+let W = 0, H = 0, dpr = 1, L = 0, tween = null, playing = !reduced, restAt = performance.now(), shown = -1, finaleAt = 0;
+
+function resize() {
+  dpr = Math.min(devicePixelRatio || 1, 2); W = innerWidth; H = innerHeight;
+  canvas.width = W * dpr; canvas.height = H * dpr;
+}
+addEventListener('resize', resize); resize();
+
+const ease = x => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+const smooth = (a, b, x) => { const t = Math.min(1, Math.max(0, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
+
+function goTo(target, now = performance.now()) {
+  target = Math.max(0, Math.min(SCENES.length - 1, target));
+  const dist = Math.abs(target - L);
+  if (dist < 1e-3) return;
+  tween = { from: L, to: target, start: now, dur: reduced ? 1 : ZOOM_MS * Math.pow(dist, .55) };
+  finale.classList.remove('on'); finaleAt = 0;
+}
+
+const ruler = document.getElementById('ruler');
+SCENES.forEach((s, i) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.innerHTML = `<span>${s.key}</span>${String(i + 1).padStart(2, '0')}`;
+  b.addEventListener('click', () => goTo(i));
+  li.append(b); ruler.append(li);
+});
+const cap = document.getElementById('caption'), finale = document.getElementById('finale');
+const els = { eyebrow: document.getElementById('eyebrow'), title: document.getElementById('title'), body: document.getElementById('body'), readout: document.getElementById('readout') };
+
+function showCaption(i) {
+  if (i === shown) return;
+  shown = i; cap.classList.add('swap');
+  setTimeout(() => {
+    const s = SCENES[i];
+    els.eyebrow.textContent = `${String(i + 1).padStart(2, '0')} / ${String(SCENES.length).padStart(2, '0')} · ${s.eyebrow}`;
+    els.title.innerHTML = s.title; els.body.textContent = s.body;
+    cap.classList.remove('swap');
+  }, reduced ? 0 : 320);
+  ruler.querySelectorAll('button').forEach((b, j) => b.setAttribute('aria-current', String(j === i)));
+}
+
+const playBtn = document.getElementById('play');
+function setPlaying(p) { playing = p; playBtn.textContent = p ? 'Pause' : 'Play'; restAt = performance.now(); }
+playBtn.addEventListener('click', () => setPlaying(!playing));
+document.getElementById('next').addEventListener('click', () => goTo(Math.round(tween ? tween.to : L) + 1));
+document.getElementById('prev').addEventListener('click', () => goTo(Math.round(tween ? tween.to : L) - 1));
+addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight') goTo(Math.round(tween ? tween.to : L) + 1);
+  else if (e.key === 'ArrowLeft') goTo(Math.round(tween ? tween.to : L) - 1);
+  else if (e.key === ' ') { e.preventDefault(); setPlaying(!playing); }
+});
+
+function frame(now) {
+  if (tween) {
+    const p = Math.min(1, (now - tween.start) / tween.dur);
+    L = tween.from + (tween.to - tween.from) * ease(p);
+    if (p >= 1) { L = tween.to; tween = null; restAt = now; }
+  } else if (playing) {
+    const last = SCENES.length - 1;
+    if (L < last && now - restAt > HOLD) goTo(Math.round(L) + 1, now);
+    else if (L >= last && now - restAt > HOLD + 2600) {
+      if (!finaleAt) { finaleAt = now; finale.classList.add('on'); cap.classList.add('swap'); }
+      else if (now - finaleAt > 5200) { finale.classList.remove('on'); tween = { from: L, to: 0, start: now, dur: 5200 }; finaleAt = 0; shown = -1; }
+    }
+  }
+  if (!finaleAt) showCaption(Math.round(L));
+  els.readout.textContent = SCENES[Math.round(L)].readout();
+
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.fillStyle = C.void; ctx.fillRect(0, 0, W, H);
+  const g = ctx.createRadialGradient(W / 2, H / 2, 0, W / 2, H / 2, Math.max(W, H) * .7);
+  g.addColorStop(0, 'rgba(127,154,102,.08)'); g.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+
+  const u = Math.min(W, H) / 820, cx = W > 900 ? W * .6 : W / 2, cy = W > 900 ? H * .44 : H * .36;
+  for (let i = 0; i < SCENES.length; i++) {
+    const d = L - i;
+    if (d < -1.05 || d > 1.3) continue;
+    const s = Math.pow(ZOOM, d) * u;
+    const alpha = i === 0 ? 1 - smooth(.55, 1, d) : smooth(-.85, -.3, d) * (1 - smooth(.55, 1, d));
+    if (alpha < .01 || s * 500 < 1.5) continue;
+    ctx.save();
+    ctx.globalAlpha = i === SCENES.length - 1 ? smooth(-.85, -.3, d) : alpha;
+    ctx.translate(cx, cy); ctx.scale(s, s);
+    SCENES[i].draw(ctx, now, Math.abs(d) < .5);
+    ctx.restore();
+  }
+  requestAnimationFrame(frame);
+}
+(document.fonts ? document.fonts.ready : Promise.resolve()).then(() => requestAnimationFrame(frame));
+</script>
