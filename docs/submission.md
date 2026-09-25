@@ -13,7 +13,7 @@
 | Project name | devouch |
 | Category | Developer Tool |
 | Emoji | 🤝 |
-| Demo URL | 公開後のHTTPS URLを入力。未公開 |
+| Demo URL | https://geeknees.github.io/devouch/ |
 | Short description | Portable, revocable contributor endorsements on ENSv2. Each repository keeps its own policy. |
 | GitHub repository | https://github.com/geeknees/devouch （デモ時に公開する方針） |
 | Images | [ロゴ・カバー・3枚の画面草案](submission-assets/README.md) |
@@ -89,7 +89,32 @@ Generated work is checked with local tests and browser runs; unperformed public-
 
 ENSv2 is where the endorsement lives, not a display name. Each recommender publishes the complete signed endorsement JSON to a text record on their own ENSv2 Permissioned Resolver, created through the official factory, so anyone can retrieve it from ENS without a Devouch service. Publishing and withdrawing are direct wallet transactions by the issuer. An optional helper wallet can be granted permission for only the endorsement text key, while the issuer keeps direct withdrawal. Verification reads the resolver's history, so a withdrawn or temporarily replaced record never silently restores trust. I use pinned official Sepolia deployments and add no custom registry.
 
-Feedback for ENS: 【提出者が記入。実際に詰まった点（例：resolver 作成から名前の接続までの手順、履歴取得に必要な RPC の要件、Sepolia の ENSv2 app のリセット）】
+### ENS prize form fields
+
+ENS を選ぶと出てくる欄。画面は [project-submit-form/](project-submit-form/) の 2026-09-26 03:25 のスクリーンショット。
+
+**How are you using this Protocol / API?**
+
+> Each recommender publishes the complete signed endorsement JSON as the `devouch.vouch` text record on their own ENSv2 Permissioned Resolver, and withdraws it by clearing that record. Devouch's CLI and GitHub Action read the record and its resolver history straight from ENS on Sepolia, so any repository can verify an endorsement without a Devouch server.
+
+**Link to the line of code where the tech is used**
+
+https://github.com/geeknees/devouch/blob/3214991e616e118d921ea9575d06d5e121b584f4/web/wallet.ts#L52-L53
+
+（推薦の JSON を ENSv2 の `setText` で公開する行。読み取り側は [src/chain.ts#L97-L100](https://github.com/geeknees/devouch/blob/3214991e616e118d921ea9575d06d5e121b584f4/src/chain.ts#L97-L100)）
+
+**How easy is it to use the API / Protocol? (1–10)**
+
+提出者が選ぶ。
+
+**Additional feedback for the Sponsor**（下書き。開発中の記録 [gotchas.md](../gotchas.md) から。提出者が確認・修正する）
+
+> - The ENSv2 text setter takes a DNS wire-format name (`setText(bytes name, …)`), while ENSv1 resolvers take a node hash. A short migration note with an example call would have saved time.
+> - A current text value alone cannot tell whether a record was cleared and restored. We had to read resolver history, link and implementation changes. A documented recipe for "was this record ever changed since block N" would help apps that treat records as revocable claims.
+> - Public Sepolia RPCs differ in how much historical state they keep; one provider stopped returning the state we needed. Guidance on RPC requirements for ENSv2 history reads would help.
+> - A setter grant on a Permissioned Resolver applies to that key for every name on the resolver, not to one name. This is reasonable, but easy to miss; we now require a dedicated resolver per issuer.
+> - Registry token IDs carry a 32-bit generation in the low bits, so matching events to a label needs care. An example in the docs would help.
+> - The Sepolia ENSv2 app notes that its state may be reset during development, which is a risk for hackathon demos; a note on expected stability would help planning.
 
 ## Future
 
@@ -136,14 +161,14 @@ Devouch carries a reference; it does not turn that reference into automatic appr
 | 項目 | 状態 |
 |---|---|
 | 公開コード / license / 配布SHA | MITあり、Actionのローカル固定SHAは [公開手順](release-runbook.md)。公開取得は未確認 |
-| ライブデモURL | 手動Pages workflowを準備、未公開 |
+| ライブデモURL | 公開済み：https://geeknees.github.io/devouch/ （2026-09-26 03:03 JST に HTTP 200 を確認） |
 | 動画URL | 別エージェントの作業で完成したとユーザー確認（2026-09-26）。提出URLは未記録 |
 | ENSv2の実txと失効後のreadback | 公開txと2方針の検証は取得（上記）。失効後は未取得 |
 | 人間・agent名義の実PRとAction run | 未取得 |
 | 別RPC・別ホストからの実操作 | ローカルUI経由の本人公開、2社RPCの検証を確認。別ホストの実操作は未実施 |
-| ENS へのフィードバック | 未記入。提出者が書く |
+| ENS の欄（使い方・コード行・評価・フィードバック） | 下書き済み（「ENS prize form fields」）。評価の1〜10とフィードバックの最終確認は提出者 |
 | 新デザインの画面画像 | ユーザー指定により後続の別作業。適用後に `node scripts/capture-assets.ts` で撮り直す |
-| repo の公開 | private。規約で public が必須 |
+| repo の公開 | public（2026-09-26 03:03 JST に確認） |
 | World Agents統合・失敗経路・feedback | 未実装、条件付き候補 |
 | イベント期間・Building from Scratch適格性 | 運営未確認 |
 
