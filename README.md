@@ -8,10 +8,19 @@ It uses Sepolia's official Permissioned Resolver. There is no Devouch API, datab
 
 **Current evidence:** local browser, CLI, and official-contract integration tests pass.
 Public Sepolia deployment-history reads work through Tenderly and ethPandaOps.
-Real-wallet publication, live hosting, a published Action commit, and real fork-PR runs remain to be completed.
+One real-wallet publication on Sepolia (`masusanou-dev.eth`) was read back and verified as accepted by one policy and rejected by another; see [Sepolia evidence](docs/submission.md#sepolia-evidence).
+Withdrawal on Sepolia, live hosting, a published Action commit, and real fork-PR runs remain to be completed.
 See the [verification record](docs/implementation-status.md); local tests are not public-chain demo evidence.
 A GitHub test run stopped on missing gem checksums. The corrected lockfile passes a clean frozen install;
 the remote rerun remains pending.
+
+## Development history
+
+When implementation began, the repository held only the planning documents in `docs/` and a `.gitignore`.
+Implementation began at 2026-09-25 22:32 JST in this working tree; no earlier Devouch application code was copied.
+The core, CLI, web workspace, and documentation were first committed as grouped commits between 00:30 and 00:37 JST on 2026-09-26, so the early history is coarser than the work itself.
+The step-by-step checks made during that period are recorded in the [verification record](docs/implementation-status.md); later work is committed in smaller steps.
+AI tool use is disclosed in the [submission draft](docs/submission.md#ai-tool-disclosure).
 
 ## Run the workspace
 
