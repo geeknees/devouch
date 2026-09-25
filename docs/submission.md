@@ -1,6 +1,6 @@
 # 提出文とピッチの草案
 
-現状: ローカル実装・GitHub CI、本人walletのSepolia公開・CLI方針比較、repoとPagesの公開を検証済み。実Sepolia失効・推薦付きfork PRの証拠は未取得。
+現状: ローカル実装・GitHub CI、本人walletのSepolia公開・CLI方針比較、repoとPagesの公開、masusanouの実fork PRでvalid / acceptedを検証済み。実Sepolia失効とCLIでの確認、人間名義の実fork PRは未実施。失効のPR検証は2026-09-26のユーザー指定で対象外。
 提出文の正本はこのファイル。提出フォームの画面の原本は [project-submit-form/](project-submit-form/) にある。
 下記は提出用の草案であり、提出済み・受賞要件充足とは扱わない。
 
@@ -82,7 +82,7 @@ Two AI coding agents were used. The human owner set the product direction, chose
 - **whisper.cpp** (speech-to-text, run locally) is used only to find when each script phrase is spoken, so the screen follows the presenter's own recorded voice. No text-to-speech or AI voice is used.
 
 The planning documents written before the event are included in `docs/` as the planning artifacts that directed the agents.
-The planned contributor demonstration uses a separate agent account, masusanou.
+The contributor demonstration uses the separate agent account masusanou; its fork PR has a verified endorsement result.
 Generated work is checked with local tests and browser runs; unperformed public-chain and GitHub checks are listed explicitly.
 
 ## ENS partner prize: why it applies
@@ -107,6 +107,8 @@ Next: support several active endorsements per recommender (today one resolver re
 | Read back | `devouch fetch --publication` returned the original JSON (2026-09-25 17:15 UTC) |
 | Policy A | `valid / accepted` at block 11780652 |
 | Policy B (issuer not trusted) | `valid / rejected`, reason `issuer_not_trusted`, at block 11780653 |
+| Agent fork PR | [masusanou's PR #2](https://github.com/geeknees/devouch/pull/2), subject `github:287365775` |
+| GitHub Action | [Devouch run](https://github.com/geeknees/devouch/actions/runs/36172488074): `valid / accepted` at block `11780996`; [normal CI](https://github.com/geeknees/devouch/actions/runs/36172488028) also passed |
 | Withdrawal | Not yet performed; planned during the live demo |
 
 RPC: `https://sepolia.gateway.tenderly.co` (the CLI default).
@@ -139,7 +141,7 @@ Devouch carries a reference; it does not turn that reference into automatic appr
 | ライブデモURL | https://geeknees.github.io/devouch/ 。配信5ファイルの一致と公開画面からのENS取得を確認 |
 | 動画URL | 別エージェントの作業で完成したとユーザー確認（2026-09-26）。提出URLは未記録 |
 | ENSv2の実txと失効後のreadback | 公開txと2方針の検証は取得（上記）。失効後は未取得 |
-| 人間・agent名義の実PRとAction run | 未取得 |
+| 人間・agent名義の実PRとAction run | masusanouのPR #2とvalid / acceptedのActionは確認済み。人間名義の実PRは未実施。失効のPR検証は対象外 |
 | 別RPC・別ホストからの実操作 | ローカルUI経由の本人公開、2社RPCの検証を確認。別ホストの実操作は未実施 |
 | ENS へのフィードバック | 未記入。提出者が書く |
 | 新デザインの画面画像 | ユーザー指定により後続の別作業。適用後に `node scripts/capture-assets.ts` で撮り直す |

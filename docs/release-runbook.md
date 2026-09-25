@@ -48,9 +48,9 @@ Pagesは [GitHub公式のcustom workflow手順](https://docs.github.com/en/pages
 
 ## PRデモの確認
 
-公開後、メンテナーがpolicyとworkflowを確認した既定branchへmasusanouのfork PRを送る。
-推薦原本は `.devouch/vouches/github-287365775.json`。
-本人walletでの公開とCLI比較は [Sepolia検証記録](demo-evidence.md)に記録済み。
-有効推薦のPR結果を確認してから、本人が失効する。
-PR作者、head/base SHA、同一原本のdigest、Action Summary、再実行後の失効を確認する。
-これは公開workflowの準備だけでは達成しない。[実機手順](demo-runbook.md)に証拠を残す。
+masusanouの [fork PR #2](https://github.com/geeknees/devouch/pull/2) は、
+推薦原本 `.devouch/vouches/github-287365775.json` を含み、valid / acceptedを確認済み。
+本人walletでの公開、CLI比較、実PR作者とhead/base SHA、原本と方針のdigest、Actionの判定値は
+[Sepolia検証記録](demo-evidence.md)に記録した。通常CIも成功し、PRはこの確認時点では未merge。
+masusanouのPR確認はこれで完了。2026-09-26のユーザー指定により、失効はPRでは検証しない。
+本人walletからの実失効と同じ原本によるCLI確認は別の確認項目として、[実機手順](demo-runbook.md)に証拠を残す。

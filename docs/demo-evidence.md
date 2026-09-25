@@ -36,7 +36,7 @@
 
 BはCLIで比較するための方針例であり、実在する別repoやPRの検証実績ではない。
 三つとも同一の785 bytesを渡し、`human_verification: not_included`、`error: null` を確認した。
-CLIの対象は `--subject` 引数で指定した。GitHubの実PR作者を確認するActionの証拠は別途必要。
+CLIの対象は `--subject` 引数で指定した。GitHubの実PR作者を確認した結果は、以下の実fork PRの記録と区別する。
 
 共通snapshotはblock `11780543`、hash
 `0xcfdfe1d744d7fae8e7f9e3ae77e8599e41b11429b447b3a8fbf0a7b5bb4dd9dd`、
@@ -53,9 +53,42 @@ RPCのheadから2 block前を使った確認であり、Ethereumのfinalityと�
 実行時のCLIと配布物はcommit `9ce4525f269f590d4d8fd0e123ff35d33dce8efa` と同じ内容。
 公開原本と各CLIレポートはローカルで保全し、この文書には公開値と判定を記録した。
 
+## masusanouの実fork PR
+
+2026-09-26 JST、[masusanouが作成したPR #2](https://github.com/geeknees/devouch/pull/2)で
+`valid / accepted` を確認した。GitHub APIのPR作者・base/headと、Actionが出力した構造化レポートを照合した。
+workflowの成功表示だけでなく、次の判定値と参照先を確認した。
+
+| 項目 | 確認値 |
+|---|---|
+| Fork / branch | `masusanou/devouch` / `docs/published-demo-endorsement` |
+| 実PR作者 / subject | `masusanou` / `github:287365775` |
+| 作者の取得元 | `github.subject_source: github_pull_request_author` |
+| Base SHA | `3214991e616e118d921ea9575d06d5e121b584f4` |
+| Head SHA | `7ac246f17c441833cb3ece244cdf1377fe35e003` |
+| 方針 | baseの `.devouch/policy.json`、digestは上記の方針Aと一致 |
+| 原本 | headの `.devouch/vouches/github-287365775.json`、785 bytes、digestは上記の公開原本と一致 |
+| Devouch | [run 36172488074](https://github.com/geeknees/devouch/actions/runs/36172488074)、`valid / accepted` |
+| CLI / Action終了コード | `0` / `0` |
+| 人間性 / エラー | `not_included` / `null`、reason codesは空 |
+| Snapshot | block `11780996`、hash `0x16538eba03f69de615d030923ef165f817ea7746d9d538893ad664197bc51bc7` |
+| Snapshot timestamp / 照会時刻 | `1790360664` / `2026-09-25T18:24:51.893Z` |
+| Confirmations | `2`。Ethereumのfinalityを意味しない |
+| 通常のCI | [Test run 36172488028](https://github.com/geeknees/devouch/actions/runs/36172488028)、全step成功 |
+
+初回forkの実行承認待ちを確認し、READMEと推薦原本だけの差分、baseの方針と固定workflowを確認して、
+上記2 runを個別に承認した。GitHubの保護設定やworkflowは変更していない。
+Devouchのjobは読み取り専用のGitHub提供tokenと認証不要のRPCを使い、PRのコードを取得・実行しない。
+別jobの通常CIは依存の固定インストール、Ruby/Bun/結合テスト、型・構文検査、配布物の再build一致まで成功した。
+この確認時点でPR #2はopen、未merge。推薦の採否はマージ承認やコード品質の証明ではない。
+
 ## 残る実機確認
 
-推薦を公開したまま、masusanouのfork PRで `valid / accepted` を先に確認する。
-その後、本人walletで失効し、同じ原本・同じPRを再検証して失効を確認する。
-現時点では推薦付きfork PR、人間名義の推薦付きPR、実Sepolia失効、公開hostingは未実施。
+2026-09-26のユーザー指定により、失効はPRでは検証しない。
+masusanouの実PR確認は、上記の `valid / accepted` で完了とする。
+本人walletでの実Sepolia失効と、同じ原本を使ったCLIでの失効確認は未実施。
+失効すると古い原本を再掲載しても有効には戻らない。以後のvalidデモには新しい推薦とPR内の原本更新が必要になるため、
+実行時期は本人が決める。既存のGitHubチェックは検証時点の記録であり、自動更新されない。
+人間名義の推薦付きfork PRでの有効時の確認も残る。人間名義のアカウントは未指定。
+公開hostingと公開画面からのENS取得は [公開の検証記録](release-evidence.md)で確認済み。
 この記録だけでデモ全体の完了とは扱わない。

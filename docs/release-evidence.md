@@ -40,4 +40,5 @@ Pagesの5ファイルも認証なしで取得し、配信commitの `dist/web/` �
 
 RPCへの呼び出しは読み取りのみで、署名・取引の送信はなかった。
 これは公開画面からの取得と配信の確認であり、推薦付きfork PRや実Sepolia失効の検証ではない。
-推薦の署名・公開位置・方針比較は [Sepolia検証記録](demo-evidence.md)を参照する。
+推薦の署名・公開位置・方針比較と、その後のmasusanouの実fork PRでのvalid / acceptedは
+[Sepolia検証記録](demo-evidence.md)を参照する。実Sepolia失効は未実施。

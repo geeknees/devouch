@@ -2,6 +2,8 @@
 
 設計時点：2026-09-25。以下は開発着手時の要件・完了条件の記録。2026-09-26にCLI・静的UI・Actionを新規実装し、ローカル通しテストを実施した。現在の契約は [protocol](protocol.md)、検証済み範囲と残作業は [実装状況](implementation-status.md)。**分散性優先、World賞は条件付き**の方針を維持している。実Sepolia・実fork PRの要件をローカル成功で置き換えない。
 
+2026-09-26のユーザー訂正: **失効はPRでは検証しない。** 以下の旧計画にある失効後のAction再実行は完了条件から外す。PRでは有効推薦の照合までを確認し、masusanouのPRは [確認済み](demo-evidence.md#masusanouの実fork-pr)。ウォレット・CLIでの失効は別の確認範囲として記録する。
+
 [データ構造と保存場所](hackathon-data-model.md)、[CLI インターフェース設計](cli-interface.md)、[受け入れ側の導入マニュアル案](adoption-guide.md)、[AI エージェント管理者向け送信マニュアル案](agent-operator-guide.md)、[企画の合意事項](hackathon-planning.md)、[公式資料の確認結果](hackathon-research.md)を併せて参照する。
 
 ---

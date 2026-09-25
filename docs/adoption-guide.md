@@ -1,6 +1,6 @@
 # Devouch 導入マニュアル
 
-更新：2026-09-26。推薦版の [Action](../action.yml)・[CLI](../exe/devouch)・静的画面を新規実装し、ローカル通しテストを実施しました。**下記の固定commitの匿名取得とPages公開を確認済みです。推薦付き実fork PRは未確認です。** [公開の検証記録](release-evidence.md)、最新の確認範囲は [実装状況](implementation-status.md)、起動方法は [README](../README.md)を参照してください。
+更新：2026-09-26。推薦版の [Action](../action.yml)・[CLI](../exe/devouch)・静的画面を新規実装し、ローカル通しテストを実施しました。**下記の固定commitの匿名取得とPages公開、masusanouの実fork PRでvalid / acceptedを確認済みです。** [公開の検証記録](release-evidence.md)、[実PRの検証記録](demo-evidence.md#masusanouの実fork-pr)、最新の確認範囲は [実装状況](implementation-status.md)、起動方法は [README](../README.md)を参照してください。
 
 公開 OSS リポジトリのメンテナー向けに、まず PR 作者の推薦を Actions の結果に表示するところまでを扱います。メンテナーは設定と workflow の2ファイルを追加し、推薦を持つ貢献者は初回だけ推薦 JSON を追加します。推薦結果を読み、レビューへ進めるかはメンテナーが決めます。
 
@@ -104,7 +104,7 @@ jobs:
 
 `policy-path`、`mode`、`github-token` は [action.yml](../action.yml) の入力です。`github.token` は GitHub が提供する実行用トークンを使い、PATやrepository secretの手動登録を求めません。権限は読み取りだけです。[GitHub の権限設定](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#permissions)
 
-既定 RPC は認証不要の `https://sepolia.gateway.tenderly.co` です。実際のデモ名の履歴とCLI requestまで確認しました。代替の `https://rpc.sepolia.ethpandaops.io` も配備時の状態照会まで確認済みで、`rpc-url` 入力で変更できます。PublicNodeは時間経過後に実名の準備確認が失敗したため、デモの代替には使いません。公開RPCの可用性・履歴保持・制限は保証せず、未完了の照会は unavailable にします。実fork PRでのSecretなしの実行は公開後の確認項目です。
+既定 RPC は認証不要の `https://sepolia.gateway.tenderly.co` です。実際のデモ名の履歴とCLI requestまで確認しました。代替の `https://rpc.sepolia.ethpandaops.io` も配備時の状態照会まで確認済みで、`rpc-url` 入力で変更できます。PublicNodeは時間経過後に実名の準備確認が失敗したため、デモの代替には使いません。公開RPCの可用性・履歴保持・制限は保証せず、未完了の照会は unavailable にします。masusanouの実fork PRでは、手動登録のSecretを追加せず、GitHub提供tokenと既定RPCでvalid / acceptedを確認しました。初回forkの実行承認は必要でした。
 
 この workflow には `checkout`、PR のビルド、テスト実行を追加しません。Action 自身のコードだけで GitHub 上の JSON と chain を読みます。配布版はタグではなく commit SHA で固定します。[GitHub の Action 固定に関する説明](https://docs.github.com/en/actions/reference/security/secure-use#using-third-party-actions)
 
@@ -198,4 +198,4 @@ GitHub 側の fork 実行承認や組織の Action 制限は残ります。競�
 
 特に、現在の ENS 案は **一つの記録・キーに同時に一つの推薦だけ**です。同じキーへ別の人の推薦を書くと前の推薦が失効します。このままでは複数人を推薦する実運用に足りず、Git にファイルを増やしても解決しません。8時間版は、一度に一人への推薦を二つの repo 方針で再利用するデモです。管理者名義とエージェント名義の確認は、片方の発行・PR・失効後にもう片方へ新しく発行して順番に行います。複数推薦の同時保持は一般公開前の設計課題です。
 
-推薦JSONと方針例のダウンロード、CLI・Action境界、ブラウザからの操作はローカルで確認済みです。公開repoのfork PR、ランタイムのGitHub上の準備、第三者がこの手順だけで導入する確認と所要時間の測定は残っています。
+推薦JSONと方針例のダウンロード、CLI・Action境界、ブラウザからの操作はローカルで確認済みです。masusanouの公開fork PRでGitHub上のランタイム準備とvalid / acceptedも確認しました。デモではユーザー指定により失効のPR検証を行いません。第三者がこの手順だけで導入する確認と所要時間の測定は残っています。
