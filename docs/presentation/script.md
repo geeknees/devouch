@@ -23,7 +23,7 @@ Before going on stage, check which steps actually run on Sepolia versus the loca
 
 ### 0:00 — Self-introduction (15s)
 
-> Hi, I'm Masumi Kawasaki. I built Devouch solo, with a coding agent, here at ETHGlobal Tokyo. Let's go straight in.
+> Hi, I'm [Name]. I built Devouch solo, with a coding agent, here at ETHGlobal Tokyo. Let's go straight in.
 
 ### 0:15 — Problem (35s)
 
@@ -98,7 +98,7 @@ Before going on stage, check which steps actually run on Sepolia versus the loca
 
 ### 0:00 — 自己紹介（15秒）
 
-> Masumi Kawasakiです。Devouch は、このハッカソンで一人とコーディングエージェントで作りました。早速本題に入ります。
+> [Name] です。Devouch は、このハッカソンで一人とコーディングエージェントで作りました。早速本題に入ります。
 
 ### 0:15 — 課題（35秒）
 
