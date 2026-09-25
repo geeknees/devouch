@@ -12,7 +12,7 @@ node tools/video/run.ts
 | --- | --- |
 | `devouch-demo-base.mp4` | 全クリップを連結した 1920×1080 / 30 fps の動画。無音の音声トラック付き |
 | `clips/*.mp4` | 場面ごとのクリップ。編集ソフトに個別に読み込める |
-| `devouch-demo-base.en.srt` | [台本](../../docs/presentation/script.md)の英語セリフを各場面に割り振った字幕。声を録るときの目安 |
+| `devouch-demo-base.en.srt` | [動画用の台本](../../docs/presentation/video-script.md)の英語セリフを各場面に割り振った字幕。声を録るときの目安 |
 | `EDIT-LIST.md` | 各クリップの開始・終了時刻と長さ |
 
 ## 場面
@@ -39,3 +39,31 @@ Node.js 24、Bun、Ruby、ffmpeg、Google Chrome（macOS）または Playwright 
 `bun install` 済みであること。カードとアニメーションのフォントは録画時に Google Fonts から読むため、ネット接続が必要。
 
 `web/` のデザインが変わったら、同じコマンドで撮り直せばよい。
+
+## 自分の声を重ねる
+
+場面ごとに録音したファイルを `tools/video/out/audio/01.m4a` 〜 `08.m4a` に置き、次の順に実行する。
+`run.ts` で撮り直しても `out/audio/` は消えない。
+
+```sh
+node tools/video/align.ts   # 台本の各単語を話した時刻を取り、out/audio/timings.json に書く
+node tools/video/run.ts     # その時刻に合わせて画面を操作しながら撮り直す
+node tools/video/mix.ts     # 声を重ねて out/devouch-demo-voiced.mp4 を書き出す
+```
+
+- `align.ts` はローカルの whisper.cpp で書き起こし、台本の単語列と突き合わせる。書き起こしの誤りがあっても、台本のフレーズ位置は崩れにくい。声は外部に送らない。
+- 各場面の操作は `record.ts` の `cue.at('台本のフレーズ')` で決めている。台本を変えたらフレーズも合わせる（見つからなければ録画が止まる）。
+- 操作が予定より遅れた場面は、録画のログに `late:` として出る。
+- 位置がずれた箇所は `timings.json` の時刻を手で直し、`run.ts` と `mix.ts` をやり直せばよい。
+- 録音の前後の無音だけを削り、音量を -16 LUFS / ピーク -1.5 dBTP に揃える。文の間の間（ま）や話す速さには手を入れない。
+- 合計が 3:59.5 を超えたら `mix.ts` は失敗する。台本を短くして録り直す。
+
+whisper.cpp とモデルの準備（初回のみ）:
+
+```sh
+brew install whisper-cpp
+mkdir -p ~/.cache/whisper-cpp
+curl -L -o ~/.cache/whisper-cpp/ggml-base.en.bin https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-base.en.bin
+```
+
+別の場所のモデルを使うときは `WHISPER_MODEL` にパスを指定する。
