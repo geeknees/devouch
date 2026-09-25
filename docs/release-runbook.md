@@ -1,12 +1,13 @@
 # デモ公開の手順
 
 公開対象は `geeknees/devouch` と `dist/web/` の静的画面。
-ユーザー指定は「デモ時に公開」。以下は準備済みの操作手順で、公開・deployの実施記録ではない。
-確認時点のrepoはprivate、GitHub Pagesは未設定。
+ユーザー承認に基づき2026-09-26 JSTにrepoとGitHub Pagesを公開した。
+実施結果は [公開の検証記録](release-evidence.md)。以下は再配信にも使う操作手順。
 
 準備用の `codex/demo-release-20260926` はユーザー承認後にpushし、[draft PR #1](https://github.com/geeknees/devouch/pull/1) を作成した。
 そのhead `5e1afca6aa3d72567e4c7ab70f9b8d851544aca2` のTestと、推薦ファイルなしのAction reportはGitHub上で成功した。
-merge・visibility変更・Pages公開はまだ行っていない。
+最終head `28409191fa62e17b1e8c22e413fac994c2237943` の全チェック成功後、ユーザー承認を得てmergeした。
+merge commit `3214991e616e118d921ea9575d06d5e121b584f4` のCIとPages配信も成功した。
 
 ## 配布物
 
@@ -17,9 +18,9 @@ merge・visibility変更・Pages公開はまだ行っていない。
 | 導入workflow | [`.github/workflows/devouch.yml`](../.github/workflows/devouch.yml) |
 | 静的画面 | `dist/web/` の5ファイルだけ |
 | 公開workflow | [`.github/workflows/pages.yml`](../.github/workflows/pages.yml) |
-| 標準URLの候補 | `https://geeknees.github.io/devouch/`。まだ公開URLとして未確認 |
+| 公開URL | https://geeknees.github.io/devouch/ 。認証なしの取得とブラウザ操作を確認済み |
 
-固定したAction commitはローカルで検証済み。公開先に存在して誰でも取得できることは、公開時に確認する。
+固定したAction commitはローカルで検証済み。認証なしで公開ファイルを取得し、検証済み内容との一致も確認した。
 その後の文書や公開workflowのcommitと、検証Actionの固定commitは別でよい。
 Actionを更新するときは、ソース・配布物の一致とテストを確認し、固定先を更新する。
 
@@ -47,9 +48,9 @@ Pagesは [GitHub公式のcustom workflow手順](https://docs.github.com/en/pages
 
 ## PRデモの確認
 
-公開後、メンテナーがpolicyとworkflowを確認した既定branchへmasusanouのfork PRを送る。
-推薦原本は `.devouch/vouches/github-287365775.json`。
-本人walletでの公開とCLI比較は [Sepolia検証記録](demo-evidence.md)に記録済み。
-有効推薦のPR結果を確認してから、本人が失効する。
-PR作者、head/base SHA、同一原本のdigest、Action Summary、再実行後の失効を確認する。
-これは公開workflowの準備だけでは達成しない。[実機手順](demo-runbook.md)に証拠を残す。
+masusanouの [fork PR #2](https://github.com/geeknees/devouch/pull/2) は、
+推薦原本 `.devouch/vouches/github-287365775.json` を含み、valid / acceptedを確認済み。
+本人walletでの公開、CLI比較、実PR作者とhead/base SHA、原本と方針のdigest、Actionの判定値は
+[Sepolia検証記録](demo-evidence.md)に記録した。通常CIも成功し、PRはこの確認時点では未merge。
+masusanouのPR確認はこれで完了。2026-09-26のユーザー指定により、失効はPRでは検証しない。
+本人walletからの実失効と同じ原本によるCLI確認は別の確認項目として、[実機手順](demo-runbook.md)に証拠を残す。

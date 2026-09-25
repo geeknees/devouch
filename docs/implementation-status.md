@@ -18,11 +18,10 @@ Building from Scratch の適格性を運営が確認したとは扱わない。
 | 二つの repo 方針で再利用、片方だけ不採用 | 同じ署名を使う通しテスト | 実Sepoliaの同一原本・snapshotでaccepted / accepted / rejectedを確認 |
 | 静的 Web の署名・公開・失効・復旧・ダウンロード | ブラウザとウォレット、receipt/readback | Chrome＋ローカルEVMで確認。本人walletの実Sepolia公開も確認、実失効は未実施 |
 | 推薦者自身による resolver 準備とキー権限 | 公式 Factory と実コントラクトによるテスト | ローカルEVMで配備・接続・キー限定・grant撤回後の本人失効を確認 |
-| 読み取り専用 Action、base/head 固定、PR 作者照合 | API/CLI 境界テスト、実 fork PR | 境界テストとprivate準備PRのmissing判定を確認。推薦付きfork PRは未実施 |
-| 管理者・エージェント両名義の実 fork PR と失効後再実行 | 対象 PR と Action run の URL | 公開情報・外部操作待ち |
+| 読み取り専用 Action、base/head 固定、PR 作者照合 | API/CLI 境界テスト、実 fork PR | masusanouの [PR #2](https://github.com/geeknees/devouch/pull/2) でvalid / accepted。作者・base/head・原本・方針digestを照合済み |
 | 運営者不在でローカル UI と別 RPC から操作 | ローカル配布物での通し確認 | ローカルUI経由の本人公開、2社RPCで同じ原本の検証を確認。別ホストからの実操作は未実施 |
 | README、導入手順、ライセンス、提出・デモ資料 | コマンド再実行とリンク検査 | 作成・更新済み。提出画像草案5点。動画は別エージェントの作業で完成したとユーザー確認（2026-09-26）。提出URLは未記録 |
-| 公開コード・配布 SHA・静的 live URL | 公開先の readback | Action固定SHAと手動Pages workflowを準備。公開・配布・hostingは未実施 |
+| 公開コード・配布 SHA・静的 live URL | 公開先の readback | repoとPagesを公開。固定Actionの匿名取得、配信5ファイルの一致、公開画面からのENS原本取得を確認 |
 
 ## 採用範囲
 
@@ -31,6 +30,9 @@ Ruby CLI、TypeScript/viem の検証補助、静的ウォレット UI、GitHub A
 同時に一記録一推薦。World、委任、Git 全履歴、複数推薦の同時保持は含めない。
 `human_verification: not_included` を常に明示する。
 2026-09-26のユーザー確認に従い、動画制作は完了扱い。デザイン改修は後続の別作業とする。
+同日のユーザー指定により、PRで失効は検証しない。PRの実機確認は有効な推薦の照合までとし、
+masusanouのPRは完了扱い。人間名義の実PR検証も同日のユーザー指定で今回の対象から外す。
+失効の機能とウォレット・CLIの確認範囲は別に記録する。
 公開前に実装の最終確認と、追跡ファイル・Git履歴のプライバシー検査を完了する。
 
 外部の公開・push・ホスティング・Sepolia 取引は、成果物と操作対象を準備した後に
@@ -38,7 +40,7 @@ Ruby CLI、TypeScript/viem の検証補助、静的ウォレット UI、GitHub A
 
 ## 実機の公開情報
 
-2026-09-26 JST: デモ先はユーザー訂正により `geeknees/devouch`（現状private、デモ時に公開）。
+2026-09-26 JST: デモ先はユーザー訂正により `geeknees/devouch`。ユーザー承認後にpublicへ変更済み。
 送信者は `masusanou`、GitHub数値ID `287365775`。
 ENS名はユーザー指定の `masusanou-dev.eth`、取得先は https://app.ens.dev/。
 World sandboxは https://sandbox.auth.world.org/。World認証は未統合。
@@ -104,12 +106,27 @@ PR Testは依存の固定インストール、Ruby/Bun/結合テスト、型・�
 予定の `/devouch/` 配下でChromeを使い、配布物・操作タブ・walletなしの表示・mobile表示・console errorなしを確認した。
 ユーザー承認後、private repoへ `codex/demo-release-20260926` をpushし、[draft PR #1](https://github.com/geeknees/devouch/pull/1) をgeeknees名義で作成した。
 本文一致、draft状態、base main、head `5e1afca6aa3d72567e4c7ab70f9b8d851544aca2` を読み戻して確認した。
-visibility変更・Pages有効化・deploy・mergeは未実施。[公開手順](release-runbook.md)を参照する。
+その後、ユーザー承認に基づきPR #1をmerge、repoをpublicへ変更し、Pagesを公開した。
+公開commit `3214991e616e118d921ea9575d06d5e121b584f4` のCIとPages配信が成功。
+固定Actionの匿名取得、公開した5ファイルの一致、公開画面からの785 bytesの推薦原本取得を確認した。
+URL・run・digestは [公開の検証記録](release-evidence.md)、再配信は [公開手順](release-runbook.md)を参照する。
 
 準備PRの [Devouch run](https://github.com/geeknees/devouch/actions/runs/36160022078) は成功。
 PR作者 `github:701242`、base `66973289d637db0ae4e3eb549aa62cb88233e0ac`、head上記SHAに対し、
 `credential_missing`、`missing / not_evaluated`、CLI終了2・Action終了0を確認した。
 これは同じprivate repo内の推薦ファイルなしのPRであり、masusanouのfork PR・有効推薦・失効後の再実行を確認した証拠ではない。
+
+## エージェント名義の実fork PR
+
+masusanouの [PR #2](https://github.com/geeknees/devouch/pull/2) は公開forkから送信され、
+[Devouch run](https://github.com/geeknees/devouch/actions/runs/36172488074) で `valid / accepted` を確認した。
+GitHub APIの実作者 `github:287365775`、base `3214991e616e118d921ea9575d06d5e121b584f4`、
+head `7ac246f17c441833cb3ece244cdf1377fe35e003` とレポートの参照先が一致した。
+原本の785 bytesとdigest、baseのpolicy digestも一致し、CLIとActionの終了コードはともに0。
+[通常CI](https://github.com/geeknees/devouch/actions/runs/36172488028) も全step成功。
+初回forkの実行承認は差分とworkflowの確認後、2 runだけに行い、保護設定は変更していない。
+snapshotと確認範囲は [Sepolia検証記録](demo-evidence.md#masusanouの実fork-pr)に記録した。
+この時点ではPRはopen。本人walletによる実失効は未実施で、PRでの失効検証はユーザー指定により行わない。
 
 ## 公開前の検査
 
@@ -124,5 +141,5 @@ Gitのauthor・committer情報にも氏名と個人メールアドレスがあ�
 2026-09-26にユーザーから公開してよい旨の確認を得た。既存履歴は維持する。
 スキャンはパターン照合であり、秘密情報がないことの数学的保証ではない。
 
-固定Action commitの公開取得、推薦付き実PR、静的公開先、本人walletによる実失効が残る。
+本人walletによる実失効とCLIでの確認が残る。
 この記録を「ハッカソンの実機デモ全体が完成」とは扱わない。

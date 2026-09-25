@@ -2,14 +2,15 @@
 
 対象 repo は [geeknees/devouch](https://github.com/geeknees/devouch)、
 エージェントの PR 作者は [masusanou](https://github.com/masusanou)（数値 ID `287365775`）。
-この ID と repo の状態は GitHub API で確認済み。repo は現在 private、既定 branch は main。
-2026-09-26のユーザー訂正に従った送信先。ユーザーはデモ時に公開すると指定済み。
-承認された準備用branchのpushと [draft PR #1](https://github.com/geeknees/devouch/pull/1) は実施済み。公開・deploy・推薦付きの実fork PRは未実施。
-人間名義の実 PR も要件に残るが、アカウントは未指定。
+この ID と repo の状態は GitHub API で確認済み。repo はpublic、既定 branch はmain。
+2026-09-26のユーザー訂正に従った送信先。同日の承認に基づき [PR #1](https://github.com/geeknees/devouch/pull/1) をmergeし、repoとPagesを公開した。
+公開結果は [検証記録](release-evidence.md)。masusanouの [実fork PR #2](https://github.com/geeknees/devouch/pull/2) は `valid / accepted` を確認済み。
+人間名義の実PR検証は2026-09-26のユーザー指定で対象外。今回の実PRデモはmasusanou名義だけを使う。
 
 ENS名・所有者・初期化済みresolverは確認済み。Actionのローカル固定SHAと手動の公開workflowも準備済み。
 推薦の公開取引とCLIのA/B方針比較は [実Sepoliaで確認済み](demo-evidence.md)。
-失効取引、Action commitの公開取得、live URL、推薦付きfork PR/run URL は未確認。
+Action commitの匿名取得、live URLと公開画面からのENS取得、実fork PRのActionを確認済み。失効取引とCLIによる失効確認は未実施。
+2026-09-26のユーザー指定により、失効はPRでは検証しない。masusanouのPR確認はvalid / acceptedで完了。
 以下の欄が埋まるまで実機デモ完了とは扱わない。
 
 ## 起動と準備
@@ -37,15 +38,16 @@ Sepolia に接続した本人のウォレットで直接 `name.eth` を取得す
 | 専用 resolver / 配備 block | `0x1C62ac64F60aDc036d184596e87c98fdFcFdb160` / `11780025` |
 | 名前の接続 | 上記resolverへ接続済み、取引hashは未記録 |
 | エージェント subject | `github:287365775` |
+| エージェントの実PR / Action | [PR #2](https://github.com/geeknees/devouch/pull/2) / [run 36172488074](https://github.com/geeknees/devouch/actions/runs/36172488074)、valid / accepted |
 | 推薦公開 | block `11780510`、receipt成功。[取引・原本・検証結果](demo-evidence.md) |
 | 推薦の期限 | `2026-10-02T16:45:00Z`（10月3日01:45 JST） |
-| 人間名義 subject | 未定 |
-| Action配布先 / 40桁SHA | `geeknees/devouch@9ce4525f269f590d4d8fd0e123ff35d33dce8efa`。ローカル検証済み、公開取得は未確認 |
-| 静的 live URL | 未公開。標準候補は `https://geeknees.github.io/devouch/` |
+| Action配布先 / 40桁SHA | `geeknees/devouch@9ce4525f269f590d4d8fd0e123ff35d33dce8efa`。ローカル検証と認証なしの公開取得を確認済み |
+| 静的 live URL | https://geeknees.github.io/devouch/ 。配信ファイルとブラウザ操作を確認済み |
 
 この名前は対応実装・recordId 1で推薦を公開済み。追加のresolver配備や再公開は不要。
 準備時の未送信requestとは別に、画面で準備した上記期限の原本が公開された。
-まずmasusanouのPRでvalid / acceptedを確認し、その後に本人walletから失効する。
+masusanouのPRでvalid / acceptedを確認済み。本人walletからの失効は、以後のデモで新しい推薦が必要になるため、本人が時期を決めて行う。
+失効確認には既存の原本とCLIを使う。現在のPRはopenで、PRのmergeや失効後の再実行はこのデモの前提ではない。
 原本の取得とCLI比較は [デモ例](../examples/demo/README.md)のコマンドを使う。
 
 PagesとActionの公開は [公開手順](release-runbook.md)に沿って行う。
@@ -64,10 +66,10 @@ PublicNodeは必要な過去stateを返せなかったため、今回の代替�
 2. **0:40–1:40: 公開。** Publish で subject / ENS名 / 有効期限を確認し、署名してから別の取引で公開する。本人wallet、receipt、text原本、公開履歴に残る情報を示す。
 3. **1:40–2:30: 再利用。** 同じ原本を repo A / B の方針で CLI 検証する。両方 accepted を示し、Bの方針だけ trustedIssuersを空にして rejected を示す。原本や署名は変更しない。
 4. **2:30–3:30: 実 PR。** masusanou の fork PR の Summary で作者ID / base・head SHA / valid / accepted を示す。actor が別でも対象は PR 作者である。
-5. **3:30–4:30: 失効。** Withdrawで本人walletから空値を送信する。2 block進んでからA/Bの CLI と同じ PR の Action を再実行し、revoked / not_evaluated を示す。古いチェックが自動で書き換わらないことを説明する。
+5. **3:30–4:30: 失効。** Withdrawで本人walletから空値を送信する。2 block進んでからA/Bの CLI を実行し、revoked / not_evaluated を示す。PRでは失効を検証しない。古いチェックが自動で書き換わらないことを説明する。
 6. **4:30–5:00: 独立動作。** 公開サイトを閉じ、別のローカル配布画面・ethPandaOps RPCから取得と本人の操作を行う。運営者のAPI・鍵・DBを呼ばない。人間性未確認と通常のコードレビューを明示する。
 
-本人アカウントの fork PR でも新しい ID / nonce の推薦を発行し、同じ手順を実施する。
+人間名義のfork PRは追加しない。別の推薦を発行する場合は新しいID / nonceを使い、元の推薦は失効する。
 一つの record に二つの推薦を同時保持したとは扱わない。
 
 ## PR に含めるもの
@@ -78,13 +80,13 @@ PR側は `.devouch/vouches/github-287365775.json` にダウンロードした原
 JSONは整形し直さない。PR作成用のログインが実際にmasusanouであることを公開前に確認する。
 公開位置を使って取得する場合は [デモ例](../examples/demo/README.md)に従い、785 bytesと記録済みdigestを照合する。
 
-予定PRの本文:
+PRの説明例:
 
 > Devouch の持ち運べる推薦を確認するデモです。PR 作者 masusanou（GitHub ID 287365775）への推薦原本を追加します。
 > 受け入れ側でレビューした方針に基づき、読み取り専用 Action が署名・ENS履歴・現在状態を確認します。
-> 人間性、コード品質、作業委任、マージ承認の証明ではありません。失効後は同じチェックを再実行して結果を確認します。
+> 人間性、コード品質、作業委任、マージ承認の証明ではありません。このPRでは有効な推薦を確認します。失効はウォレットとCLIで別に扱います。
 
-これはレビュー用の文面。現時点で PR を投稿した記録ではない。
+これは説明文の例。実際の投稿と確認結果は [PR #2](https://github.com/geeknees/devouch/pull/2)と [検証記録](demo-evidence.md#masusanouの実fork-pr)を参照する。
 実際の変更は対象 repo の AGENTS.md / CONTRIBUTING / gotchas を読んでから用意する。
 
 ## 不具合・復旧の見せ方
@@ -104,8 +106,8 @@ JSONは整形し直さない。PR作成用のログインが実際にmasusanou�
 |---|---|
 | 配備・接続・公開・失効 | tx hash、receipt成功、block hash、対応eventとreadback |
 | A/B再利用とBのみ不採用 | 同一原本のdigest、二つのpolicy digest、各CLI JSON、終了コード |
-| 両名義のfork PR | PR URL、作者numeric ID、head/base SHA、Action run URL |
-| 失効後 | 同じPRの再実行URL、revokedとsnapshot、CLI JSON |
+| masusanouのfork PR | PR URL、作者numeric ID、head/base SHA、Action run URL |
+| 失効後 | CLIのrevokedとsnapshot、JSON、終了コード。PRでの検証は対象外 |
 | 他人の推薦 | 対象IDと原本subjectの相違、invalidのrun |
 | 運営者不在 | 起動した配布commit、別RPCのhost、直接操作のtx・readback |
 | 公開 | repo URL、release SHA、HTTPS live URLの取得確認 |

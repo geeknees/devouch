@@ -12,3 +12,4 @@
 - ローカルgemだけで作ったBundler 4のlockfileはCHECKSUMSが空のままになることがある。既存gemでテストが通ってもCIのfrozen installは失敗する。`bundle lock --add-checksums` で補完し、空のBUNDLE_PATHとfrozenモードで再確認する。frozenを解除してCIを通す修正にはしない。
 - 発表台本でも検証境界を保つ。vouchにも他repoのリスト参照があり、Devouchの補助grantを持つwalletも推薦を消せる。失効が反映されるのは各repoの次回検証であり、過去のAction結果は自動更新されない。
 - `assets/devouch-logo.svg` も配布物の入力。ロゴを変えたら `bun run build` で `dist/web/devouch-logo.svg` を更新して一緒に保存する。機能テストが通っても、配布物が古ければCIの再build一致検査は失敗する。
+- デモの確認範囲は最新のユーザー指定を優先する。2026-09-26に失効のPR検証と人間名義の実PR検証が対象外になった。古い計画の両名義の実PR・Action再実行を残作業として復活させない。実PRはmasusanouの有効推薦の照合まで、失効のウォレット・CLI確認は別に記録する。

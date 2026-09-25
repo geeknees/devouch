@@ -13,7 +13,7 @@
 | もの | 状態 |
 | --- | --- |
 | `.devouch/local/demo/vouch.json` | Sepolia に公開済みの推薦の原本（[本番のコマンド](script.md#live-demo-commands)） |
-| `.devouch/local/demo/repo-a.json`, `repo-b.json` | 用意済み |
+| `examples/demo/policy-a.json`, `examples/demo/policy-b-reject.json` | Git管理済み |
 | 端末 | repo のルートで開いておく |
 | ブラウザ | Web アプリの **Retrieve** タブ、デモ用 PR の Devouch チェック、デモ動画（`clips/06-revoke.mp4` と `clips/07-revoked.mp4`） |
 
@@ -22,15 +22,17 @@
 ## コマンド
 
 ```sh
+mkdir -p .devouch/local/demo
+
 # A. ENS から原本を取り出す（Devouch のサイトを使わない）
 rm -f .devouch/local/demo/booth-fetched.json
 ./exe/devouch fetch --name masusanou-dev.eth --output .devouch/local/demo/booth-fetched.json
 
 # B. repo A：valid / accepted
-./exe/devouch verify --credential .devouch/local/demo/vouch.json --policy .devouch/local/demo/repo-a.json --subject github:287365775
+./exe/devouch verify --credential .devouch/local/demo/booth-fetched.json --policy examples/demo/policy-a.json --subject github:287365775
 
 # C. repo B：valid / rejected
-./exe/devouch verify --credential .devouch/local/demo/vouch.json --policy .devouch/local/demo/repo-b.json --subject github:287365775
+./exe/devouch verify --credential .devouch/local/demo/booth-fetched.json --policy examples/demo/policy-b-reject.json --subject github:287365775
 ```
 
 どれも読むだけで、取引は送らない。取得できないときは `--rpc-url https://rpc.sepolia.ethpandaops.io` を付ける。
@@ -88,7 +90,7 @@ rm -f .devouch/local/demo/booth-fetched.json
 ### Why ENSv2? (ENS judges)
 
 > The vouch lives / **on ENS,** / not on a Devouch server.
-> I own the resolver. / Only I can publish / or clear it.
+> I own the resolver. / I can publish or clear it / **without Devouch approval.**
 > I can give a helper wallet / permission / for **one text key only.**
 > Devouch reads / the **history** of that record. / So an old vouch / can't come back.
 
@@ -162,7 +164,7 @@ rm -f .devouch/local/demo/booth-fetched.json
 
 ### 深掘り（聞かれたら）
 
-- **なぜ ENSv2？:** 推薦はサーバーではなく ENS にあります。resolver は私のもので、公開も取り消しも私だけができます。補助のウォレットに、一つの text key だけの権限を渡せます。記録の履歴を読むので、古い推薦は戻りません。聞かれたら `vendor/ens-v2/README.md` で、固定した公式コントラクトの出どころを見せる。新しいコントラクトは書いていない。
+- **なぜ ENSv2？:** 推薦はサーバーではなく ENS にあります。resolver は私のもので、Devouch運営者の承認なしに公開も取り消しもできます。補助のウォレットに、一つの text key だけの権限を渡せます。記録の履歴を読むので、古い推薦は戻りません。聞かれたら `vendor/ens-v2/README.md` で、固定した公式コントラクトの出どころを見せる。新しいコントラクトは書いていない。
 - **検証の仕組み:** 署名・期限・ENS の記録を確認します。最新から2ブロック前の状態を読みます。そのあと、リポジトリの方針が判断します。
 - **サイトがなくなったら？:** Web は静的なので、自分のパソコンで、好きな RPC で動かせます。CLI は ENS を直接読みます。
 - **含まないもの:** 人間であることは証明しません。コードレビューの代わりにもなりません。示すのは、誰があなたを推薦しているかです。
