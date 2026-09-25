@@ -3,7 +3,8 @@
 対象 repo は [geeknees/devouch](https://github.com/geeknees/devouch)、
 エージェントの PR 作者は [masusanou](https://github.com/masusanou)（数値 ID `287365775`）。
 この ID と repo の状態は GitHub API で確認済み。repo は現在 private、既定 branch は main。
-2026-09-26のユーザー訂正に従った送信先。ユーザーはデモ時に公開すると指定済み。公開・push・配布・実 fork PR はまだ実施していない。
+2026-09-26のユーザー訂正に従った送信先。ユーザーはデモ時に公開すると指定済み。
+承認された準備用branchのpushと [draft PR #1](https://github.com/geeknees/devouch/pull/1) は実施済み。公開・deploy・推薦付きの実fork PRは未実施。
 人間名義の実 PR も要件に残るが、アカウントは未指定。
 
 ENS名・所有者・初期化済みresolverは確認済み。Actionのローカル固定SHAと手動の公開workflowも準備済み。

@@ -1,8 +1,12 @@
 # デモ公開の手順
 
 公開対象は `geeknees/devouch` と `dist/web/` の静的画面。
-ユーザー指定は「デモ時に公開」。以下は準備済みの操作手順で、公開・push・deployの実施記録ではない。
+ユーザー指定は「デモ時に公開」。以下は準備済みの操作手順で、公開・deployの実施記録ではない。
 確認時点のrepoはprivate、GitHub Pagesは未設定。
+
+準備用の `codex/demo-release-20260926` はユーザー承認後にpushし、[draft PR #1](https://github.com/geeknees/devouch/pull/1) を作成した。
+そのhead `5e1afca6aa3d72567e4c7ab70f9b8d851544aca2` のTestと、推薦ファイルなしのAction reportはGitHub上で成功した。
+merge・visibility変更・Pages公開はまだ行っていない。
 
 ## 配布物
 

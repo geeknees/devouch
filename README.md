@@ -10,8 +10,8 @@ It uses Sepolia's official Permissioned Resolver. There is no Devouch API, datab
 Public Sepolia deployment-history reads work through Tenderly and ethPandaOps.
 Real-wallet publication, live hosting, a published Action commit, and real fork-PR runs remain to be completed.
 See the [verification record](docs/implementation-status.md); local tests are not public-chain demo evidence.
-A GitHub test run stopped on missing gem checksums. The corrected lockfile passes a clean frozen install;
-the remote rerun remains pending.
+The corrected lockfile passes a clean frozen install and the [GitHub test workflow](https://github.com/geeknees/devouch/actions/runs/36160022026).
+The private preparation PR's Action reported missing evidence correctly; this is not yet an endorsed fork-PR demonstration.
 
 ## Run the workspace
 

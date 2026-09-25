@@ -18,7 +18,7 @@ Building from Scratch の適格性を運営が確認したとは扱わない。
 | 二つの repo 方針で再利用、片方だけ不採用 | 同じ署名を使う通しテスト | 実CLIで確認、実機用policy例を用意 |
 | 静的 Web の署名・公開・失効・復旧・ダウンロード | ブラウザとウォレット、receipt/readback | Chrome＋ローカルEVMで確認。実walletは未実施 |
 | 推薦者自身による resolver 準備とキー権限 | 公式 Factory と実コントラクトによるテスト | ローカルEVMで配備・接続・キー限定・grant撤回後の本人失効を確認 |
-| 読み取り専用 Action、base/head 固定、PR 作者照合 | API/CLI 境界テスト、実 fork PR | 境界テスト済み、実GitHub runは未実施 |
+| 読み取り専用 Action、base/head 固定、PR 作者照合 | API/CLI 境界テスト、実 fork PR | 境界テストとprivate準備PRのmissing判定を確認。推薦付きfork PRは未実施 |
 | 管理者・エージェント両名義の実 fork PR と失効後再実行 | 対象 PR と Action run の URL | 公開情報・外部操作待ち |
 | 運営者不在でローカル UI と別 RPC から操作 | ローカル配布物での通し確認 | ローカルUIと2社RPCの実名読み取りまで。実取引は未確認 |
 | README、導入手順、ライセンス、提出・デモ資料 | コマンド再実行とリンク検査 | 作成・更新済み。提出画像草案5点。録画用ツールは別作業で追加済み、提出用の実機動画は未完成 |
@@ -79,7 +79,9 @@ loopback画面を開いたChromeから両RPCへ接続し、CORS経由でもSepol
 
 GitHubの [Test run](https://github.com/geeknees/devouch/actions/runs/36155612207) はcommit `66973289d637db0ae4e3eb549aa62cb88233e0ac` を対象に実行され、空のgemチェックサムによりテスト前のbundle installで失敗した。
 同じfrozenエラーを手元で再現し、依存バージョンを変えずGemfile.lockのチェックサムを補完した。
-上記のクリーンなインストールとテストは修正後に成功。修正を含むremote CIの成功はまだ未確認。
+上記のクリーンなインストールとテストは修正後に成功。
+commit `5e1afca6aa3d72567e4c7ab70f9b8d851544aca2` の [push Test](https://github.com/geeknees/devouch/actions/runs/36159498575) と [PR Test](https://github.com/geeknees/devouch/actions/runs/36160022026) も成功した。
+PR Testは依存の固定インストール、Ruby/Bun/結合テスト、型・構文検査、配布物の再build一致まで全stepのsuccessを確認した。
 
 ## 公開準備
 
@@ -87,7 +89,14 @@ GitHubの [Test run](https://github.com/geeknees/devouch/actions/runs/3615561220
 `.github/workflows/pages.yml` はmainの手動実行で `dist/web/` だけを公開する。
 3 workflowの構文・外部ActionのSHA固定・権限・公開対象を検査した。
 予定の `/devouch/` 配下でChromeを使い、配布物・操作タブ・walletなしの表示・mobile表示・console errorなしを確認した。
-公開先へのpush・Pages有効化・deployは未実施。[公開手順](release-runbook.md)を参照する。
+ユーザー承認後、private repoへ `codex/demo-release-20260926` をpushし、[draft PR #1](https://github.com/geeknees/devouch/pull/1) をgeeknees名義で作成した。
+本文一致、draft状態、base main、head `5e1afca6aa3d72567e4c7ab70f9b8d851544aca2` を読み戻して確認した。
+visibility変更・Pages有効化・deploy・mergeは未実施。[公開手順](release-runbook.md)を参照する。
+
+準備PRの [Devouch run](https://github.com/geeknees/devouch/actions/runs/36160022078) は成功。
+PR作者 `github:701242`、base `66973289d637db0ae4e3eb549aa62cb88233e0ac`、head上記SHAに対し、
+`credential_missing`、`missing / not_evaluated`、CLI終了2・Action終了0を確認した。
+これは同じprivate repo内の推薦ファイルなしのPRであり、masusanouのfork PR・有効推薦・失効後の再実行を確認した証拠ではない。
 
 ## 公開前の検査
 
