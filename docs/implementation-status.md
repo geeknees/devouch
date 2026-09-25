@@ -21,7 +21,7 @@ Building from Scratch の適格性を運営が確認したとは扱わない。
 | 読み取り専用 Action、base/head 固定、PR 作者照合 | API/CLI 境界テスト、実 fork PR | masusanouの [PR #2](https://github.com/geeknees/devouch/pull/2) でvalid / accepted。作者・base/head・原本・方針digestを照合済み |
 | 運営者不在でローカル UI と別 RPC から操作 | ローカル配布物での通し確認 | ローカルUI経由の本人公開、2社RPCで同じ原本の検証を確認。別ホストからの実操作は未実施 |
 | README、導入手順、ライセンス、提出・デモ資料 | コマンド再実行とリンク検査 | 作成・更新済み。提出画像草案5点。動画は別エージェントの作業で完成したとユーザー確認（2026-09-26）。提出URLは未記録 |
-| 公開コード・配布 SHA・静的 live URL | 公開先の readback | repoとPagesを公開。固定Actionの匿名取得、配信5ファイルの一致、公開画面からのENS原本取得を確認 |
+| 公開コード・配布 SHA・静的 live URL | 公開先の readback | repoとPagesを公開。固定Actionの匿名取得と初回公開画面からのENS原本取得を確認。新デザインでは同梱フォントを含む配信10ファイルの一致と全タブを確認 |
 
 ## 採用範囲
 
@@ -29,7 +29,8 @@ Ruby CLI、TypeScript/viem の検証補助、静的ウォレット UI、GitHub A
 既存 ENSv2 Permissioned Resolver を使い、独自台帳・共通秘密鍵・運営者 API は置かない。
 同時に一記録一推薦。World、委任、Git 全履歴、複数推薦の同時保持は含めない。
 `human_verification: not_included` を常に明示する。
-2026-09-26のユーザー確認に従い、動画制作は完了扱い。デザイン改修は後続の別作業とする。
+2026-09-26のユーザー確認に従い、動画制作は完了扱い。後続のデザイン改修も同日に実装・検証・公開を完了した。
+52テスト、同梱フォント、キーボード・画面幅・コントラストと公開先の確認は [デザイン検証記録](design-verification.md) を参照。
 同日のユーザー指定により、PRで失効は検証しない。PRの実機確認は有効な推薦の照合までとし、
 masusanouのPRは完了扱い。人間名義の実PR検証も同日のユーザー指定で今回の対象から外す。
 失効の機能とウォレット・CLIの確認範囲は別に記録する。

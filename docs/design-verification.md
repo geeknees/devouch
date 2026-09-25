@@ -32,5 +32,20 @@
 署名・公開・失効・復旧そのものは、従来のブラウザ統合テストでローカルEVMと実際の公式コントラクトを使って確認した。
 このデザイン作業に伴うSepoliaへの署名・取引は送信していない。
 
-公開URLとGitHub上のREADMEの反映確認は、承認後のPR merge・Pages配布に続けて行う。
+## 公開先の確認
+
+ユーザーの承認後、2026-09-26に [PR #4](https://github.com/geeknees/devouch/pull/4) をmergeしてPagesを更新した。
+
+| 項目 | 確認結果 |
+| --- | --- |
+| 実装commit | `13ad0a90a3c04fb22264be2e60b97a9c4a4c94a9` |
+| 公開commit | `53afeae72e095a6c401c3df53708fbcb0bf28bb7`。ファイルツリーは検証済み実装commitと一致 |
+| mainのCI | [Test](https://github.com/geeknees/devouch/actions/runs/36180353277)、success |
+| Pages | [Publish workspace](https://github.com/geeknees/devouch/actions/runs/36180553637)、success |
+| 公開URL | https://geeknees.github.io/devouch/ |
+| 匿名での配布物照合 | HTML・CSS・JS・SVG・ライセンスとWOFF2の計10ファイルがローカルの検証済み配布物とbyte単位で一致 |
+| 公開画面 | フォント6フェイスの読み込み、同一originからの5つのWOFF2、1440/390pxの全4タブを確認。横はみ出し・JavaScriptエラー・外部要求・GET以外の要求なし |
+| README | GitHub上でロゴ画像の表示と読み込み完了、見出しより前に配置されていることを確認 |
+
+公開前の差分検査で検出なし。全ファイル・履歴の検査は、既知のライセンス表記8件、公開承認済みの氏名4件、GitHubドキュメントURLの誤検出2件のみだった。
 以前の公開版の記録は [release-evidence.md](release-evidence.md) に残している。
