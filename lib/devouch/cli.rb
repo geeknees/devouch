@@ -121,6 +121,8 @@ module Devouch
         end
         begin
           expires = Time.iso8601(timestamp)
+          # Time.iso8601 normalizes impossible dates and out-of-range offsets instead of rejecting them.
+          raise ArgumentError unless expires.iso8601.sub(/[+-]00:00\z/, "Z") == timestamp.sub(/[+-]00:00\z/, "Z")
         rescue ArgumentError
           raise Error.new("invalid_expiry", "Use a valid RFC 3339 timestamp.")
         end
