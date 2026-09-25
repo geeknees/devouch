@@ -7,7 +7,7 @@ import { DEFAULT_RPC, RESOLVER_IMPL } from '../src/ens';
 import { EvidenceError, insist } from '../src/errors';
 import { makeRequest, makeRevoke, publicationHint, validatePublishRequest, validateRevokeRequest,
   type PublishRequest, type RevokeRequest } from '../src/operations';
-import { Submission, validatePending, type Pending } from './submission';
+import { isWalletRejection, Submission, validatePending, type Pending } from './submission';
 import { WalletSession } from './wallet';
 
 declare global { interface Window { ethereum?: EIP1193Provider & { on?: (event: string, listener: () => void) => void } } }
@@ -41,6 +41,7 @@ function status(message: string, tone: 'neutral' | 'success' | 'error' | 'withdr
 }
 function update() {
   for (const target of document.querySelectorAll<HTMLButtonElement>('button')) target.disabled = busy;
+  for (const target of document.querySelectorAll<HTMLInputElement>('input')) target.disabled = busy;
   if (submission.pending || damagedRecovery) for (const id of writeButtons) button(id).disabled = true;
   button('sign').disabled ||= !publishRequest || !input('consent').checked;
   button('publish').disabled ||= !signedRaw || !input('consent').checked;
@@ -55,7 +56,8 @@ function update() {
   button('connect').textContent = session?.account ? session.account.slice(0, 6) + '…' + session.account.slice(-4) : 'Connect wallet ↗';
 }
 function errorMessage(error: unknown) {
-  const code = error instanceof EvidenceError ? error.code : error instanceof Error ? error.message : '';
+  const code = isWalletRejection(error) ? 'wallet_rejected'
+    : error instanceof EvidenceError ? error.code : error instanceof Error ? error.message : '';
   const messages: Record<string, string> = {
     wallet_unavailable: 'Open this workspace in a browser with an Ethereum wallet extension.',
     wallet_rejected: 'The wallet request was cancelled. Nothing was submitted by this operation.',
@@ -126,10 +128,21 @@ function details(id: string, fields: [string, string][]) {
     target.append(term, definition);
   }
 }
+function clearReview() {
+  publishRequest = null; signedRaw = null;
+  input('consent').checked = false;
+  element('review').hidden = true;
+}
+function localDateTime(date: Date) {
+  return new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().slice(0, 19);
+}
 function review(request: PublishRequest) {
   publishRequest = request; signedRaw = null;
   input('consent').checked = false;
   const m = request.message;
+  input('publish-name').value = m.recordName;
+  input('subject-id').value = m.subject.split(':')[1]!;
+  input('expires').value = localDateTime(new Date(Number(m.expiresAt) * 1000));
   details('review-details', [['Contributor', m.subject], ['Issuer', m.issuer], ['Purpose', m.scope],
     ['Expires', new Date(Number(m.expiresAt) * 1000).toISOString()], ['ENS name', m.recordName], ['Resolver', m.resolver]]);
   element('replacement').hidden = request.previousValue === '';
@@ -152,7 +165,11 @@ async function downloads(raw: string, publication: Publication) {
   const parsed = await parseCredential(raw);
   downloadedRaw = raw; downloadedPublication = publication;
   element('downloads').hidden = false;
-  element('download-description').textContent = parsed.message.subject + ' · ' + parsed.message.recordName + ' · Published block ' + publication.blockNumber;
+  element('download-description').textContent = 'Published at block ' + publication.blockNumber + '. Retrieval does not confirm current validity.';
+  details('download-details', [['Contributor', parsed.message.subject], ['Issuer', parsed.message.issuer],
+    ['Purpose', parsed.message.scope], ['Expires (UTC)', new Date(Number(parsed.message.expiresAt) * 1000).toISOString()],
+    ['ENS name', parsed.message.recordName], ['Resolver', parsed.message.resolver]]);
+  element<HTMLAnchorElement>('publication-link').href = 'https://sepolia.etherscan.io/tx/' + publication.transactionHash;
   element('credential-path').textContent = '.devouch/vouches/github-' + parsed.message.subject.split(':')[1] + '.json';
 }
 async function completed(result: Awaited<ReturnType<WalletSession['recover']>>) {
@@ -174,7 +191,17 @@ async function completed(result: Awaited<ReturnType<WalletSession['recover']>>) 
 }
 
 document.querySelectorAll<HTMLButtonElement>('[data-tab]').forEach(target => target.addEventListener('click', () => activate(target.dataset.tab!)));
-document.querySelectorAll<HTMLButtonElement>('[data-go]').forEach(target => target.addEventListener('click', () => activate(target.dataset.go!)));
+document.querySelectorAll<HTMLButtonElement>('[data-go]').forEach(target => target.addEventListener('click', () => {
+  const tab = target.dataset.go!;
+  activate(tab);
+  document.querySelector<HTMLButtonElement>('[data-tab="' + tab + '"]')?.focus();
+  element('panel-' + tab).scrollIntoView({ block: 'start' });
+}));
+for (const id of ['publish-name', 'subject-id', 'expires']) input(id).addEventListener('input', () => {
+  if (!publishRequest) return;
+  clearReview(); update();
+  status('Details changed. Prepare the endorsement again, then review and sign the updated details.');
+});
 for (const id of ['consent', 'revoke-consent', 'bind-consent']) input(id).addEventListener('change', update);
 button('connect').addEventListener('click', () => run('Connecting to your Sepolia wallet…', async () => {
   await wallet().connect(); status('Wallet connected. Your private key stays in your wallet.', 'success');
@@ -182,6 +209,7 @@ button('connect').addEventListener('click', () => run('Connecting to your Sepoli
 element('prepare-form').addEventListener('submit', event => {
   event.preventDefault();
   void run('Reading your ENS publishing space…', async () => {
+    clearReview();
     const current = await connected();
     const expiry = Math.floor(new Date(input('expires').value).getTime() / 1000);
     insist(Number.isFinite(expiry) && expiry > Date.now() / 1000, 'expired');
@@ -191,6 +219,7 @@ element('prepare-form').addEventListener('submit', event => {
   });
 });
 input('request-file').addEventListener('change', () => run('Reading the unsigned request…', async () => {
+  clearReview();
   review(validatePublishRequest(strictJson(await fileText('request-file'), 16384)));
   status('Request loaded. Its publishing location and current record will be rechecked before signing.');
 }));
@@ -207,6 +236,7 @@ button('publish').addEventListener('click', () => run('Rechecking the public rec
 element('fetch-form').addEventListener('submit', event => {
   event.preventDefault();
   void run('Retrieving the original public record and publication history…', async () => {
+    downloadedRaw = null; downloadedPublication = null; element('downloads').hidden = true;
     const hint = input('publication-file').files?.length ? publicationHint(strictJson(await fileText('publication-file', 2048))) : undefined;
     const fetched = await new ChainReader(rpcUrl).fetch(input('fetch-name').value.trim(), hint);
     await downloads(fetched.raw, fetched.publication);
@@ -276,5 +306,5 @@ button('apply-rpc').addEventListener('click', () => run('Changing the read conne
 window.ethereum?.on?.('accountsChanged', () => { session = null; signedRaw = null; update(); status('Wallet changed. Reconnect and review the operation again.'); });
 window.ethereum?.on?.('chainChanged', () => { session = null; signedRaw = null; update(); });
 const nextWeek = new Date(Date.now() + 7 * 86400000);
-input('expires').value = new Date(nextWeek.getTime() - nextWeek.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+input('expires').value = localDateTime(nextWeek).slice(0, 16);
 update();
