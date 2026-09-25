@@ -168,7 +168,7 @@ Devouch carries a reference; it does not turn that reference into automatic appr
 | agent名義の実PRとAction run | masusanouのPR #2とvalid / acceptedのActionは確認済み。人間名義の実PRと失効のPR検証は対象外 |
 | 別RPC・別ホストからの実操作 | ローカルUI経由の本人公開、2社RPCの検証を確認。別ホストの実操作は未実施 |
 | ENS の欄（使い方・コード行・評価・フィードバック） | 下書き済み（「ENS prize form fields」）。評価の1〜10とフィードバックの最終確認は提出者 |
-| 新デザインの画面画像 | ユーザー指定により後続の別作業。適用後に `node scripts/capture-assets.ts` で撮り直す |
+| 新デザインの画面画像 | 適用・公開済み。`node scripts/capture-assets.ts` で画面3枚を更新。同梱フォントでの撮影と公開URLの確認は [デザイン検証記録](design-verification.md) |
 | repo の公開 | public。ユーザー承認後に公開（2026-09-26 03:03 JST に確認） |
 | World Agents統合・失敗経路・feedback | 未実装、条件付き候補 |
 | イベント期間・Building from Scratch適格性 | 運営未確認 |

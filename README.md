@@ -27,7 +27,8 @@ Masusanou's [fork PR #2](https://github.com/geeknees/devouch/pull/2) reports
 Real-wallet withdrawal remains to be completed.
 The PR demonstration uses masusanou and ends at `valid / accepted`; a separate human-account PR is outside the demo scope.
 Withdrawal is demonstrated separately through the wallet and CLI.
-The published commit passes the [GitHub test workflow](https://github.com/geeknees/devouch/actions/runs/36170464968).
+The published design passes the [GitHub test workflow](https://github.com/geeknees/devouch/actions/runs/36180353277).
+The [design verification](docs/design-verification.md) records the dark workspace, bundled fonts, and hosted browser checks.
 
 ## Development history
 

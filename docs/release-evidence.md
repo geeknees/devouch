@@ -1,5 +1,10 @@
 # 公開と配信の検証記録
 
+新デザインは2026-09-26に [PR #4](https://github.com/geeknees/devouch/pull/4) をmergeし、
+`53afeae72e095a6c401c3df53708fbcb0bf28bb7` を [Pages run](https://github.com/geeknees/devouch/actions/runs/36180553637) で公開した。
+同梱フォントを含む10ファイルの照合、公開画面とREADMEロゴの確認は [デザイン検証記録](design-verification.md#公開先の確認) を参照。
+以下は初回公開時の検証記録であり、新デザインより前の配布commitとファイル数を記録している。
+
 2026-09-26 JST、ユーザー承認に基づき [PR #1](https://github.com/geeknees/devouch/pull/1) をmergeし、
 [geeknees/devouch](https://github.com/geeknees/devouch) をpublicへ変更、GitHub Pagesを公開した。
 現在のファイルとGit履歴の検査を終え、既存の氏名・個人メール・画像のイニシャルについても公開可の確認を得た。
