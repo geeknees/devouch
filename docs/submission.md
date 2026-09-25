@@ -22,7 +22,7 @@
 | Languages | Ruby, TypeScript, JavaScript, HTML, CSS |
 | Web framework / Database | None / None |
 | Other tools | Bun, Node.js, GitHub Actions, Playwright, Minitest |
-| Prizes | **ENS のみ**選ぶ。説明は「ENS partner prize: why it applies」、フィードバック欄は提出者が記入。World は未統合なので選ばない |
+| Prizes | **ENS のみ**選ぶ。ENS の欄は「ENS prize form fields」を使う。World は未統合なので選ばない |
 | AI tools | 「AI tool disclosure」を貼る |
 | Video | 別エージェントの作業で完成済み（ユーザー確認）。提出URLは未記録 |
 | Future | 「Future」を貼る |
@@ -49,18 +49,6 @@ No Devouch-operated API, database, signing service, publisher key, or unique sto
 The project still depends on Ethereum/ENS, name maintenance, a wallet, GitHub for PR identity, and a reliable historical RPC provider.
 Recommendations do not prove humanity, code quality, delegation, or merge approval.
 
-## ENSv2 usage
-
-- Complete signed endorsements are ENS text records, retrievable independently of Devouch hosting.
-- Official factory-created Permissioned Resolvers give issuers direct ownership of publication and withdrawal.
-- The optional helper grant is limited to the endorsement text key; the issuer retains direct withdrawal.
-- Resolver/link/upgrade histories are checked alongside current values so temporary changes cannot silently restore trust.
-- The same endorsement works with different repository policies.
-
-The implementation uses pinned official Sepolia artifacts and unmodified contract code.
-It introduces no custom endorsement registry.
-Tests run real official bytecode on a disposable local EVM. One publication on Sepolia has been read back and verified against two policies (see "Sepolia evidence" below); withdrawal on Sepolia is still to be recorded.
-
 ## How it's made
 
 The command-line interface is Ruby and uses the standard library for bounded file handling, policy evaluation, and read-only GitHub API access.
@@ -85,9 +73,20 @@ The planning documents written before the event are included in `docs/` as the p
 The planned contributor demonstration uses a separate agent account, masusanou.
 Generated work is checked with local tests and browser runs; unperformed public-chain and GitHub checks are listed explicitly.
 
-## ENS partner prize: why it applies
+## ENS usage
 
-ENSv2 is where the endorsement lives, not a display name. Each recommender publishes the complete signed endorsement JSON to a text record on their own ENSv2 Permissioned Resolver, created through the official factory, so anyone can retrieve it from ENS without a Devouch service. Publishing and withdrawing are direct wallet transactions by the issuer. An optional helper wallet can be granted permission for only the endorsement text key, while the issuer keeps direct withdrawal. Verification reads the resolver's history, so a withdrawn or temporarily replaced record never silently restores trust. I use pinned official Sepolia deployments and add no custom registry.
+ENS をどう使っているかの詳しい控え。フォームの ENS 欄には下の「ENS prize form fields」の2文を貼り、ここはブースや Q&A、repo を読みに来た審査員のために使う。
+
+ENSv2 is where the endorsement lives, not a display name.
+
+- Each recommender publishes the complete signed endorsement JSON to the `devouch.vouch` text record on their own ENSv2 Permissioned Resolver, created through the official factory. Anyone can retrieve it from ENS without a Devouch service.
+- Publishing and withdrawing are direct wallet transactions by the issuer.
+- An optional helper wallet can be granted permission for only the endorsement text key, while the issuer keeps direct withdrawal.
+- Verification reads the resolver's history (text, link and implementation changes) alongside the current value, so a withdrawn or temporarily replaced record never silently restores trust.
+- The same endorsement works with different repository policies: the evidence is shared, and each repository decides.
+
+I use pinned official Sepolia artifacts and unmodified contract code, and add no custom endorsement registry.
+Tests run the real official bytecode on a disposable local EVM. One publication on Sepolia has been read back and verified against two policies (see "Sepolia evidence" below); withdrawal on Sepolia is still to be recorded.
 
 ### ENS prize form fields
 
