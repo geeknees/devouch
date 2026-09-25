@@ -20,6 +20,14 @@ Real-wallet withdrawal, live hosting, a published Action commit, and endorsed fo
 The corrected lockfile passes a clean frozen install and the [GitHub test workflow](https://github.com/geeknees/devouch/actions/runs/36160022026).
 The private preparation PR's Action reported missing evidence correctly; this is not yet an endorsed fork-PR demonstration.
 
+## Development history
+
+When implementation began, the repository held only the planning documents in `docs/` and a `.gitignore`.
+Implementation began at 2026-09-25 22:32 JST in this working tree; no earlier Devouch application code was copied.
+The core, CLI, web workspace, and documentation were first committed as grouped commits between 00:30 and 00:37 JST on 2026-09-26, so the early history is coarser than the work itself.
+The step-by-step checks made during that period are recorded in the [verification record](docs/implementation-status.md); later work is committed in smaller steps.
+AI tool use is disclosed in the [submission draft](docs/submission.md#ai-tool-disclosure).
+
 ## Run the workspace
 
 Use Node.js 24 and Ruby 3.4 or newer. Bundled distribution files are included; running the CLI or workspace does not install JavaScript dependencies.

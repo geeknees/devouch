@@ -1,192 +1,242 @@
 # Devouch: Finalist Talk Script
 
 ETHGlobal Tokyo 2026 finalist judging: **7 minutes = 4 min demo + 3 min Q&A.**
-Target pace: ~130 words/min in English, so the 4-minute part is kept under ~500 words.
 
-`[DEMO]` marks a screen action. `[FALLBACK]` is what to show if the live step fails.
-Before going on stage, check which steps actually run on Sepolia versus the local EVM, and only say "on Sepolia" for steps that ran there.
+英語が母語でない発表者向けに書いている。
+
+- 1文は短く（ほぼ10語以内）。ゆっくり話しても4分に収まるよう、英語は約320語（1分あたり約100語）にしている。
+- `/` は息継ぎの位置。**太字** は強く言う語。
+- 大事な言葉はスライドにも出す。詰まったらスライドを読めばよい。
+- `[DEMO]` は画面の操作。`[FALLBACK]` は本番の操作が失敗したときに見せるもの。
+- 「on Sepolia」と言うのは、実際に Sepolia で動かした操作だけにする。
+
+## 当日の段取り
+
+**推薦は審査の前に公開しておく。** 本番では、公開済みの推薦を見せ、検証・Action・失効・再検証だけを行う。公開と失効の両方で約24秒ずつ待つと、4分に収まらないため。
+
+1. 審査の前に Web で推薦を新しく公開する（リハーサルで失効させた推薦は復活しない）。
+2. `vouch.json` を `.devouch/local/demo/` に置き直す（[本番のコマンド](#live-demo-commands)）。
+3. デモ用 PR の `.devouch/vouches/github-287365775.json` も、この新しい原本に差し替えて Action を再実行し、`valid / accepted` を確認しておく。
+4. 端末・Web・PR の3つのタブを並べておく。
+
+## 読み方の手がかり
+
+| 語 | 読み | 強勢 |
+| --- | --- | --- |
+| repository | リ**ポ**ジトリー | po |
+| verify | **ヴェ**リファイ | ve |
+| accepted | アク**セ**プティッド | cep |
+| rejected | リ**ジェ**クティッド | jec |
+| revoked | リ**ヴォ**ークト | vo |
+| vouch | **ヴァ**ウチ（一音節） | vouch |
+| ENS | イー・エン・**エ**ス | S |
+| maintainer | メイン**テ**イナー | tai |
+| contributor | コン**トリ**ビューター | tri |
 
 ## Timeline
 
-| Time      | Section                | Screen                                 |
-| --------- | ---------------------- | -------------------------------------- |
-| 0:00–0:15 | Self-introduction      | Title slide                            |
-| 0:15–0:50 | Problem                | 1 slide                                |
-| 0:50–1:20 | Idea                   | 1 slide (diagram)                      |
-| 1:20–3:30 | Live demo              | Web app → CLI → GitHub Action → revoke |
-| 3:30–4:00 | Why it matters / close | Closing slide                          |
-| 4:00–7:00 | Q&A                    | —                                      |
+| Time      | Section           | Screen                                   |
+| --------- | ----------------- | ---------------------------------------- |
+| 0:00–0:10 | Self-introduction | Title slide                              |
+| 0:10–0:45 | Problem           | 1 slide                                  |
+| 0:45–1:15 | Idea              | 1 slide (diagram)                        |
+| 1:15–3:30 | Live demo         | Web (retrieve) → CLI → Action → revoke → CLI |
+| 3:30–4:00 | Close             | Closing slide                            |
+| 4:00–7:00 | Q&A               | —                                        |
 
 ---
 
 ## English
 
-### 0:00 — Self-introduction (15s)
+### 0:00 — Self-introduction (10s)
 
-> Hi, I'm [Name]. I built Devouch solo, with a coding agent, here at ETHGlobal Tokyo. Let's go straight in.
+> Hi, I'm [Name]. / I built **Devouch** / with a coding agent.
 
-### 0:15 — Problem (35s)
+### 0:10 — Problem (35s)
 
-> AI can now write pull requests faster than any maintainer can read them.
-> A friend of mine who maintains the Hono web framework wrote about drowning in AI slop PRs.
-> The code is cheap. The maintainer's time and trust are not.
+> AI writes pull requests / very fast.
+> Maintainers / **can't read them all.**
+> My friend maintains **Hono**. / He has this problem / every day.
 >
-> Mitchell Hashimoto's **vouch** shows a good answer: before reviewing, ask "has someone I trust vouched for this contributor?"
-> It can already share lists across repositories. Devouch adds an issuer-signed record with an expiry and a withdrawal history that anyone can verify.
+> Mitchell Hashimoto made **vouch**. / The idea is simple:
+> before a review, / ask one question. / "Does **someone I trust** / vouch for this person?"
+> Vouch already / shares lists across projects. / Devouch adds / **signatures, expiry, and withdrawal history.**
 
-### 0:50 — Idea (30s)
+### 0:45 — Idea (30s)
 
-> Devouch makes a vouch **portable and verifiable**.
+> Devouch makes a vouch / **portable.**
+> I sign a vouch / for a GitHub account.
+> I publish it / on **my own ENS name.**
+> Any repository / can check it.
+> But **each repository decides** / if it trusts me.
 >
-> A recommender signs an endorsement for a GitHub account, and publishes it to **their own ENSv2 resolver**, straight from their wallet.
-> Any repository can then verify it: the signature, the expiry, and whether it is still published on-chain.
-> But **each repository decides** whether it trusts that recommender.
->
-> Endorse once. Let each community decide.
+> **Endorse once. / Let each community decide.**
 
-### 1:20 — Demo (2m10s)
+### 1:15 — Demo (2m15s)
 
-**1. Issue (≈35s)**
+**1. The vouch on ENS (≈25s)**
 
-`[DEMO]` Open the static web app. Enter the contributor's GitHub numeric ID, scope `oss-contribution`, and expiry. Sign with the wallet, then publish to the recommender's ENS name.
+`[DEMO]` Web app → **Retrieve** tab → `masusanou-dev.eth` → show the endorsement.
 
-> This is a static page. There is no Devouch server and no API key.
-> I sign the endorsement with my own wallet, and write it to a text record on my own ENSv2 resolver. I own this record, not us.
+> I published this vouch / **before the talk.**
+> It lives / on my ENS name, / **on Sepolia.**
+> No Devouch server. / No database. / Only my wallet / and ENS.
 
-**2. Verify in two repositories (≈35s)**
+**2. Two repositories, one vouch (≈35s)**
 
 `[DEMO]` Run commands 2 and 3 from [Live demo commands](#live-demo-commands).
 
-> Now two different repositories check the **same** endorsement.
-> Repo A trusts this recommender: `valid`, `accepted`.
-> Repo B doesn't: still `valid`, but `rejected`.
-> The evidence is shared. The judgment stays with each project.
+> Two repositories / check the **same** vouch.
+> Repo A / trusts me. / **Valid. Accepted.**
+> Repo B / does not. / Still valid, / but **rejected.**
+> Same evidence. / **Different decisions.**
 
-**3. GitHub Action on a real fork PR (≈30s)**
+**3. GitHub Action (≈30s)**
 
 `[DEMO]` Show the PR's Devouch check summary.
 
-> For maintainers, setup is two files: a policy and a workflow.
-> The Action matches the PR author's ID with the original JSON, checks its ENS history, and reports the result.
-> It never checks out or runs the PR's code, and it needs no secrets.
+> For maintainers, / setup is **two files.**
+> The Action checks / the PR author.
+> It does **not** run / the PR's code. / It needs **no secrets.**
 
-**4. Revoke (≈30s)**
+**4. Take it back (≈30s)**
 
-`[DEMO]` In the web app, revoke the endorsement from the wallet. Re-run commands 2 and 3, then re-run the Action.
+`[DEMO]` Web app → **Withdraw** → load `vouch.json` → confirm → send from the wallet.
 
-> Trust has to be withdrawable. I clear the record on ENS.
-> The old JSON is still sitting in both repositories — but verification reads the on-chain history, so now both say `revoked`.
-> Each repository sees that withdrawal on its next verification.
+> Trust must be / **easy to take back.**
+> I clear the record / from my wallet. / **No Devouch approval needed.**
 
-`[FALLBACK]` If Sepolia is slow, show the recorded run of the same step and say so.
+While waiting for two blocks (about 24 seconds):
 
-### 3:30 — Why it matters / close (30s)
+> The old file / is still in both repositories.
+> But Devouch reads / the **history** on ENS.
 
-> Three things we deliberately did **not** build:
-> no global reputation score, no token rewards for endorsing, and no central service you must trust.
-> We also don't claim "verified human" — Devouch shows who vouched for you, not who you are.
+**5. Check again (≈15s)**
+
+`[DEMO]` Run commands 2 and 3 again.
+
+> Now both say / **revoked.**
+> One transaction. / Each repository sees it / **on its next check.**
+
+`[FALLBACK]` If Sepolia is slow, say "This is a recording of the same steps," and play the matching clip from the demo video.
+
+### 3:30 — Close (30s)
+
+> We did **not** build / a global score.
+> We did **not** add / token rewards.
+> We did **not** build / a central server.
+> Devouch does not check / if you are human. / It shows / **who vouches for you.**
 >
-> ENSv2 gives us exactly what trust needs: a public record, owned by the person who endorses, and revocable at any time.
->
-> AI can multiply code. It can't multiply a maintainer's trust. Devouch lets that trust travel. Thank you.
+> AI can make / more code. / It can't make / more **trust.**
+> **Endorse once. / Let each community decide.** / Thank you.
 
 ---
 
 ## 日本語
 
-英語版と同じ構成・時間配分です。練習時の意味確認用、または日本語で発表する場合に使います。
+英語版と同じ構成。意味の確認用、または日本語で発表する場合に使う。
 
-### 0:00 — 自己紹介（15秒）
+### 0:00 — 自己紹介（10秒）
 
-> [Name] です。Devouch は、このハッカソンで一人とコーディングエージェントで作りました。早速本題に入ります。
+> [Name] です。コーディングエージェントと一緒に Devouch を作りました。
 
-### 0:15 — 課題（35秒）
+### 0:10 — 課題（35秒）
 
-> AI によって、メンテナーが読み切れない速さで PR が作れるようになりました。
-> Hono のメンテナーをしている友人も、AI slop の PR に悩まされていると記事に書いています。
-> コードは安くなりました。でも、メンテナーの時間と信頼は安くなっていません。
+> AI は、とても速く PR を書きます。
+> メンテナーは、全部は読み切れません。
+> 友人の Hono のメンテナーも、毎日この問題を抱えています。
 >
-> Mitchell Hashimoto の **vouch** は良い答えを示しています。レビューの前に「信頼できる誰かが、この貢献者を推薦しているか」を見る。
-> vouch は、すでに別のリポジトリのリストを参照できます。Devouch はそこに、推薦者の署名、期限、取り消しの履歴を誰でも検証できる記録を加えます。
+> Mitchell Hashimoto の vouch は、シンプルな考え方です。
+> レビューの前に、一つだけ問う。「信頼している誰かが、この人を推薦しているか？」
+> vouch には、別のリポジトリのリストを参照する機能もあります。Devouch は、署名・期限・取り消しの履歴を加えます。
 
-### 0:50 — アイデア（30秒）
+### 0:45 — アイデア（30秒）
 
-> Devouch は、推薦を **持ち運べて、検証できる** ものにします。
->
-> 推薦者が GitHub アカウントへの推薦に署名し、**自分の ENSv2 resolver** へ、自分のウォレットから直接公開します。
-> どのリポジトリでも、署名・期限・今もオンチェーンで公開されているかを検証できます。
-> ただし、その推薦者を信頼するかは **各リポジトリが決めます**。
+> Devouch は、推薦を持ち運べるものにします。
+> 私が、GitHub アカウントへの推薦に署名します。
+> それを、自分の ENS の名前に公開します。
+> どのリポジトリでも確認できます。
+> でも、私を信頼するかは、各リポジトリが決めます。
 >
 > 推薦は一度。判断は各コミュニティで。
 
-### 1:20 — デモ（2分10秒）
+### 1:15 — デモ（2分15秒）
 
-**1. 発行（約35秒）**
+**1. ENS 上の推薦（約25秒）**
 
-`[DEMO]` 静的 Web アプリを開く。貢献者の GitHub 数値 ID、用途 `oss-contribution`、期限を入力。ウォレットで署名し、推薦者の ENS 名へ公開する。
+`[DEMO]` Web アプリ → **Retrieve** タブ → `masusanou-dev.eth` → 推薦を表示する。
 
-> これは静的ページです。Devouch のサーバーも API キーもありません。
-> 自分のウォレットで推薦に署名し、自分の ENSv2 resolver の text record に書き込みます。この記録を持っているのは私たちではなく推薦者です。
+> この推薦は、発表の前に公開しておきました。
+> 私の ENS の名前にあります。Sepolia 上です。
+> Devouch のサーバーも、データベースもありません。私のウォレットと ENS だけです。
 
-**2. 二つのリポジトリで検証（約35秒）**
+**2. 二つのリポジトリ、一つの推薦（約35秒）**
 
 `[DEMO]` [本番のコマンド](#live-demo-commands)の 2 と 3 を実行する。
 
-> 二つのリポジトリが **同じ** 推薦を確認します。
-> repo A はこの推薦者を信頼しているので `valid`・`accepted`。
-> repo B は信頼していないので、`valid` のまま `rejected`。
-> 証拠は共有し、判断は各プロジェクトに残ります。
+> 二つのリポジトリが、同じ推薦を確認します。
+> repo A は私を信頼しています。valid、accepted。
+> repo B は信頼していません。valid のまま、rejected。
+> 証拠は同じ。判断は別々です。
 
-**3. 実際の fork PR で GitHub Action（約30秒）**
+**3. GitHub Action（約30秒）**
 
 `[DEMO]` PR の Devouch チェックの Summary を見せる。
 
-> メンテナーの導入は、方針ファイルと workflow の2ファイルだけです。
-> Action は PR 作者の ID と推薦原本を照合し、ENS 上の履歴を確認して結果を表示します。
-> PR のコードは checkout も実行もせず、secret も不要です。
+> メンテナーの導入は、ファイル二つだけです。
+> Action は、PR の作者を確認します。
+> PR のコードは実行しません。secret も要りません。
 
-**4. 失効（約30秒）**
+**4. 取り消す（約30秒）**
 
-`[DEMO]` Web アプリでウォレットから推薦を失効させる。コマンド 2 と 3 を再実行し、Action も再実行する。
+`[DEMO]` Web アプリ → **Withdraw** → `vouch.json` を読み込む → 確認 → ウォレットから送信する。
 
-> 信頼は取り消せなければいけません。ENS の記録を空にします。
-> 古い JSON は両方のリポジトリに残ったままです。でも検証はオンチェーンの履歴を読むので、どちらも `revoked` になります。
+> 信頼は、簡単に取り消せなければいけません。
+> 自分のウォレットから、記録を空にします。Devouch 運営者の承認は要りません。
+
+2ブロック（約24秒）待つ間に:
+
+> 古いファイルは、両方のリポジトリに残ったままです。
+> でも Devouch は、ENS の履歴を読みます。
+
+**5. もう一度確認（約15秒）**
+
+`[DEMO]` コマンド 2 と 3 をもう一度実行する。
+
+> どちらも revoked になりました。
 > 各リポジトリが次に検証した時に、取り消しが反映されます。
 
-`[FALLBACK]` Sepolia が遅い場合は、同じ手順の録画を見せ、録画であることを伝える。
+`[FALLBACK]` Sepolia が遅いときは「同じ手順の録画です」と言って、デモ動画の該当場面を流す。
 
-### 3:30 — 意義とまとめ（30秒）
+### 3:30 — まとめ（30秒）
 
-> あえて作らなかったものが三つあります。
-> 全体共通の信用スコア、推薦へのトークン報酬、そして信頼を強いる中央サービスです。
-> 「人間であることの確認済み」とも表示しません。Devouch が示すのは、あなたが誰かではなく、誰があなたを推薦したかです。
+> 全体共通のスコアは作りませんでした。
+> トークン報酬も入れませんでした。
+> 中央のサーバーも作りませんでした。
+> Devouch は、人間かどうかは確かめません。示すのは、誰があなたを推薦しているかです。
 >
-> ENSv2 は、信頼に必要なものをそのまま提供してくれます。公開された記録、推薦者自身が持つ所有権、そしていつでもできる取り消しです。
->
-> AI はコードを増やせる。メンテナーの信頼は増やせない。Devouch は、その信頼を持ち運べるようにします。ありがとうございました。
+> AI はコードを増やせます。でも、信頼は増やせません。
+> 推薦は一度。判断は各コミュニティで。ありがとうございました。
 
 ---
 
 ## Live demo commands
 
-本番で端末に打つコマンド。repo のルートで実行する。ファイルは `.devouch/local/demo/`（Git 管理外）に置く。
+本番で端末に打つコマンド。repo のルートで実行する。推薦の原本と公開位置は `.devouch/local/demo/`（Git 管理外）に置き、方針は `examples/demo/` のファイルを使う。
 
 | ファイル | 用意するとき |
 | --- | --- |
 | `examples/demo/policy-a.json` | Git管理済み。`.devouch/policy.json` と同じ推薦者・resolver を信頼する |
 | `examples/demo/policy-b-reject.json` | Git管理済み。別repoの方針例で、`trustedIssuers` は空 |
-| `vouch.json` | 本番で公開した直後に、Web の **Download endorsement** で保存する |
+| `vouch.json` | 審査の前に公開した推薦の原本。公開後に Web の **Download endorsement** で保存するか、下の `fetch` で取り出す |
 
-推薦は失効すると復活しないので、リハーサルと本番で毎回新しく発行する。
+推薦は失効すると復活しない。同じ ENS 名に新しく公開すると前の推薦は置き換わる。リハーサルで失効させたら、審査の前に新しく公開し直し、`vouch.json` とデモ用 PR のファイルも差し替える。
 既定の RPC は Tenderly（`https://sepolia.gateway.tenderly.co`）。取得できないときは各コマンドに `--rpc-url https://rpc.sepolia.ethpandaops.io` を付ける（[実機デモの手順](../demo-runbook.md)）。
 
 ```sh
 mkdir -p .devouch/local/demo
 
-# 1. 原本ファイルを置く前の確認（任意）。ファイルがなければ missing になる
-./exe/devouch verify --credential .devouch/local/demo/vouch.json --policy examples/demo/policy-a.json --subject github:287365775
-
-# 公開後、Web からダウンロードした原本を置く
+# 審査の前：公開した原本を置く
 mv ~/Downloads/github-287365775.json .devouch/local/demo/vouch.json
 
 # 2. repo A：valid / accepted
@@ -208,51 +258,61 @@ mv ~/Downloads/publication.json .devouch/local/demo/publication.json
 `publication.json` がなくても `--publication` を外せば現在の公開値を取り出せるが、失効後は取り出せない。
 
 Web は `github-<数値ID>.json` という名前で保存する。同名のファイルがあるとブラウザが `(1)` を付けるので、`mv` の元を合わせる。原本の JSON は整形し直さない。
-公開・失効の直後は2ブロック（約24秒）待ってから検証する。待つ間に次のセリフへ進むと間が空かない。
+失効の直後は2ブロック（約24秒）待ってから検証する。台本の「待つ間に」のセリフでつなぐ。
 これは待ち時間の目安。snapshotが取引のblock以降になったことを結果で確認する。過去のAction結果は自動で更新されない。
 
 比較の根拠は [vouchの調査記録](../hackathon-research.md#vouch-が扱っている信頼)。他repoのリストを参照できることを前提に、署名・期限・失効履歴の違いを説明する。
 
 ## Q&A Preparation / Q&A 準備
 
-Keep each answer to ~20 seconds. / 各回答は20秒程度に収める。
+答えは短く、2〜3文で。分からなければ、無理に英語で長く話さない。
+
+### 困ったときの一言
+
+| 場面 | 英語 |
+| --- | --- |
+| 聞き取れない | "Sorry, could you say that again, / more slowly?" |
+| 考える時間がほしい | "Good question. / Let me think." |
+| 画面で見せたい | "Let me show you / on the screen." |
+| 答えられない | "I'm not sure. / I'll check / and follow up." |
+| 質問を確かめたい | "Do you mean / … ?" |
 
 ### What inspired your project? / 着想のきっかけは？
 
-- **EN:** A friend who maintains Hono wrote about being overwhelmed by AI-generated PRs. vouch already had the right model — trust the contributor, not each PR — so I wanted to make that trust portable across projects without a central operator.
-- **JA:** Hono のメンテナーをしている友人が、AI 生成の PR に困っていると書いていました。vouch は「PR ごとではなく貢献者を信頼する」という正しいモデルを持っているので、その信頼を中央の運営者なしにプロジェクト間で持ち運べるようにしたいと考えました。
+- **EN:** My friend maintains Hono. / He gets too many AI pull requests. / Vouch had a good idea. / I wanted to make that trust **portable.**
+- **JA:** Hono のメンテナーの友人が、AI の PR に困っていました。vouch の考え方は良い。その信頼を持ち運べるようにしたかったのです。
 
 ### What tools did you use, and why? / 何を使い、なぜ？
 
-- **EN:** ENSv2 on Sepolia for publishing and revoking, because the recommender owns the record and can delegate a limited key. EIP-712 signatures via viem. A Ruby CLI for verification, a GitHub Action for maintainers, and a static wallet page. I built it with a coding agent; the AI usage is documented in the repo.
-- **JA:** 公開と失効に Sepolia の ENSv2。推薦者が記録を所有し、限定したキー権限を委任できるからです。署名は viem による EIP-712。検証は Ruby CLI、メンテナー向けに GitHub Action、操作用に静的なウォレットページ。開発にはコーディングエージェントを使い、AI の利用範囲はリポジトリに記載しています。
+- **EN:** ENSv2 on Sepolia. / The person who vouches / **owns the record.** / We use viem for signatures, / a Ruby CLI, / and a GitHub Action. / We used AI coding agents. / It's written in the README.
+- **JA:** Sepolia の ENSv2 です。推薦する人が記録を持つからです。署名に viem、Ruby の CLI、GitHub Action を使いました。AI コーディングエージェントを使い、README に書いてあります。
 
 ### What challenges did you solve? / どんな課題を解決した？
 
-- **EN:** Revocation. A copied JSON file can't revoke itself, so verification reads the resolver's history and rejects an endorsement that was cleared — even if someone re-publishes the old one. Also keeping "evidence is valid" separate from "this repo accepts it."
-- **JA:** 失効です。コピーされた JSON は自分では失効できないので、検証時に resolver の履歴を読み、一度消された推薦は、古いものを再掲載されても拒否します。また「証拠が有効」と「この repo が受け入れる」を分けて扱いました。
+- **EN:** Taking trust back. / A copied file can't delete itself. / So Devouch reads the **history** on ENS. / A removed vouch / never comes back.
+- **JA:** 信頼の取り消しです。コピーされたファイルは自分では消えません。だから ENS の履歴を読みます。一度消した推薦は、戻りません。
 
 ### Why a blockchain? Why not a JSON file on GitHub? / なぜブロックチェーン？GitHub の JSON では駄目？
 
-- **EN:** GitHub can distribute copies, but it can't tell you whether the recommender still stands behind them. ENS is the one shared place every repository can check for the current state and revocation, without asking us.
-- **JA:** GitHub はコピーを配れますが、推薦者が今もそれを支持しているかは分かりません。ENS は、各リポジトリが私たちに問い合わせずに、現在の状態と失効を確認できる共通の場所です。
+- **EN:** GitHub can copy the file. / But it can't tell you / if I **still** trust this person. / ENS is one shared place / to check that.
+- **JA:** GitHub はファイルをコピーできます。でも、私が今も信頼しているかは分かりません。ENS は、それを確かめられる共通の場所です。
 
 ### Does this prove the contributor is human? / 人間であることを証明する？
 
-- **EN:** No, and we say so in every result (`human_verification: not_included`). Being human and being trustworthy are different things. We looked at World ID, but only want to add it if it doesn't require a central service.
-- **JA:** しません。結果にも毎回明示しています（`human_verification: not_included`）。人間であることと信頼できることは別です。World ID も検討しましたが、中央のサービスを必須にしない形で組み込める場合のみ追加します。
+- **EN:** No. / Being human / and being trusted / are different. / Every result says / "human verification: not included."
+- **JA:** しません。人間であることと、信頼されていることは別です。結果にも毎回そう書いています。
 
 ### What about AI agents opening PRs? / AI エージェントの PR は？
 
-- **EN:** An agent with its own GitHub account can be endorsed directly, like a person. The endorsement is about the account that sends the PR.
-- **JA:** 専用の GitHub アカウントを持つエージェントも、人と同じように直接推薦できます。推薦の対象は PR を送るアカウントです。
+- **EN:** An agent with its own GitHub account / can get a vouch, / **just like a person.**
+- **JA:** 自分の GitHub アカウントを持つエージェントも、人と同じように推薦を受けられます。
 
 ### Costs and privacy? / コストとプライバシーは？
 
-- **EN:** Only the recommender pays gas, to publish or revoke. Maintainers' Actions only read. Endorsements are public and stay in the history after revocation, so the recommender should publish knowingly.
-- **JA:** ガスを払うのは公開・失効する推薦者だけで、メンテナーの Action は読み取りのみです。推薦は公開され、失効後も履歴に残るので、推薦者はそれを理解した上で公開します。
+- **EN:** Only the person who vouches / pays gas. / Maintainers only **read.** / A vouch is public, / and it stays in the history.
+- **JA:** ガスを払うのは推薦する人だけです。メンテナーは読むだけです。推薦は公開され、履歴に残ります。
 
 ### What's next? / 今後は？
 
-- **EN:** Multiple endorsements per recommender (today it's one record, one endorsement), easier resolver setup for maintainers, and trying it on a real OSS project.
-- **JA:** 一人の推薦者が複数人を推薦できる構成（現状は一記録一推薦）、メンテナーの resolver 設定の簡略化、実際の OSS での試用です。
+- **EN:** More than one vouch per person, / easier setup for maintainers, / and a test with a **real** open-source project.
+- **JA:** 一人が複数人を推薦できるようにすること、メンテナーの設定を簡単にすること、実際の OSS で試すことです。

@@ -1,12 +1,12 @@
 # 提出文とピッチの草案
 
-現状: ローカル実装とGitHub CI、実Sepoliaの本人公開・CLI方針比較を検証済み。
-公開URL、推薦付きfork PR、実Sepolia失効の証拠は未取得。
+現状: ローカル実装・GitHub CI、本人walletのSepolia公開・CLI方針比較を検証済み。公開URL・実Sepolia失効・推薦付きfork PRの証拠は未取得。
+提出文の正本はこのファイル。提出フォームの画面の原本は [project-submit-form/](project-submit-form/) にある。
 下記は提出用の草案であり、提出済み・受賞要件充足とは扱わない。
 
 ## フォーム入力
 
-提供された提出フォーム画像を確認した。実フォームへの保存・送信は行っていない。
+[提出フォームの画面](project-submit-form/)を確認した。実フォームへの保存・送信は行っていない。下の表の順に、フォームの画面（Project details → Images → Tech stack → Select prizes → Video → Future）を埋める。
 
 | Field | Draft |
 |---|---|
@@ -22,12 +22,15 @@
 | Languages | Ruby, TypeScript, JavaScript, HTML, CSS |
 | Web framework / Database | None / None |
 | Other tools | Bun, Node.js, GitHub Actions, Playwright, Minitest |
-| Prizes | ENSv2を主候補。Worldは未統合のため適合を主張しない |
-| Track / judging choice | 事前設計資料を開示して適格性確認。Top 10 + Partner / Partner only は未指定 |
+| Prizes | **ENS のみ**選ぶ。説明は「ENS partner prize: why it applies」、フィードバック欄は提出者が記入。World は未統合なので選ばない |
+| AI tools | 「AI tool disclosure」を貼る |
+| Video | 別エージェントの作業で完成済み（ユーザー確認）。提出URLは未記録 |
+| Future | 「Future」を貼る |
+| Track / judging choice | Building from Scratch。事前設計資料を開示。Submission type は Top 10 Finalist & Partner Prizes を想定（決勝用の [台本](presentation/script.md) を用意済み）。最終判断は提出者 |
 
 Short descriptionは100文字以内。DescriptionとHow it's madeはそれぞれ280文字以上の下記原稿を使う。
 提供フォームでは動画は任意だが推奨、2〜4分、720p以上、音声あり・音楽なし。
-5分の操作リハーサルをそのまま提出動画にせず、3分30秒を目安に別途収録する。倍速化はしない。
+提出動画は別エージェントの作業で完成済みとユーザー確認（2026-09-26）。本作業での再収録は不要。
 公式の対面審査は4分デモ＋3分Q&A。[本番台本](presentation/script.md)と [提供されたルール](info/rules.md)を参照する。
 
 ## Project description
@@ -56,9 +59,7 @@ Recommendations do not prove humanity, code quality, delegation, or merge approv
 
 The implementation uses pinned official Sepolia artifacts and unmodified contract code.
 It introduces no custom endorsement registry.
-Tests run real official bytecode on a disposable local EVM.
-The issuer also published a real endorsement on Sepolia; the CLI verified that same original against independent repository policies.
-The [public-chain record](demo-evidence.md) distinguishes these completed checks from pending withdrawal and endorsed fork-PR demonstrations.
+Tests run real official bytecode on a disposable local EVM. One publication on Sepolia has been read back and verified against two policies (see "Sepolia evidence" below); withdrawal on Sepolia is still to be recorded.
 
 ## How it's made
 
@@ -74,10 +75,43 @@ No new smart contract, backend service, database, or shared signing key was adde
 
 ## AI tool disclosure
 
-OpenAI Codex assisted with reading the existing planning documents, researching official protocol interfaces, implementing the CLI, verifier, wallet UI and Action, writing tests, and drafting documentation.
-The human owner set the product direction, corrected the demo destination, and controls the wallet and publication decisions.
+Two AI coding agents were used. The human owner set the product direction, chose the scope and designs, controls the wallet, and made every publication decision.
+
+- **OpenAI Codex** assisted with reading the existing planning documents, researching official protocol interfaces, implementing the CLI, verifier, wallet UI and Action (`src/`, `lib/`, `web/`, `scripts/`, `action.yml`), writing tests (`test/`), and drafting documentation.
+- **Claude Code (Anthropic)** wrote the presentation materials and demo tooling: the talk and video scripts (`docs/presentation/`), the zoom animation (`docs/presentation/devouch-zoom.html`), the demo-video recorder, narration aligner and mixer (`tools/video/`), the logo and cover (`assets/`), the design handoff (`docs/design-handoff.md`), and submission-form drafts (`docs/project-submit-form/`).
+- **whisper.cpp** (speech-to-text, run locally) is used only to find when each script phrase is spoken, so the screen follows the presenter's own recorded voice. No text-to-speech or AI voice is used.
+
+The planning documents written before the event are included in `docs/` as the planning artifacts that directed the agents.
 The planned contributor demonstration uses a separate agent account, masusanou.
 Generated work is checked with local tests and browser runs; unperformed public-chain and GitHub checks are listed explicitly.
+
+## ENS partner prize: why it applies
+
+ENSv2 is where the endorsement lives, not a display name. Each recommender publishes the complete signed endorsement JSON to a text record on their own ENSv2 Permissioned Resolver, created through the official factory, so anyone can retrieve it from ENS without a Devouch service. Publishing and withdrawing are direct wallet transactions by the issuer. An optional helper wallet can be granted permission for only the endorsement text key, while the issuer keeps direct withdrawal. Verification reads the resolver's history, so a withdrawn or temporarily replaced record never silently restores trust. We use pinned official Sepolia deployments and add no custom registry.
+
+Feedback for ENS: 【提出者が記入。実際に詰まった点（例：resolver 作成から名前の接続までの手順、履歴取得に必要な RPC の要件、Sepolia の ENSv2 app のリセット）】
+
+## Future
+
+Next: support several active endorsements per recommender (today one resolver record holds one endorsement), copy-paste policy setup so maintainers don't handle resolver addresses by hand, a published Action release pinned by commit SHA, and a trial on a real open-source project. We will add proof of personhood such as World ID only if it can be verified without making a central service mandatory.
+
+## Sepolia evidence
+
+| Item | Value |
+|---|---|
+| ENS name | `masusanou-dev.eth` |
+| Issuer | `0x894108DC5640e36c478523228addA22b58Eeb79c` |
+| Resolver | `0x1C62ac64F60aDc036d184596e87c98fdFcFdb160` |
+| Subject / scope / expiry | `github:287365775` / `oss-contribution` / 2026-10-02 16:45 UTC |
+| Publication tx | `0xfa33b82bd93b8296b6866107328acf4b3ace32a876c7763c4cbd10ddb9141c96` (block 11780510) |
+| Read back | `devouch fetch --publication` returned the original JSON (2026-09-25 17:15 UTC) |
+| Policy A | `valid / accepted` at block 11780652 |
+| Policy B (issuer not trusted) | `valid / rejected`, reason `issuer_not_trusted`, at block 11780653 |
+| Withdrawal | Not yet performed; planned during the live demo |
+
+RPC: `https://sepolia.gateway.tenderly.co` (the CLI default).
+
+An earlier comparison used the same original and block `11780543` across Tenderly and ethPandaOps: two policies accepted it, while the policy declining the issuer rejected it. The [verification record](demo-evidence.md) includes the original digest, policy digests, block hash, and public position for retrieving it again.
 
 ## 90-second pitch
 
@@ -104,9 +138,12 @@ Devouch carries a reference; it does not turn that reference into automatic appr
 | 公開コード / license / 配布SHA | MITあり、Actionのローカル固定SHAは [公開手順](release-runbook.md)。公開取得は未確認 |
 | ライブデモURL | 手動Pages workflowを準備、未公開 |
 | 動画URL | 別エージェントの作業で完成したとユーザー確認（2026-09-26）。提出URLは未記録 |
-| ENSv2の実txと失効後のreadback | [本人公開・原本取得・A/B方針比較を確認](demo-evidence.md)。実失効は未実施 |
+| ENSv2の実txと失効後のreadback | 公開txと2方針の検証は取得（上記）。失効後は未取得 |
 | 人間・agent名義の実PRとAction run | 未取得 |
 | 別RPC・別ホストからの実操作 | ローカルUI経由の本人公開、2社RPCの検証を確認。別ホストの実操作は未実施 |
+| ENS へのフィードバック | 未記入。提出者が書く |
+| 新デザインの画面画像 | ユーザー指定により後続の別作業。適用後に `node scripts/capture-assets.ts` で撮り直す |
+| repo の公開 | private。規約で public が必須 |
 | World Agents統合・失敗経路・feedback | 未実装、条件付き候補 |
 | イベント期間・Building from Scratch適格性 | 運営未確認 |
 
