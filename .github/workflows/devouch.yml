@@ -1,0 +1,23 @@
+# ABOUTME: Reports the pull request author's endorsement against this repository's policy.
+# ABOUTME: Uses an immutable Devouch release without checking out or executing PR code.
+name: Devouch
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, ready_for_review]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  endorsement:
+    name: Devouch endorsement report
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: geeknees/devouch@9ce4525f269f590d4d8fd0e123ff35d33dce8efa
+        with:
+          policy-path: .devouch/policy.json
+          mode: report
+          github-token: ${{ github.token }}

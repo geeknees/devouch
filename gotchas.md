@@ -8,3 +8,5 @@
 - Rubyの長さ指定IO.readは空ファイルでnilを返す。空入力をinternal errorへ落とさず、credentialとpolicyの入力エラーとして扱う。
 - ローカルEVMのpass、公開RPCのread、Sepolia取引、実GitHub Actionは別の証拠。公開値を未確認のまま実機デモ完了にしない。
 - 現在のbytecodeや直近logsが読めても、古いstateが読めるRPCとは限らない。実際のnameでprepareまで確認する。proxyの配備探索は現在から遡り、無関係に古いfactory時点との中間stateを最初に要求しない。
+- 新しいresolverのprepare成功は、時間経過後のstate保持を保証しない。デモ前は配備前・配備時の読み取りまで再確認する。PublicNodeは実名でも後に履歴取得不能となり、TenderlyとethPandaOpsで再確認した。
+- ローカルgemだけで作ったBundler 4のlockfileはCHECKSUMSが空のままになることがある。既存gemでテストが通ってもCIのfrozen installは失敗する。`bundle lock --add-checksums` で補完し、空のBUNDLE_PATHとfrozenモードで再確認する。frozenを解除してCIを通す修正にはしない。

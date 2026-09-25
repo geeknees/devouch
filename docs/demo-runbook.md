@@ -6,7 +6,8 @@
 2026-09-26のユーザー訂正に従った送信先。ユーザーはデモ時に公開すると指定済み。公開・push・配布・実 fork PR はまだ実施していない。
 人間名義の実 PR も要件に残るが、アカウントは未指定。
 
-ENS名・所有者・初期化済みresolverは確認済み。推薦の公開・失効取引、公開Action SHA、live URL、PR/run URL は未取得。
+ENS名・所有者・初期化済みresolverは確認済み。Actionのローカル固定SHAと手動の公開workflowも準備済み。
+推薦の公開・失効取引、Action commitの公開取得、live URL、PR/run URL は未確認。
 以下の欄が埋まるまで実機デモ完了とは扱わない。
 
 ## 起動と準備
@@ -14,6 +15,7 @@ ENS名・所有者・初期化済みresolverは確認済み。推薦の公開・
 ```sh
 node scripts/serve.ts
 bun run scripts/probe-rpc.ts
+bun run scripts/check-name.ts masusanou-dev.eth
 ```
 
 画面は http://127.0.0.1:4173 。独立した端末で使う場合も同じ静的配布物を起動できる。
@@ -34,13 +36,20 @@ Sepolia に接続した本人のウォレットで直接 `name.eth` を取得す
 | 名前の接続 | 上記resolverへ接続済み、取引hashは未記録 |
 | エージェント subject | `github:287365775` |
 | 人間名義 subject | 未定 |
-| Action配布先 / 40桁SHA | 未公開 |
-| 静的 live URL | 未公開 |
+| Action配布先 / 40桁SHA | `geeknees/devouch@9ce4525f269f590d4d8fd0e123ff35d33dce8efa`。ローカル検証済み、公開取得は未確認 |
+| 静的 live URL | 未公開。標準候補は `https://geeknees.github.io/devouch/` |
 
 この名前は対応実装・recordId 1・空の推薦欄まで確認済みなので、追加のresolver配備は不要。
 `.devouch/local/request-masusanou.json` に期限 2026-09-30 12:00 UTC の未送信リクエストを作成済み。
 画面のLoad CLI requestで読み込むか、現在状態を確認して新しくPrepareする。
 接続walletは上記ownerを選び、署名と公開を本人が確認する。
+
+PagesとActionの公開は [公開手順](release-runbook.md)に沿って行う。
+RPCの実名確認は `ready: true` まで確認する。直近runtimeだけを読むprobeの成功では代用しない。
+既定Tenderlyが取得不能なら、Connection settingsで `https://rpc.sepolia.ethpandaops.io` を選んで再確認する。
+PublicNodeは必要な過去stateを返せなかったため、今回の代替には使わない。
+785 bytesの同形式データで公開ガスを見積もった結果は664,611 gas。署名はplaceholderで、取引は未送信。
+実際の署名・手数料はwalletで確認し、公開後はreceiptのgasUsedを記録する。
 
 ## 操作確認のリハーサル
 
@@ -52,7 +61,7 @@ Sepolia に接続した本人のウォレットで直接 `name.eth` を取得す
 3. **1:40–2:30: 再利用。** 同じ原本を repo A / B の方針で CLI 検証する。両方 accepted を示し、Bの方針だけ trustedIssuersを空にして rejected を示す。原本や署名は変更しない。
 4. **2:30–3:30: 実 PR。** masusanou の fork PR の Summary で作者ID / base・head SHA / valid / accepted を示す。actor が別でも対象は PR 作者である。
 5. **3:30–4:30: 失効。** Withdrawで本人walletから空値を送信する。2 block進んでからA/Bの CLI と同じ PR の Action を再実行し、revoked / not_evaluated を示す。古いチェックが自動で書き換わらないことを説明する。
-6. **4:30–5:00: 独立動作。** 公開サイトを閉じ、別のローカル配布画面・Tenderly RPCから取得と本人の操作を行う。運営者のAPI・鍵・DBを呼ばない。人間性未確認と通常のコードレビューを明示する。
+6. **4:30–5:00: 独立動作。** 公開サイトを閉じ、別のローカル配布画面・ethPandaOps RPCから取得と本人の操作を行う。運営者のAPI・鍵・DBを呼ばない。人間性未確認と通常のコードレビューを明示する。
 
 本人アカウントの fork PR でも新しい ID / nonce の推薦を発行し、同じ手順を実施する。
 一つの record に二つの推薦を同時保持したとは扱わない。

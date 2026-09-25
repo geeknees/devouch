@@ -21,8 +21,8 @@ Building from Scratch の適格性を運営が確認したとは扱わない。
 | 読み取り専用 Action、base/head 固定、PR 作者照合 | API/CLI 境界テスト、実 fork PR | 境界テスト済み、実GitHub runは未実施 |
 | 管理者・エージェント両名義の実 fork PR と失効後再実行 | 対象 PR と Action run の URL | 公開情報・外部操作待ち |
 | 運営者不在でローカル UI と別 RPC から操作 | ローカル配布物での通し確認 | ローカルUIと2社RPCの実名読み取りまで。実取引は未確認 |
-| README、導入手順、ライセンス、提出・デモ資料 | コマンド再実行とリンク検査 | 作成・更新済み。提出画像草案5点。動画は未収録 |
-| 公開コード・配布 SHA・静的 live URL | 公開先の readback | repoはデモ時公開の指定。公開・配布・hostingは未実施 |
+| README、導入手順、ライセンス、提出・デモ資料 | コマンド再実行とリンク検査 | 作成・更新済み。提出画像草案5点。録画用ツールは別作業で追加済み、提出用の実機動画は未完成 |
+| 公開コード・配布 SHA・静的 live URL | 公開先の readback | Action固定SHAと手動Pages workflowを準備。公開・配布・hostingは未実施 |
 
 ## 採用範囲
 
@@ -55,6 +55,16 @@ PublicNodeでも探索修正後、block `11780085` / hash
 既定は実名の履歴を読めた `https://sepolia.gateway.tenderly.co`。
 どちらも公開推薦・失効の実取引を実施した証拠ではない。
 
+追加確認ではPublicNodeの `eth_getCode` がblock 11780079で `historical state ... is not available` を返し、実名のprepareが失敗した。
+直近状態を読めた時点の成功だけでは、時間経過後の履歴検証を保証できない。
+Tenderlyにも一時的な取得失敗があったが、再確認ではprepareが成功した。
+代替の `https://rpc.sepolia.ethpandaops.io` は実名のprepareが成功し、推薦欄は空だった。
+さらに両RPCでblock `11780240` / hash
+`0xe83ee69127edcc38dc13b67c96772778eaae97e04d89be473d4e32fac776bd07`
+をsnapshotに配備直前・配備時のproxy検証と当時のowner照会を確認した。
+同じ形式の785 bytesのデータは両者で664,611 gasの見積もり。署名はplaceholderで、公開原本や実取引の証拠ではない。
+loopback画面を開いたChromeから両RPCへ接続し、CORS経由でもSepoliaのchain IDが返ることを確認した。
+
 ## ローカル検証
 
 - Ruby: `bundle exec rake test` は17 tests・68 assertions成功。`bundle exec rake lint` の構文検査も成功。
@@ -64,7 +74,20 @@ PublicNodeでも探索修正後、block `11780085` / hash
 - UI: 1440pxと390pxの画面確認、mobileの横溢れなし。ロゴ・カバー・3画面を生成。
 
 確認環境はRuby 4.0.6 / Node 24.14.1 / Bun 1.3.13。
-GitHub用CI定義はRuby 3.4 / Node 24で準備したが、remote CIはまだ実行していない。
+追加でRuby 3.4.8 / Bundler 4.0.20の空の一時環境へfrozen installを行い、Ruby 17 testsと結合9 tests、構文検査を確認した。
+配布物の再buildによる差分はなかった。
+
+GitHubの [Test run](https://github.com/geeknees/devouch/actions/runs/36155612207) はcommit `66973289d637db0ae4e3eb549aa62cb88233e0ac` を対象に実行され、空のgemチェックサムによりテスト前のbundle installで失敗した。
+同じfrozenエラーを手元で再現し、依存バージョンを変えずGemfile.lockのチェックサムを補完した。
+上記のクリーンなインストールとテストは修正後に成功。修正を含むremote CIの成功はまだ未確認。
+
+## 公開準備
+
+`.github/workflows/devouch.yml` はローカル検証済みcommit `9ce4525f269f590d4d8fd0e123ff35d33dce8efa` を固定した。
+`.github/workflows/pages.yml` はmainの手動実行で `dist/web/` だけを公開する。
+3 workflowの構文・外部ActionのSHA固定・権限・公開対象を検査した。
+予定の `/devouch/` 配下でChromeを使い、配布物・操作タブ・walletなしの表示・mobile表示・console errorなしを確認した。
+公開先へのpush・Pages有効化・deployは未実施。[公開手順](release-runbook.md)を参照する。
 
 ## 公開前の検査
 
@@ -74,5 +97,5 @@ privacy-checkのパターンで追跡中・未追跡の対象ファイルと既�
 後者は他作業の原稿として保全し、履歴の変更・削除はしていない。
 スキャンはパターン照合であり、秘密情報がないことの数学的保証ではない。
 
-公開Actionの固定SHA、実PR、静的公開先、walletによる署名・公開・失効が残る。
+固定Action commitの公開取得、実PR、静的公開先、walletによる署名・公開・失効が残る。
 この記録を「ハッカソンの実機デモ全体が完成」とは扱わない。

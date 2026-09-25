@@ -98,9 +98,9 @@ Devouch carries a reference; it does not turn that reference into automatic appr
 
 | 項目 | 状態 |
 |---|---|
-| 公開コード / license / 配布SHA | MITを追加、公開とSHA未確定 |
-| ライブデモURL | 未公開 |
-| 動画URL | 未収録 |
+| 公開コード / license / 配布SHA | MITあり、Actionのローカル固定SHAは [公開手順](release-runbook.md)。公開取得は未確認 |
+| ライブデモURL | 手動Pages workflowを準備、未公開 |
+| 動画URL | 実機・本人音声の提出動画は未完成。別作業でローカルEVMの無音素材を作る録画ツールが追加された |
 | ENSv2の実txと失効後のreadback | 未取得 |
 | 人間・agent名義の実PRとAction run | 未取得 |
 | 別RPC・別ホストからの実操作 | 読み取りは確認、実取引は未確認 |

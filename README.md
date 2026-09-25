@@ -7,9 +7,11 @@ This hackathon implementation contains a Ruby CLI, a static wallet workspace, an
 It uses Sepolia's official Permissioned Resolver. There is no Devouch API, database, shared publisher key, or new registry contract.
 
 **Current evidence:** local browser, CLI, and official-contract integration tests pass.
-Public Sepolia contract reads work through PublicNode and Tenderly.
+Public Sepolia deployment-history reads work through Tenderly and ethPandaOps.
 Real-wallet publication, live hosting, a published Action commit, and real fork-PR runs remain to be completed.
 See the [verification record](docs/implementation-status.md); local tests are not public-chain demo evidence.
+A GitHub test run stopped on missing gem checksums. The corrected lockfile passes a clean frozen install;
+the remote rerun remains pending.
 
 ## Run the workspace
 
@@ -23,6 +25,7 @@ node scripts/serve.ts
 Open **http://127.0.0.1:4173** with an Ethereum wallet extension.
 The server binds only to loopback and serves only `dist/web/`.
 The same static directory can be hosted on an HTTPS origin; there is no server-side issuance endpoint.
+The [release runbook](docs/release-runbook.md) covers the prepared manual GitHub Pages workflow and public Action checks.
 
 1. Acquire a direct `name.eth` on Sepolia using [the ENSv2 app](https://app.ens.dev/).
 2. In **ENS setup**, create a dedicated resolver, then connect the name. Both operations require your wallet's confirmation.
@@ -35,7 +38,8 @@ The planned receiving repository is [geeknees/devouch](https://github.com/geekne
 It is currently private and will be made public for the demo, as requested by the owner.
 Public distribution and fork-PR validation have not yet been performed.
 The chosen ENS name is `masusanou-dev.eth`; its public owner and compatible initialized resolver were verified.
-An unsigned request is prepared locally. The public Action release remains unassigned.
+An unsigned request is prepared locally. The adoption workflow pins the locally tested Action commit;
+its public availability remains unverified.
 
 ## CLI
 
@@ -69,7 +73,8 @@ The CLI's subject is supplied by its caller; the Action obtains it from GitHub's
 
 The default RPC is `https://sepolia.gateway.tenderly.co`; the real demo name's history and CLI request were checked with it.
 Set `--rpc-url` or `DEVOUCH_RPC_URL` to use another provider.
-PublicNode was read-tested but returned unavailable historical state for older queries.
+The alternate `https://rpc.sepolia.ethpandaops.io` also passed the demo name's deployment-history checks.
+PublicNode returned unavailable historical state for this name as time passed; it is unsuitable as the demo fallback.
 Provider-specific historical limits still apply. No automatic fallback hides provider failures.
 The workspace has a separate **Connection settings** field.
 
@@ -97,6 +102,7 @@ bun run typecheck
 bun run build
 bun run test:integration
 bun run scripts/probe-rpc.ts
+bun run scripts/check-name.ts masusanou-dev.eth
 ```
 
 On Linux, install the test browser with `bunx playwright install --with-deps chromium`.

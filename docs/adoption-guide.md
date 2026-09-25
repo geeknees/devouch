@@ -1,6 +1,6 @@
 # Devouch 導入マニュアル
 
-更新：2026-09-26。推薦版の [Action](../action.yml)・[CLI](../exe/devouch)・静的画面を新規実装し、ローカル通しテストを実施しました。**公開済みの配布 SHA と実 fork PR の確認はまだありません。** 公開後に下記 workflow の SHA を埋めます。最新の確認範囲は [実装状況](implementation-status.md)、起動方法は [README](../README.md)を参照してください。
+更新：2026-09-26。推薦版の [Action](../action.yml)・[CLI](../exe/devouch)・静的画面を新規実装し、ローカル通しテストを実施しました。**下記の固定commitはローカル検証済みですが、公開取得と実 fork PR は未確認です。** [公開手順](release-runbook.md)の完了後に利用してください。最新の確認範囲は [実装状況](implementation-status.md)、起動方法は [README](../README.md)を参照してください。
 
 公開 OSS リポジトリのメンテナー向けに、まず PR 作者の推薦を Actions の結果に表示するところまでを扱います。メンテナーは設定と workflow の2ファイルを追加し、推薦を持つ貢献者は初回だけ推薦 JSON を追加します。推薦結果を読み、レビューへ進めるかはメンテナーが決めます。
 
@@ -74,7 +74,7 @@ resolver の公開アドレスは導入者が確認します。画面の公開�
 
 ## 2. GitHub Actions の workflow を追加する
 
-`.github/workflows/devouch.yml` を作ります。配布先は `geeknees/devouch`、デモ時に公開予定です。`RELEASE_COMMIT_SHA` を公開済み配布版の40桁 commit SHAへ置き換えてから使います。現在のmainにはまだ実装が公開されていません。
+`.github/workflows/devouch.yml` を作ります。配布先は `geeknees/devouch`、デモ時に公開予定です。ローカル検証済みの40桁SHAで固定した [workflow](../.github/workflows/devouch.yml)を用意しました。repoとそのcommitの公開取得を確認してから利用します。
 
 ```yaml
 # ABOUTME: Reports the pull request author's portable endorsement.
@@ -95,7 +95,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - uses: geeknees/devouch@RELEASE_COMMIT_SHA
+      - uses: geeknees/devouch@9ce4525f269f590d4d8fd0e123ff35d33dce8efa
         with:
           policy-path: .devouch/policy.json
           mode: report
@@ -104,7 +104,7 @@ jobs:
 
 `policy-path`、`mode`、`github-token` は [action.yml](../action.yml) の入力です。`github.token` は GitHub が提供する実行用トークンを使い、PATやrepository secretの手動登録を求めません。権限は読み取りだけです。[GitHub の権限設定](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#permissions)
 
-既定 RPC は認証不要の `https://sepolia.gateway.tenderly.co` です。実際のデモ名の履歴とCLI requestまで確認しました。`rpc-url` 入力で変更できます。PublicNodeは古い状態の一部が取得不能でした。公開RPCの可用性・履歴保持・制限は保証せず、未完了の照会は unavailable にします。実fork PRでのSecretなしの実行は公開後の確認項目です。
+既定 RPC は認証不要の `https://sepolia.gateway.tenderly.co` です。実際のデモ名の履歴とCLI requestまで確認しました。代替の `https://rpc.sepolia.ethpandaops.io` も配備時の状態照会まで確認済みで、`rpc-url` 入力で変更できます。PublicNodeは時間経過後に実名の準備確認が失敗したため、デモの代替には使いません。公開RPCの可用性・履歴保持・制限は保証せず、未完了の照会は unavailable にします。実fork PRでのSecretなしの実行は公開後の確認項目です。
 
 この workflow には `checkout`、PR のビルド、テスト実行を追加しません。Action 自身のコードだけで GitHub 上の JSON と chain を読みます。配布版はタグではなく commit SHA で固定します。[GitHub の Action 固定に関する説明](https://docs.github.com/en/actions/reference/security/secure-use#using-third-party-actions)
 
@@ -184,7 +184,7 @@ Git に JSON が存在するだけでは有効な推薦になりません。Acti
 
 | 症状 | 確認すること |
 |---|---|
-| workflow が動かない | 配布先と SHA の置換、Actions の利用許可、fork からの実行承認、PR の競合 |
+| workflow が動かない | 配布repoと固定commitの公開、Actions の利用許可、fork からの実行承認、PR の競合 |
 | `missing` | PR 作者の数値 ID とファイル名、JSON が PR に含まれること、ENS への公開 |
 | `invalid` | 元の公開済み JSON を編集していないか、PR 作者と subject が一致するか |
 | `valid / rejected` | 設定した推薦者・用途が、その推薦と一致するか |

@@ -22,5 +22,6 @@ After withdrawal and two additional blocks: exit 2 for all, with revoked evidenc
 The files are reused unchanged; do not overwrite previous evidence files when recording another run.
 No publication is performed by these commands.
 
-Before adding the adoption workflow, replace `RELEASE_COMMIT_SHA` in the [maintainer guide](../../docs/adoption-guide.md)
-with the public release's real commit. Do not install a placeholder workflow.
+The [adoption workflow](../../.github/workflows/devouch.yml) pins the locally tested Action commit.
+Follow the [release runbook](../../docs/release-runbook.md) and verify that the repository and pinned commit
+are publicly accessible before using it for the fork-PR demonstration.
