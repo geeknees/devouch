@@ -6,19 +6,27 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Issue, carry, and revoke contributor endorsements. Each repository keeps its own judgment.">
-  <meta name="color-scheme" content="light">
+  <meta name="color-scheme" content="dark">
   <title>Devouch — Portable trust for open source</title>
   <link rel="stylesheet" href="./style.css">
   <script type="module" src="./app.js"></script>
 </head>
 <body>
   <header class="topbar">
-    <a class="brand" href="./" aria-label="Devouch home"><img class="brand-mark" src="./devouch-logo.svg" alt="" width="32" height="32">devouch<span class="beta">LAB</span></a>
+    <a class="brand" href="./" aria-label="Devouch home"><svg class="brand-mark" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 512 512" aria-hidden="true" focusable="false">
+      <rect width="512" height="512" fill="#d5f594"/>
+      <clipPath id="workspace-brand-clip"><rect x="0" y="110" width="512" height="314"/></clipPath>
+      <g clip-path="url(#workspace-brand-clip)" transform="translate(25.5 -11)" fill="none" stroke-width="56" stroke-linejoin="miter">
+        <circle cx="206" cy="316" r="80" stroke="#11150f"/>
+        <path d="M286 464 V206 L205.2 47.4" stroke="#11150f"/>
+        <path d="M286 212 L366.8 47.4" stroke="#d6246e"/>
+      </g>
+    </svg>devouch<span class="beta">LAB</span></a>
     <div class="connection"><span class="network"><span class="dot"></span>Sepolia testnet</span><button id="connect" class="button dark">Connect wallet <span aria-hidden="true">↗</span></button></div>
   </header>
   <main>
     <section class="intro">
-      <div class="intro-copy"><p class="eyebrow">A RECOMMENDATION, WITHOUT A GATEKEEPER</p><h1>Endorse once.<br><span>Let each community decide.</span></h1>
+      <div class="intro-copy"><p class="eyebrow">A RECOMMENDATION, WITHOUT A GATEKEEPER</p><h1>Endorse once.<br><em>Let each community decide.</em></h1>
       <p class="lead">Give a collaborator a recommendation they can carry.<br>Publish it yourself. Withdraw it when things change.</p>
       <div class="intro-note"><span class="small-mark">↳</span>Built for people and agents contributing to open source.</div></div>
       <div class="flow" aria-label="An issuer publishes one endorsement on ENS. Repositories A and B independently choose whether to accept it.">
@@ -32,9 +40,9 @@
     <section class="workspace" aria-label="Endorsement workspace">
       <div class="workspace-top"><div><span class="eyebrow">ISSUER WORKSPACE</span><h2>A little trust goes a long way.</h2></div><span class="workspace-caption">Your wallet. Your ENS name. Your decision.</span></div>
       <nav class="tabs" aria-label="Choose an operation">
-        <button data-tab="publish" class="tab active" aria-current="page">01 <span>Publish</span></button>
-        <button data-tab="retrieve" class="tab">02 <span>Retrieve</span></button>
-        <button data-tab="revoke" class="tab">03 <span>Withdraw</span></button>
+        <button data-tab="publish" class="tab active" aria-current="page"><span class="tab-number" aria-hidden="true">01</span> <span>Publish</span></button>
+        <button data-tab="retrieve" class="tab"><span class="tab-number" aria-hidden="true">02</span> <span>Retrieve</span></button>
+        <button data-tab="revoke" class="tab"><span class="tab-number" aria-hidden="true">03</span> <span>Withdraw</span></button>
         <button data-tab="setup" class="tab setup-tab"><span>ENS setup</span> ↗</button>
       </nav>
       <div id="status" class="status" role="status" aria-live="polite" hidden></div>

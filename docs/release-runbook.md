@@ -16,7 +16,7 @@ merge commit `3214991e616e118d921ea9575d06d5e121b584f4` のCIとPages配信も�
 | PRの推薦検証 | Devouch commit `9ce4525f269f590d4d8fd0e123ff35d33dce8efa` |
 | 導入先の方針 | [`.devouch/policy.json`](../.devouch/policy.json) |
 | 導入workflow | [`.github/workflows/devouch.yml`](../.github/workflows/devouch.yml) |
-| 静的画面 | `dist/web/` の5ファイルだけ |
+| 静的画面 | `dist/web/` 内のHTML・CSS・JS・ロゴ・ライセンスと `fonts/` の同梱WOFF2。ソースやローカル設定は含めない |
 | 公開workflow | [`.github/workflows/pages.yml`](../.github/workflows/pages.yml) |
 | 公開URL | https://geeknees.github.io/devouch/ 。認証なしの取得とブラウザ操作を確認済み |
 

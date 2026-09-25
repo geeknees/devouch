@@ -6,7 +6,7 @@ import { createServer } from 'node:http';
 const root = resolve('dist/web');
 const port = Number(process.argv[2] ?? 4173);
 const mime: Record<string, string> = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8',
-  '.css': 'text/css; charset=utf-8', '.txt': 'text/plain; charset=utf-8', '.svg': 'image/svg+xml' };
+  '.css': 'text/css; charset=utf-8', '.txt': 'text/plain; charset=utf-8', '.svg': 'image/svg+xml', '.woff2': 'font/woff2' };
 const server = createServer(async (request, response) => {
   if (!['GET', 'HEAD'].includes(request.method ?? '')) { response.writeHead(405).end(); return; }
   let path: string;

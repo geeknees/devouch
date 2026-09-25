@@ -1,5 +1,7 @@
 # デザイン適用の引き継ぎ
 
+実装とローカル検証の記録は [design-verification.md](design-verification.md) を参照。
+
 作成：2026-09-26。対象：静的ワークスペース `web/`。
 [ズームアニメーション](presentation/devouch-zoom.html) のデザインを、アプリと提出素材に揃えるための資料。
 アプリの振る舞い・ID・文言の意味は変えない。見た目だけを置き換える。
