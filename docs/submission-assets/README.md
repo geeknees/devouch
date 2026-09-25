@@ -1,6 +1,6 @@
 # 提出画像の草案
 
-- `logo.png`: 512 × 512。一つの推薦が二つの repo へ分かれるマーク。元データは [SVG](../../assets/devouch-logo.svg)。
+- `logo.png`: 512 × 512。縦線の先が二つに分かれた小文字 d。右の枝だけマゼンタ。元データは [SVG](../../assets/devouch-logo.svg)。
 - `cover.png`: 1280 × 720、16:9。推薦の流れ。元データは [SVG](../../assets/devouch-cover.svg)。
 - `workspace.png`、`ens-setup.png`、`withdraw.png`: 実際の静的アプリをChromeで撮影した操作画面。
 

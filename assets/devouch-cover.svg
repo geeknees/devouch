@@ -257,7 +257,7 @@
     <text x="1100" y="522" fill="#e8ecdd">repo B</text>
     <text x="1100" y="544" fill="#e08a6d">valid · rejected</text>
   </g>
-  <svg x="72" y="60" width="46" height="46" viewBox="0 0 512 512"><rect width="512" height="512" rx="110" fill="#1b2118"/><path d="M256 190 V240 C256 290 170 270 170 318 M256 240 C256 290 342 270 342 318" fill="none" stroke="#7f9a66" stroke-width="22" stroke-linecap="round"/><circle cx="256" cy="150" r="52" fill="#d5f594"/><circle cx="170" cy="362" r="34" fill="none" stroke="#d5f594" stroke-width="20"/><circle cx="342" cy="362" r="34" fill="none" stroke="#d5f594" stroke-width="20"/></svg>
+  <svg x="72" y="60" width="46" height="46" viewBox="0 0 512 512"><clipPath id="cover-mark-clip"><rect x="0" y="110" width="512" height="314"/></clipPath><rect width="512" height="512" rx="96" fill="#d5f594"/><g clip-path="url(#cover-mark-clip)" transform="translate(25.5 -11)" fill="none" stroke-width="56" stroke-linejoin="miter"><circle cx="206" cy="316" r="80" stroke="#11150f"/><path d="M286 464 V206 L205.2 47.4" stroke="#11150f"/><path d="M286 212 L366.8 47.4" stroke="#d6246e"/></g></svg>
   <text x="132" y="93" class="sans" font-size="28" font-weight="500" fill="#e8ecdd" letter-spacing="-.5">devouch</text>
   <text x="74" y="236" class="mono" font-size="14" letter-spacing="2.6" fill="#7f9a66">PORTABLE TRUST FOR OPEN SOURCE</text>
   <text class="serif" font-size="88" fill="#e8ecdd" letter-spacing="-1">
