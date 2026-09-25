@@ -122,9 +122,9 @@ While waiting for two blocks (about 24 seconds):
 
 ### 3:30 — Close (30s)
 
-> We did **not** build / a global score.
-> We did **not** add / token rewards.
-> We did **not** build / a central server.
+> I did **not** build / a global score.
+> I did **not** add / token rewards.
+> I did **not** build / a central server.
 > Devouch does not check / if you are human. / It shows / **who vouches for you.**
 >
 > AI can make / more code. / It can't make / more **trust.**
@@ -279,7 +279,7 @@ Web は `github-<数値ID>.json` という名前で保存する。同名のフ�
 
 ### What tools did you use, and why? / 何を使い、なぜ？
 
-- **EN:** ENSv2 on Sepolia. / The person who vouches / **owns the record.** / We use viem for signatures, / a Ruby CLI, / and a GitHub Action. / We used AI coding agents. / It's written in the README.
+- **EN:** ENSv2 on Sepolia. / The person who vouches / **owns the record.** / I use viem for signatures, / a Ruby CLI, / and a GitHub Action. / I used AI coding agents. / It's written in the README.
 - **JA:** Sepolia の ENSv2 です。推薦する人が記録を持つからです。署名に viem、Ruby の CLI、GitHub Action を使いました。AI コーディングエージェントを使い、README に書いてあります。
 
 ### What challenges did you solve? / どんな課題を解決した？

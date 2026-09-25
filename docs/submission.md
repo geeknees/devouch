@@ -66,7 +66,7 @@ Tests run real official bytecode on a disposable local EVM. One publication on S
 The command-line interface is Ruby and uses the standard library for bounded file handling, policy evaluation, and read-only GitHub API access.
 A bundled TypeScript helper uses viem for EIP-712 recovery, ENS normalization, contract reads, and event decoding.
 The static HTML/CSS workspace connects to an injected wallet and sends transactions directly to the official ENSv2 factory, registry, and dedicated resolver.
-The complete signed JSON is stored in devouch.vouch, so another verifier can retrieve it without our website.
+The complete signed JSON is stored in devouch.vouch, so another verifier can retrieve it without the Devouch website.
 
 Verification checks a pinned chain snapshot, the resolver's deployment origin, exact publication bytes, subsequent text updates, and transient binding or upgrade changes.
 A composite GitHub Action uses the PR author's numeric ID, the base commit's policy, and the head commit's endorsement without checking out PR code.
@@ -86,13 +86,13 @@ The planned contributor demonstration uses a separate agent account, masusanou.
 Generated work is checked with local tests and browser runs; unperformed public-chain and GitHub checks are listed explicitly.
 ## ENS partner prize: why it applies
 
-ENSv2 is where the endorsement lives, not a display name. Each recommender publishes the complete signed endorsement JSON to a text record on their own ENSv2 Permissioned Resolver, created through the official factory, so anyone can retrieve it from ENS without a Devouch service. Publishing and withdrawing are direct wallet transactions by the issuer. An optional helper wallet can be granted permission for only the endorsement text key, while the issuer keeps direct withdrawal. Verification reads the resolver's history, so a withdrawn or temporarily replaced record never silently restores trust. We use pinned official Sepolia deployments and add no custom registry.
+ENSv2 is where the endorsement lives, not a display name. Each recommender publishes the complete signed endorsement JSON to a text record on their own ENSv2 Permissioned Resolver, created through the official factory, so anyone can retrieve it from ENS without a Devouch service. Publishing and withdrawing are direct wallet transactions by the issuer. An optional helper wallet can be granted permission for only the endorsement text key, while the issuer keeps direct withdrawal. Verification reads the resolver's history, so a withdrawn or temporarily replaced record never silently restores trust. I use pinned official Sepolia deployments and add no custom registry.
 
 Feedback for ENS: 【提出者が記入。実際に詰まった点（例：resolver 作成から名前の接続までの手順、履歴取得に必要な RPC の要件、Sepolia の ENSv2 app のリセット）】
 
 ## Future
 
-Next: support several active endorsements per recommender (today one resolver record holds one endorsement), copy-paste policy setup so maintainers don't handle resolver addresses by hand, a published Action release pinned by commit SHA, and a trial on a real open-source project. We will add proof of personhood such as World ID only if it can be verified without making a central service mandatory.
+Next: support several active endorsements per recommender (today one resolver record holds one endorsement), copy-paste policy setup so maintainers don't handle resolver addresses by hand, a published Action release pinned by commit SHA, and a trial on a real open-source project. I will add proof of personhood such as World ID only if it can be verified without making a central service mandatory.
 
 ## Sepolia evidence
 
@@ -122,7 +122,7 @@ One may accept the issuer; another may decline. The signed recommendation stays 
 
 When the issuer withdraws the record, every repository can discover the change on its next verification.
 An old file or a restored ENS value does not bring the recommendation back.
-Our website can disappear: the issuer can run the static workspace locally, choose another RPC, and operate with their own wallet.
+The Devouch website can disappear: the issuer can run the static workspace locally, choose another RPC, and operate with their own wallet.
 
 ENSv2 supplies the shared record and fine-grained update permissions.
 GitHub supplies the PR account identity. Humans still review the contribution.
