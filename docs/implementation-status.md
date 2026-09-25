@@ -11,16 +11,16 @@ Building from Scratch の適格性を運営が確認したとは扱わない。
 
 | 条件 | 検証方法 | 状態 |
 |---|---|---|
-| Ruby CLI の request / fetch / verify / revoke | Minitest、実 CLI の JSON と終了コード | ローカルEVMで確認、実名のrequestも確認 |
+| Ruby CLI の request / fetch / verify / revoke | Minitest、実 CLI の JSON と終了コード | ローカルEVMで全コマンド確認。実Sepoliaでrequest・公開後fetch/verifyも確認 |
 | EIP-712 署名、対象・期限・公開先・サイズの検査 | viem による正負のテスト | 実装・テスト済み |
-| ENSv2 の実装固定、本文取得、履歴・snapshot 検証 | 公式 ABI、ローカル EVM と Sepolia の readback | ローカル通し確認、実名の配備・現在値まで確認 |
+| ENSv2 の実装固定、本文取得、履歴・snapshot 検証 | 公式 ABI、ローカル EVM と Sepolia の readback | ローカル通し確認、実Sepoliaの公開原本をvalidと検証 |
 | 失効と再掲載拒否、リンク・実装変更の拒否 | 時系列を変えるテスト、実 EVM | ローカルEVMで確認 |
-| 二つの repo 方針で再利用、片方だけ不採用 | 同じ署名を使う通しテスト | 実CLIで確認、実機用policy例を用意 |
-| 静的 Web の署名・公開・失効・復旧・ダウンロード | ブラウザとウォレット、receipt/readback | Chrome＋ローカルEVMで確認。実walletは未実施 |
+| 二つの repo 方針で再利用、片方だけ不採用 | 同じ署名を使う通しテスト | 実Sepoliaの同一原本・snapshotでaccepted / accepted / rejectedを確認 |
+| 静的 Web の署名・公開・失効・復旧・ダウンロード | ブラウザとウォレット、receipt/readback | Chrome＋ローカルEVMで確認。本人walletの実Sepolia公開も確認、実失効は未実施 |
 | 推薦者自身による resolver 準備とキー権限 | 公式 Factory と実コントラクトによるテスト | ローカルEVMで配備・接続・キー限定・grant撤回後の本人失効を確認 |
 | 読み取り専用 Action、base/head 固定、PR 作者照合 | API/CLI 境界テスト、実 fork PR | 境界テストとprivate準備PRのmissing判定を確認。推薦付きfork PRは未実施 |
 | 管理者・エージェント両名義の実 fork PR と失効後再実行 | 対象 PR と Action run の URL | 公開情報・外部操作待ち |
-| 運営者不在でローカル UI と別 RPC から操作 | ローカル配布物での通し確認 | ローカルUIと2社RPCの実名読み取りまで。実取引は未確認 |
+| 運営者不在でローカル UI と別 RPC から操作 | ローカル配布物での通し確認 | ローカルUI経由の本人公開、2社RPCで同じ原本の検証を確認。別ホストからの実操作は未実施 |
 | README、導入手順、ライセンス、提出・デモ資料 | コマンド再実行とリンク検査 | 作成・更新済み。提出画像草案5点。録画用ツールは別作業で追加済み、提出用の実機動画は未完成 |
 | 公開コード・配布 SHA・静的 live URL | 公開先の readback | Action固定SHAと手動Pages workflowを準備。公開・配布・hostingは未実施 |
 
@@ -43,7 +43,13 @@ World sandboxは https://sandbox.auth.world.org/。World認証は未統合。
 
 名前owner: `0x894108DC5640e36c478523228addA22b58Eeb79c`（EOA）。
 resolver: `0x1C62ac64F60aDc036d184596e87c98fdFcFdb160`、recordId 1、
-配備block 11780025、固定した公式PermissionedResolverImplと一致、推薦欄は空。
+配備block 11780025、固定した公式PermissionedResolverImplと一致。
+本人walletの公開取引 `0xfa33b82bd93b8296b6866107328acf4b3ace32a876c7763c4cbd10ddb9141c96` が
+block `11780510` で成功し、785 bytesの原本を取得できた。実gasUsedは `642290`。
+同じ原本を2社RPC・同じsnapshotで検証し、二つの方針でaccepted、推薦者を不採用にした方針でrejectedを確認した。
+原本・方針digest、block hash、期限、再取得用の公開位置は [Sepolia検証記録](demo-evidence.md)に記録した。
+
+以下は公開前に行ったRPCとresolverの準備確認。
 
 Tenderlyではblock `11780029` / hash
 `0xb0f81c893af154c317bdd3579aab96c41cfaeb1b9e84e68b8d3dbbda84eba391`
@@ -102,9 +108,10 @@ PR作者 `github:701242`、base `66973289d637db0ae4e3eb549aa62cb88233e0ac`、hea
 
 privacy-checkのパターンで追跡中・未追跡の対象ファイルと既存履歴を検査した。
 秘密鍵・API token・個人の実行パスの検出はなかった。
-第三者ライセンスの公開連絡先、説明用の数値ID、並行して追加された発表台本の自己紹介にヒットした。
-後者は他作業の原稿として保全し、履歴の変更・削除はしていない。
+第三者ライセンスの公開連絡先と、公式GitHub docs URLの一部は誤検知として区別した。
+発表台本の氏名は現在placeholderだが、追加・削除した既存コミットの差分には残っている。
+履歴を含めて公開するかの判断が必要。履歴の変更・削除は行っていない。
 スキャンはパターン照合であり、秘密情報がないことの数学的保証ではない。
 
-固定Action commitの公開取得、実PR、静的公開先、walletによる署名・公開・失効が残る。
+固定Action commitの公開取得、推薦付き実PR、静的公開先、本人walletによる実失効が残る。
 この記録を「ハッカソンの実機デモ全体が完成」とは扱わない。

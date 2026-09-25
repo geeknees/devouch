@@ -1,6 +1,7 @@
 # 提出文とピッチの草案
 
-現状: ローカル実装・検証済み。公開URLと実Sepolia・fork PRの証拠は未取得。
+現状: ローカル実装とGitHub CI、実Sepoliaの本人公開・CLI方針比較を検証済み。
+公開URL、推薦付きfork PR、実Sepolia失効の証拠は未取得。
 下記は提出用の草案であり、提出済み・受賞要件充足とは扱わない。
 
 ## フォーム入力
@@ -55,7 +56,9 @@ Recommendations do not prove humanity, code quality, delegation, or merge approv
 
 The implementation uses pinned official Sepolia artifacts and unmodified contract code.
 It introduces no custom endorsement registry.
-Current tests run real official bytecode on a disposable local EVM; real Sepolia write evidence must be added before claiming a public demo.
+Tests run real official bytecode on a disposable local EVM.
+The issuer also published a real endorsement on Sepolia; the CLI verified that same original against independent repository policies.
+The [public-chain record](demo-evidence.md) distinguishes these completed checks from pending withdrawal and endorsed fork-PR demonstrations.
 
 ## How it's made
 
@@ -101,9 +104,9 @@ Devouch carries a reference; it does not turn that reference into automatic appr
 | 公開コード / license / 配布SHA | MITあり、Actionのローカル固定SHAは [公開手順](release-runbook.md)。公開取得は未確認 |
 | ライブデモURL | 手動Pages workflowを準備、未公開 |
 | 動画URL | 実機・本人音声の提出動画は未完成。別作業でローカルEVMの無音素材を作る録画ツールが追加された |
-| ENSv2の実txと失効後のreadback | 未取得 |
+| ENSv2の実txと失効後のreadback | [本人公開・原本取得・A/B方針比較を確認](demo-evidence.md)。実失効は未実施 |
 | 人間・agent名義の実PRとAction run | 未取得 |
-| 別RPC・別ホストからの実操作 | 読み取りは確認、実取引は未確認 |
+| 別RPC・別ホストからの実操作 | ローカルUI経由の本人公開、2社RPCの検証を確認。別ホストの実操作は未実施 |
 | World Agents統合・失敗経路・feedback | 未実装、条件付き候補 |
 | イベント期間・Building from Scratch適格性 | 運営未確認 |
 
