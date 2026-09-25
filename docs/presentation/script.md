@@ -194,6 +194,17 @@ mv ~/Downloads/github-287365775.json .devouch/local/demo/vouch.json
 ./exe/devouch verify --credential .devouch/local/demo/vouch.json --policy .devouch/local/demo/repo-b.json --subject github:287365775
 ```
 
+ダウンロードがうまくいかないときは、チェーンから原本を取り出す。Web の **Save publication position** で保存した `publication.json`（公開したブロックとトランザクション）を使う。
+
+```sh
+# 代替：チェーン上の公開位置から原本を取り出す（取引は送らない）
+mv ~/Downloads/publication.json .devouch/local/demo/publication.json
+./exe/devouch fetch --name masusanou-dev.eth --publication .devouch/local/demo/publication.json --output .devouch/local/demo/vouch.json
+```
+
+`--output` の先に同名のファイルがあると失敗するので、古い `vouch.json` は先に退避する。
+`publication.json` がなくても `--publication` を外せば現在の公開値を取り出せるが、失効後は取り出せない。
+
 Web は `github-<数値ID>.json` という名前で保存する。同名のファイルがあるとブラウザが `(1)` を付けるので、`mv` の元を合わせる。原本の JSON は整形し直さない。
 公開・失効の直後は2ブロック（約24秒）待ってから検証する。待つ間に次のセリフへ進むと間が空かない。
 
