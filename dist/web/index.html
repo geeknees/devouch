@@ -57,6 +57,7 @@
         <button data-tab="verify" class="tab"><span class="tab-number" aria-hidden="true">04</span> <span>Verify</span></button>
         <button data-tab="namespaces" class="tab"><span>Namespaces</span></button>
         <button data-tab="maintainers" class="tab"><span>Maintainers</span></button>
+        <button data-tab="manage" class="tab"><span>My endorsements</span></button>
         <button data-tab="setup" class="tab setup-tab"><span>ENS setup</span> ↗</button>
       </nav>
       <div id="status" class="status" role="status" aria-live="polite" hidden></div>
@@ -112,6 +113,22 @@
               <label for="helper-address">Helper’s public address</label><input id="helper-address" placeholder="0x…">
               <div class="form-actions"><button id="grant" class="button secondary">Grant key access</button><button id="remove" class="text-button">Revoke key grant</button></div>
             </details>
+          </section>
+          <section id="panel-manage" class="panel" hidden>
+            <div class="panel-heading"><span class="step-icon">≡</span><div><h3>Your recommendations, in one place.</h3><p>Save publication names. Check each relationship when you need it.</p></div></div>
+            <p class="verify-readonly">Read-only · No wallet needed · Stored in this browser</p>
+            <form id="manage-form">
+              <label for="manage-name">Publication ENS name</label><input id="manage-name" placeholder="Enter an ENS name" maxlength="255" required autocomplete="off" spellcheck="false">
+              <p class="field-note">Example: <code>masusanou.vouches.geeknees.eth</code>. Enter a direct name or a subname you want to follow.</p>
+              <details class="advanced"><summary>Optional saved publication position</summary><p class="field-note">Load a publication.json to check an older endorsement if its current record is empty.</p><input id="manage-publication" type="file" accept=".json,application/json"></details>
+              <div class="form-actions"><button id="manage-add" class="button dark" type="submit">Add to list +</button><button id="manage-refresh" class="button secondary" type="button">Refresh all evidence</button><button id="manage-stop" class="text-button" type="button" hidden>Stop after current name</button></div>
+            </form>
+            <p id="manage-storage" class="field-note" role="status"></p>
+            <p id="manage-empty" class="notice subtle">Add a direct ENS name or a subname to get started. Names stay here after you close this page.</p>
+            <div id="manage-list" aria-live="polite"></div>
+            <p class="field-note">Each refresh runs the full signature, ENS history, and snapshot checks. Names are checked one at a time. A successful read saves its publication position so a later withdrawal can still be checked. Agent permissions are checked separately on request.</p>
+            <p class="field-note">Remove from list only changes this browser’s list. To withdraw a published recommendation, use Withdraw and review the exact endorsement with your wallet.</p>
+            <p class="verify-boundary">human verification: not included</p>
           </section>
           <section id="panel-maintainers" class="panel" hidden>
             <div class="panel-heading"><span class="step-icon">≡</span><div><h3>Your repository. Your decision.</h3><p>Choose recommendations to accept, then review two configuration files.</p></div></div>
@@ -293,7 +310,17 @@
         </aside>
       </div>
     </section>
-    <details class="rpc-settings"><summary>Connection settings <span>Use your own RPC</span></summary><label for="rpc-url">Sepolia JSON-RPC URL</label><div class="inline"><input id="rpc-url" type="url" value="https://sepolia.gateway.tenderly.co"><button id="apply-rpc" class="button secondary">Use this connection</button></div><p class="field-note">A provider must support historical state and logs. Connections and past checks are never treated as proof of current validity.</p><label class="file-link">Load transaction recovery <input id="recovery-file" type="file" accept=".json,application/json"></label></details>
+    <details class="rpc-settings"><summary>Connection settings <span>Diagnose or change RPC</span></summary>
+      <p id="rpc-active" class="field-note"></p>
+      <label for="rpc-url">Sepolia JSON-RPC URL</label><div class="inline"><input id="rpc-url" type="url" value="https://sepolia.gateway.tenderly.co"><button id="apply-rpc" class="button secondary">Use this connection</button></div>
+      <p class="field-note">A provider must support historical state and logs. Connections and past checks are never treated as proof of current validity. RPC URLs are not saved in browser storage.</p>
+      <label for="rpc-check-name">Publication ENS name <span class="label-note">optional full verification</span></label><input id="rpc-check-name" placeholder="Enter a name for a full check" maxlength="255" autocomplete="off" spellcheck="false">
+      <p class="field-note">For example, <code>masusanou.vouches.geeknees.eth</code>. Leave empty to check connection capabilities only.</p>
+      <div class="form-actions"><button id="diagnose-rpc" class="button secondary" type="button">Diagnose selected RPC</button><button id="rpc-alternative" class="text-button" type="button">Fill public alternative</button></div>
+      <p id="rpc-selection-note" class="field-note">Diagnostics test the URL above. Your active connection changes only when you choose Use this connection.</p>
+      <div id="rpc-diagnostics" class="rpc-diagnostics" role="status" aria-live="polite" hidden></div>
+      <label class="file-link">Load transaction recovery <input id="recovery-file" type="file" accept=".json,application/json"></label>
+    </details>
   </main>
   <footer><span class="footer-brand">devouch<span> / Open-source trust, on your terms.</span></span><span>ENSv2 · Sepolia · Experimental · <a href="./THIRD_PARTY_NOTICES.txt">Licenses</a></span></footer>
 </body>

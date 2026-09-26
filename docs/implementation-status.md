@@ -25,6 +25,31 @@ Building from Scratch の適格性を運営が確認したとは扱わない。
 
 ユーザーが導入試験先を`geeknees/devouch`と指定した。独立した第三者による導入実績とは数えない。World IDはRP署名基盤と運営者不要の方針のトレードオフを再確認し、ユーザー指定で引き続き対象外。READMEのBoundariesも、オンチェーン検証の存在と共通サービスを採用した場合の依存を区別した。
 
+## CLI SKILL・RPC診断・推薦一覧（2026-09-26）
+
+ユーザー指定により3件を追加した。スライド・提出資料は変更しない。CLIを実行できるエージェントは既存コマンドとSKILLで運用し、MCPサーバーは追加していない。
+
+- [devouch-check SKILL](../skills/devouch-check/SKILL.md): 投稿先と実PR作者の数値IDを確認し、署名済み原本のbytesを保って `check --repo` を実行する。終了0かつ `valid / accepted` の場合に限り、別途許可された投稿作業へ進む。その他の終了コードは送信を止め、証拠と方針の理由を報告する。各エージェントへのインストールは自動実行しない。
+- **Connection settings → Diagnose selected RPC**: Sepolia・snapshot・固定ENS Factory配備blockのstate/logを読み取る。任意の名前を入れると、接続の各検査に成功した後に既存の完全検証器を実行する。サンプル1blockの成功を全履歴取得やrepo採用の保証にしない。レート制限・履歴欠如・タイムアウト等は安全な分類だけを表示し、RPC URLの保存や暗黙の切替はしない。
+- **My endorsements** (`#manage`): direct名とサブネームを最大8件、名前と公開位置だけブラウザへ保存する。現在の原本を既存検証器で確認し、欠如の場合は保存した公開位置から旧推薦を再検証できる。再読込と接続変更で結果は `not_checked` に戻る。agentのidentity・プロフィール権限は別のボタンで検証し、推薦の証拠やrepo方針と混同しない。一覧の削除はENSのWithdrawを行わない。破損した保存データを勝手に上書きせず、そのタブ内だけで利用できる。
+- Factory検査で、通信失敗を一律に `unsupported_registry` / `unsupported_resolver` としていた誤表示を修正した。コントラクト自身のrevertとRPC障害を区別し、後者は既存の `rpc_unavailable` / `unavailable` を維持する。明確なレート制限を範囲分割で繰り返さない。`-32005` だけではレート制限と検索範囲制限を決め付けない。
+
+ローカル確認: TypeScript **106 tests / 351 assertions**、公式ENSコントラクトの結合 **54 tests**、Ruby **70 tests / 380 assertions**、型検査とRuby構文検査が成功。新しいブラウザ検査は一覧保存・再読込・失効復元・RPC不能・明示的切替・独立したagent権限の付与／撤回表示・保存データ破損を含む。320 / 390 / 768 / 1440pxで横はみ出しなし。配布13ファイルの再build一致、保存済みデモ・方針6ファイルのbytes不変も確認した。SKILLの標準Python検査はPyYAML未導入のため起動できず、同じfrontmatter制約をRuby YAMLで検査した。
+
+SKILLのコマンドをcheckout外から実行し、公開GitHubのmain `16c5a747e99b95cff0bdb096ed63dfecc033963c` の方針と既存 `masusanou-dev.eth` 原本で **valid / accepted**、終了0、`submitted: false` を確認した。RPCは明示したethPandaOps。snapshotは `2026-09-26T08:45:35.282Z`、block `11785130`、hash `0xba126b1a38dac7aaede30a337d8051df2c1bc7e5bdf223a9ee9353f4ca845e98`。policy digestは `sha256:ce77f04b8a1679ab784528a7feec24e0d3779c0d3b045b25950cea939ee9f653`。
+
+17:48〜17:52 JSTに、新しい配布物をローカル配信した一時Chromeから実Sepoliaを読み取り確認した。ethPandaOpsのRPC診断はsnapshot `11785145`、Factoryの過去state/log（block `11708995`）が成功し、任意名の完全検証もblock `11785146`でvalidだった。一覧は次の結果だった。
+
+| 一覧の名前 | 証拠 / block / checked_at | agentの独立した確認 |
+|---|---|---|
+| `masusanou.vouches.geeknees.eth` | valid / `11785150` / `2026-09-26T08:49:26.319Z` | block `11785152`、全プロフィール権限なし |
+| `geeknees.eth` | valid / `11785157` / `2026-09-26T08:50:58.212Z` | 今回の一覧では未照会と表示 |
+| `287365775.vouches.geeknees.eth` | revoked / `11785160` / `2026-09-26T08:51:25.263Z` | block `11785162`、全プロフィール権限なし |
+
+一覧の推薦者は3件とも `Vouched by geeknees.eth`。旧数値名の原本subjectの入力誤りとagent subjectは別々にそのまま表示され、署名済みデータを補正していない。両テーマと320 / 390 / 768 / 1440px、再読込後の `not_checked`、wallet未接続、読み取りRPC6メソッドのみ、JSエラー0を確認した。表示確認で残っていた処理中の案内文を完了表示へ修正し、最終配布物のブラウザ回帰テストも再度成功した。
+
+新画面の公開先確認は、公開後の結果をこの節に追記する。これは一時Chromeの確認であり、本人の実スマートフォンによる新画面の確認とは区別する。
+
 ## 完成条件と証拠
 
 | 条件 | 検証方法 | 状態 |

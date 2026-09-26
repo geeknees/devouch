@@ -1,12 +1,13 @@
 // ABOUTME: Reads ENSv2 endorsements and their complete bounded histories at one chain snapshot.
 // ABOUTME: Refuses unknown implementations, changed bindings, unavailable history, and resurrection.
-import { createPublicClient, decodeAbiParameters, decodeEventLog, encodeFunctionData, getAddress, http,
+import { BaseError, ContractFunctionRevertedError, createPublicClient, decodeAbiParameters, decodeEventLog, encodeFunctionData, getAddress, http,
   keccak256, toHex, zeroAddress, type Address, type Hex, type Log } from 'viem';
 import { sepolia } from 'viem/chains';
 import { CHAIN_ID, TEXT_KEY, address, parseCredential, type ParsedCredential, type Message } from './credential';
 import { DEPLOYMENTS, DEPLOYMENT_BLOCK, ETH_REGISTRY, FACTORY, RESOLVER_IMPL, ROOT_REGISTRY, ROLE_TEXT, USER_REGISTRY_IMPL,
   addressAbi, factoryAbi, implementationMatches, nameParts, registryAbi, resolverAbi, textAbi } from './ens';
 import { EvidenceError, insist, type EvidenceStatus } from './errors';
+import { RpcUnavailableError } from './rpc-errors';
 import { evaluateHistory, order, type Position, type Update } from './history';
 import { authorityChanged, summarizePath, type ChainEvent, type NameHop } from './hierarchy';
 import { AGENT_KEY, AGENT_PROFILE_KEYS, parseAgentIdentity, type AgentProfileKey } from './agent-namespace';
@@ -38,7 +39,7 @@ export class ChainReader {
     try { return await call(); }
     catch (error) {
       if (error instanceof EvidenceError) throw error;
-      throw new EvidenceError('rpc_unavailable', 'unavailable');
+      throw new RpcUnavailableError(error);
     }
   }
 
@@ -104,11 +105,16 @@ export class ChainReader {
   }
 
   private async proxy(resolver: Address, block: bigint, expected: Address = RESOLVER_IMPL) {
-    let implementation: Address;
-    try {
-      implementation = await this.rpc(() => this.client.readContract({ address: FACTORY, abi: factoryAbi,
-        functionName: 'verifyContract', args: [resolver], blockNumber: block }));
-    } catch { throw new EvidenceError(expected === RESOLVER_IMPL ? 'unsupported_resolver' : 'unsupported_registry', 'unavailable'); }
+    const implementation = await this.rpc(async () => {
+      try { return await this.client.readContract({ address: FACTORY, abi: factoryAbi,
+        functionName: 'verifyContract', args: [resolver], blockNumber: block }); }
+      catch (error) {
+        if (error instanceof BaseError && error.walk(cause => cause instanceof ContractFunctionRevertedError) instanceof ContractFunctionRevertedError) {
+          throw new EvidenceError(expected === RESOLVER_IMPL ? 'unsupported_resolver' : 'unsupported_registry', 'unavailable');
+        }
+        throw error;
+      }
+    });
     insist(implementation.toLowerCase() === expected.toLowerCase(), 'unsupported_implementation', 'unavailable');
     const logic = await this.rpc(() => this.client.readContract({ address: FACTORY, abi: factoryAbi,
       functionName: 'proxyLogic', blockNumber: block }));
@@ -133,6 +139,7 @@ export class ChainReader {
     const range = async (start: bigint, end: bigint): Promise<Log[]> => {
       try { return await this.rpc(() => this.client.getLogs({ address: addresses, fromBlock: start, toBlock: end })); }
       catch (error) {
+        if (error instanceof RpcUnavailableError && ['rate_limited', 'history_unavailable', 'timeout'].includes(error.rpcIssue)) throw error;
         if (start === end || Date.now() > this.deadline || this.queries > 1150) throw error;
         const middle = (start + end) / 2n;
         return [...await range(start, middle), ...await range(middle + 1n, end)];
