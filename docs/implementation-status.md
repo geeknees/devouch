@@ -56,7 +56,23 @@ PRモードはbase SHA・policy digest・固定commitの方針リンクを表示
 - ENSはvalid・A accepted / B rejected → accepted、PRはvalid / accepted。両方で `Vouched by masusanou-dev.eth` と図の名前表示を確認。
 - dark/light × 6幅 × 2モードの24レイアウトで、ページ・各nodeの横溢れなし。Enter/Space、タッチ、reduced motionを確認し、画像も目視確認した。
 - 図の選択と方針編集による追加通信0回。二つの新規検証はGitHub GET 3回と読み取りRPC 79回で、wallet・署名・取引・JavaScriptエラーなし。
-- この信頼マップの実スマートフォンでの確認は未実施。提出文・スライドQR・提出画像は引き続きClaude側の担当。
+- この信頼マップの実スマートフォンでの確認結果は未取得。提出文・スライドQR・提出画像は引き続きClaude側の担当。
+
+### 公開Pagesでの確認
+
+[PR #13](https://github.com/geeknees/devouch/pull/13) のhead `5dffaa69fbb47f3918769bc37d101f608bcfb187` は
+[push CI](https://github.com/geeknees/devouch/actions/runs/36211645854)・[PR CI](https://github.com/geeknees/devouch/actions/runs/36211657759)とも成功。
+merge commit `a4a729b67348aa22c97939be0f005e8b255d16fa` も [main CI](https://github.com/geeknees/devouch/actions/runs/36211753526) が成功し、
+同commitを [Pages run](https://github.com/geeknees/devouch/actions/runs/36211847350) で公開した。
+
+- 確認日時: 2026-09-26 11:30 JST。Chromeの390px・タッチ端末エミュレーションで上記二つの共有URLを開いた。
+- ENS名のchecked_at: `2026-09-26T02:30:02.519Z`。PR #2のchecked_at: `2026-09-26T02:30:12.473Z`。
+- 両モードのsnapshotはblock `11783291`、hash `0x98be8fbd454f8078b87016a8c865af6ed1a1b40cf3c3c519fa00942a29c2ff7a`。
+- 図のENS名、署名・証拠valid、A accepted / B rejected → accepted、PR #2のacceptedと固定base方針へのリンクを確認。
+- nodeのタッチ・Enter/Spaceで詳細を開き、Bの編集欄への移動と採否の更新を確認。図の操作と方針編集による追加通信0回。
+- dark/light × 6幅 × 2モードの24レイアウトでページ・nodeの横溢れなし。reduced motion・walletなし・JavaScriptエラー0件も確認。
+- GitHub GET 3回、読み取りRPC 79回。通信先はPages・GitHub API・Tenderlyの3 originのみで、署名・取引なし。
+- 公開11ファイルはHTTP 200でローカル配布物とbytes一致。`app.js` SHA-256: `3f469353638a69ce82ad3b16287586c32b241a03545a04600907598e90b49ea0`。
 
 ## PRのURLからの検証（2026-09-26）
 
