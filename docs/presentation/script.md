@@ -12,25 +12,47 @@ ETHGlobal Tokyo 2026 finalist judging: **7 minutes = 4 min demo + 3 min Q&A.**
 
 ## 当日の段取り
 
-**推薦は審査の前に公開しておく。** 本番では、公開済みの推薦を見せ、検証・Action・失効・再検証だけを行う。公開と失効の両方で約24秒ずつ待つと、4分に収まらないため。
+**本番のデモは録画で行う（2026-09-26 決定）。** 台本を見ながら PC を操作するのは負担が大きいため。デモの部分だけ、音声なし・字幕付きの動画 `tools/video/out/devouch-demo-cut-captions.mp4`（約2分10秒）を流す。字幕を読み上げてもよいし、黙って字幕に任せてもよい。
 
-1. 審査の前に Web で推薦を新しく公開する（リハーサルで失効させた推薦は復活しない）。
-2. `vouch.json` を `.devouch/local/demo/` に置き直す（[本番のコマンド](#live-demo-commands)）。
-3. デモ用 PR の `.devouch/vouches/github-287365775.json` も、この新しい原本に差し替えて Action を再実行し、`valid / accepted` を確認しておく。
-4. 端末・Web・PR の3つのタブを並べておく。
+- 動画の中の発行と取り消しはローカルのチェーン（公式 ENSv2 コントラクト）での録画で、画面にもそう出ている。Action の場面は GitHub 上の実際の PR #2。
+- 本番では取引を送らないので、推薦を公開し直す必要はない。Sepolia の推薦（`masusanou-dev.eth`）はそのまま残し、最後に QR で審査員に確かめてもらう。
+- 手でライブ操作する版は、下の「ライブ操作版（予備）」に残してある。使うときだけ、その段取りに従う。
+
+準備するもの:
+
+1. スライド（表紙から順に。「Live demo」のスライドで動画に切り替える）。
+2. 動画 `devouch-demo-cut-captions.mp4` を全画面で再生できる状態にしておく（音声はない。字幕が会場の後ろからも読めるか確認）。予備に声入りの `devouch-demo-cut.mp4` も置いておく。
+3. 念のため、完成版 `devouch-demo-voiced.mp4` と、検証ページ（https://geeknees.github.io/devouch/?name=masusanou-dev.eth#verify）もすぐ開けるようにしておく。
 
 ### 9/27 の流れ（リハーサルは提出後）
 
 | 時刻（JST） | やること |
 | --- | --- |
 | 09:00 まで | 提出を終える |
-| 09:00 以降 | リハーサル。台本どおり失効まで通し、時間を計る |
-| リハーサル後 | 上の 1〜3（公開し直し、`vouch.json` と PR #2 のファイルを差し替え、Action を再実行して `valid / accepted` を確認） |
+| 09:00 以降 | リハーサル。スライドと動画の切り替えまで通し、時間を計る |
 | 14:30 | 決勝の審査 |
 
-- 公開し直しと Action の再実行には、確認まで含めて30分ほど見ておく。
 - リハーサルで見つかった問題は、台本と操作だけで直す。提出済みの資料は変えない。
-- 失効させないブース用の台本（[booth-script.md](booth-script.md)）は、推薦を消費しないので、提出前にいつでも練習できる。
+- 検証ページの推薦が `valid` のままかを、審査の直前に一度確かめる（QR を読んでもらうため）。
+
+## 録画デモ版（本番はこちら）
+
+| Time | Section | Screen |
+| --- | --- | --- |
+| 0:00–1:15 | 自己紹介・課題・アイデア | スライドで話す（下の English の該当部分） |
+| 1:15–1:20 | 動画への橋渡し | 「Live demo」のスライド |
+| 1:20–3:30 | デモ | 動画 `devouch-demo-cut-captions.mp4` を流す（字幕を読み上げるか、黙る） |
+| 3:30–4:00 | 試してもらう・まとめ | 「Try it on your phone」→ まとめ → 最後のスライド |
+
+動画の前に（5秒）:
+
+> Here is a two-minute demo. / It's a recording, / so I can show you / every step.
+
+> 2分のデモをお見せします。録画なので、全部の手順をお見せできます。
+
+動画の後は、English の「3:30 — Close」をそのまま話す（QR のスライドから）。
+動画の中でもローカルのチェーンで録ったことを話しているので、ここで繰り返さなくてよい。
+QR のスライドでは「This one is live on Sepolia.」と一言添えると、録画との違いがはっきりする。
 
 ## 読み方の手がかり
 
@@ -53,7 +75,7 @@ ETHGlobal Tokyo 2026 finalist judging: **7 minutes = 4 min demo + 3 min Q&A.**
 | 0:00–0:10 | Self-introduction | Title slide                              |
 | 0:10–0:45 | Problem           | 1 slide                                  |
 | 0:45–1:15 | Idea              | 1 slide (diagram)                        |
-| 1:15–3:30 | Live demo         | Web (retrieve) → CLI → Action → revoke → CLI |
+| 1:15–3:30 | Demo              | Recorded video (see 録画デモ版); live operation is the backup |
 | 3:30–4:00 | Close             | Closing slide                            |
 | 4:00–7:00 | Q&A               | —                                        |
 
@@ -85,7 +107,7 @@ ETHGlobal Tokyo 2026 finalist judging: **7 minutes = 4 min demo + 3 min Q&A.**
 >
 > **Endorse once. / Let each community decide.**
 
-### 1:15 — Demo (2m15s)
+### 1:15 — Demo (2m15s) · ライブ操作版（予備）
 
 **1. The vouch on ENS (≈25s)**
 
@@ -142,7 +164,7 @@ While waiting for two blocks (about 24 seconds):
 >
 `[DEMO]` Show the slide "Try it on your phone" (QR).
 
-> Scan this. / **Try it yourself** / on your phone.
+> Scan this. / **Try it yourself** / on your phone. / This one is **live on Sepolia.**
 >
 > AI can make / more code. / It can't make / more **trust.**
 > **Endorse once. / Let each community decide.** / Thank you.
@@ -177,7 +199,7 @@ While waiting for two blocks (about 24 seconds):
 >
 > 推薦は一度。判断は各コミュニティで。
 
-### 1:15 — デモ（2分15秒）
+### 1:15 — デモ（2分15秒）· ライブ操作版（予備）
 
 **1. ENS 上の推薦（約25秒）**
 

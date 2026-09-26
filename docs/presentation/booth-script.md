@@ -1,42 +1,33 @@
 # Devouch: Partner Booth Script
 
-スポンサー（主に ENS）のブースで見せる、**失効させない**デモの台本。
-取引を一切送らないので、同じ推薦で何回でも繰り返せる。推薦の期限は 2026-10-02 16:45 UTC。
+スポンサー（主に ENS）のブースで見せる、**PC を操作しない**デモの台本。
+字幕付きの録画デモと、審査員のスマホで開く検証ページだけで進める。取引は送らないので、同じ推薦で何回でも繰り返せる（推薦の期限は 2026-10-02 16:45 UTC）。
 
-- 基本は約2分。審査員の関心に合わせて「深掘り」を足す。
+- 基本は約3分。時間がなければ「短縮版」にする。審査員の関心に合わせて「深掘り」を足す。
 - 英語の書き方は [決勝の台本](script.md) と同じ（`/` は息継ぎ、**太字** は強く言う語）。読み方の表もそちらを見る。
-- 失効は本番で行わず、[デモ動画](../../tools/video/README.md) の該当場面を見せる。その映像はローカル EVM での録画で、画面にもそう出ている。口頭でもそう言う。
-- 「on Sepolia」と言ってよいのは、Sepolia の推薦を読む操作（下のコマンド）だけ。
+- 動画の中の発行と取り消しはローカルのチェーン（公式 ENSv2 コントラクト）での録画で、画面にもそう出ている。Action の場面は GitHub 上の実際の PR #2。
+- 「on Sepolia」と言ってよいのは、検証ページ（QR）と CLI で Sepolia の推薦を読むときだけ。
 
 ## 準備
 
 | もの | 状態 |
 | --- | --- |
-| `.devouch/local/demo/vouch.json` | Sepolia に公開済みの推薦の原本（[本番のコマンド](script.md#live-demo-commands)） |
-| `examples/demo/policy-a.json`, `examples/demo/policy-b-reject.json` | Git管理済み |
-| 端末 | repo のルートで開いておく |
+| 字幕付きの動画 | `tools/video/out/devouch-demo-cut-captions.mp4`（2分10秒、音声なし）。全画面ですぐ再生できるようにしておく |
 | QR | スライドの「Try it on your phone」か、印刷した QR。検証ページ（https://geeknees.github.io/devouch/?name=masusanou-dev.eth#verify）を開く |
-| ブラウザ | Web アプリの **Retrieve** タブ、デモ用 PR の Devouch チェック、デモ動画（`clips/06-revoke.mp4` と `clips/07-revoked.mp4`） |
+| 予備 | 同じ検証ページを自分の PC でも開いておく（審査員がスマホを出さないとき用） |
 
-決勝の前にリハーサルで失効させた場合は、公開し直した新しい推薦に合わせて `vouch.json` を置き直す。
+審査の直前に、検証ページで推薦が `valid` のままかを一度確かめる。
 
-## コマンド
+## 流れ
 
-```sh
-mkdir -p .devouch/local/demo
+| 時間 | 内容 | 見せるもの |
+| --- | --- | --- |
+| 0:00–0:15 | つかみ | なし（または表紙のスライド） |
+| 0:15–2:25 | デモ | 字幕付きの動画 |
+| 2:25–2:50 | 自分で試してもらう | QR → 審査員のスマホ |
+| 2:50–3:00 | まとめ | なし |
 
-# A. ENS から原本を取り出す（Devouch のサイトを使わない）
-rm -f .devouch/local/demo/booth-fetched.json
-./exe/devouch fetch --name masusanou-dev.eth --output .devouch/local/demo/booth-fetched.json
-
-# B. repo A：valid / accepted
-./exe/devouch verify --credential .devouch/local/demo/booth-fetched.json --policy examples/demo/policy-a.json --subject github:287365775
-
-# C. repo B：valid / rejected
-./exe/devouch verify --credential .devouch/local/demo/booth-fetched.json --policy examples/demo/policy-b-reject.json --subject github:287365775
-```
-
-どれも読むだけで、取引は送らない。取得できないときは `--rpc-url https://rpc.sepolia.ethpandaops.io` を付ける。
+**短縮版（約1分30秒）:** つかみ → QR で試してもらう → 動画は「Action」と「取り消し」の場面（1:03〜2:10）だけ → まとめ。
 
 ---
 
@@ -48,47 +39,32 @@ rm -f .devouch/local/demo/booth-fetched.json
 > Maintainers get / too many AI pull requests.
 > Devouch lets trust / **move between projects.**
 
-### 2. Where the vouch lives (35s)
+### 2. Demo video (2m10s)
 
-`[DEMO]` Run command A. Then open the fetched JSON and point at `issuer`, `subject`, `scope`, `expiresAt`.
+`[DEMO]` Play `devouch-demo-cut-captions.mp4` full screen.
 
-> I signed this vouch / with my wallet.
-> The **whole signed JSON** / is a text record / on **my own ENSv2 resolver.**
-> I just read it / **from ENS,** / on Sepolia. / No Devouch server.
+> Here is a two-minute demo. / It's a recording, / so you can see / every step.
 
-### 3. Same vouch, two decisions (35s)
+Then let the captions speak. If the judge looks at you, read the caption aloud or add one line:
 
-`[DEMO]` Run commands B and C.
+| When the caption says | You can add |
+| --- | --- |
+| "The signed JSON goes to my own ENSv2 resolver" | The **whole signed JSON** / is a text record / on **my own resolver.** |
+| "Repo B doesn't: valid · rejected" | Same evidence. / **Each project decides.** |
+| "A real run on fork PR #2" | This part is **real,** / on GitHub. |
+| "Load the vouch, confirm, and clear the record" | **Only I** can take it back. |
+| "Both now say revoked" | One transaction. / Every repository / sees it. |
 
-> Two repositories / check the **same** vouch.
-> Repo A trusts me: / **accepted.**
-> Repo B does not: / **rejected.**
-> The evidence is shared. / **Each project decides.**
+### 3. Try it yourself (25s)
 
-### 4. GitHub Action (20s)
-
-`[DEMO]` Show the PR's Devouch check summary.
-
-> For maintainers, / it's **two files.** / A policy / and a workflow.
-> It does not run / the PR's code.
-
-### 5. Taking it back (15s)
-
-`[DEMO]` Play `06-revoke` and `07-revoked` from the demo video.
-
-> I can take a vouch back / from my wallet.
-> This part is **a recording** / on a local chain.
-> After that, / both repositories say / **revoked.**
-
-### 5b. Try it yourself (15s)
-
-`[DEMO]` Show the QR (slide "Try it on your phone" or a printout). Let the judge open it on their phone.
+`[DEMO]` Show the QR. Let the judge open it on their phone.
 
 > Please scan this. / **Try it yourself.**
-> No wallet. / It's live on Sepolia.
+> No wallet. / This one is **live on Sepolia.**
+> It says / "Vouched by masusanou-dev.eth."
 > Add me to repo B, / and it changes / to **accepted.**
 
-### 6. Close (10s)
+### 4. Close (10s)
 
 > **Endorse once. / Let each community decide.** / Thank you.
 
@@ -104,6 +80,13 @@ rm -f .devouch/local/demo/booth-fetched.json
 > Devouch reads / the **history** of that record. / So an old vouch / can't come back.
 
 `[DEMO]` If asked, open [`vendor/ens-v2/README.md`](../../vendor/ens-v2/README.md) and show where the pinned official Sepolia contracts come from. No new contract was written.
+
+### What's next with ENS?
+
+> Next, / one **subname** / per endorsement.
+> And AI agents / as **namespaces,** / each with its own permissions.
+
+（詳しくは [README の Roadmap](../../README.md#roadmap)）
 
 ### How does verification work?
 
@@ -135,53 +118,59 @@ rm -f .devouch/local/demo/booth-fetched.json
 > メンテナーは、AI の PR が多すぎて困っています。
 > Devouch は、信頼をプロジェクトの間で持ち運べるようにします。
 
-### 2. 推薦はどこにあるか（35秒）
+### 2. デモ動画（2分10秒）
 
-`[DEMO]` コマンド A を実行し、取り出した JSON の `issuer`・`subject`・`scope`・`expiresAt` を指す。
+`[DEMO]` `devouch-demo-cut-captions.mp4` を全画面で流す。
 
-> この推薦は、私のウォレットで署名しました。
-> 署名付きの JSON 全体が、私自身の ENSv2 resolver の text record に入っています。
-> 今、それを ENS から直接読みました。Sepolia 上です。Devouch のサーバーは使っていません。
+> 2分のデモをお見せします。録画なので、全部の手順が見られます。
 
-### 3. 同じ推薦、二つの判断（35秒）
+あとは字幕に任せる。審査員がこちらを見たら、字幕を読み上げるか、次の一言を足す。
 
-`[DEMO]` コマンド B と C を実行する。
+| 字幕 | 足せる一言 |
+| --- | --- |
+| 「The signed JSON goes to my own ENSv2 resolver」 | 署名付きの JSON 全体が、私の resolver の text record に入ります。 |
+| 「Repo B doesn't: valid · rejected」 | 証拠は同じ。判断は各プロジェクトです。 |
+| 「A real run on fork PR #2」 | ここは GitHub 上の本物です。 |
+| 「Load the vouch, confirm, and clear the record」 | 取り消せるのは私だけです。 |
+| 「Both now say revoked」 | 一回のトランザクションで、すべての repo に届きます。 |
 
-> 二つのリポジトリが、同じ推薦を確認します。
-> repo A は私を信頼しています。accepted。
-> repo B は信頼していません。rejected。
-> 証拠は共有し、判断は各プロジェクトが決めます。
+### 3. 自分で試してもらう（25秒）
 
-### 4. GitHub Action（20秒）
-
-`[DEMO]` PR の Devouch チェックの Summary を見せる。
-
-> メンテナーの導入は、方針ファイルと workflow の二つだけです。
-> PR のコードは実行しません。
-
-### 5. 取り消し（15秒）
-
-`[DEMO]` デモ動画の `06-revoke` と `07-revoked` を流す。
-
-> 推薦は、自分のウォレットから取り消せます。
-> ここはローカルのチェーンでの録画です。
-> 取り消した後は、両方のリポジトリが revoked になります。
-
-### 5b. 自分で試してもらう（15秒）
-
-`[DEMO]` QR を見せる（スライド「Try it on your phone」か印刷したもの）。審査員のスマホで開いてもらう。
+`[DEMO]` QR を見せて、審査員のスマホで開いてもらう。
 
 > これを読み取って、ご自身で試してみてください。
-> ウォレットは要りません。Sepolia の本物のデータです。
+> ウォレットは要りません。こちらは Sepolia の本物のデータです。
+> 「Vouched by masusanou-dev.eth」と出ます。
 > repo B に私を追加すると、accepted に変わります。
 
-### 6. まとめ（10秒）
+### 4. まとめ（10秒）
 
 > 推薦は一度。判断は各コミュニティで。ありがとうございました。
 
 ### 深掘り（聞かれたら）
 
-- **なぜ ENSv2？:** 推薦はサーバーではなく ENS にあります。resolver は私のもので、Devouch運営者の承認なしに公開も取り消しもできます。補助のウォレットに、一つの text key だけの権限を渡せます。記録の履歴を読むので、古い推薦は戻りません。聞かれたら `vendor/ens-v2/README.md` で、固定した公式コントラクトの出どころを見せる。新しいコントラクトは書いていない。
+- **なぜ ENSv2？:** 推薦はサーバーではなく ENS にあります。resolver は私のもので、Devouch 運営者の承認なしに公開も取り消しもできます。補助のウォレットに、一つの text key だけの権限を渡せます。記録の履歴を読むので、古い推薦は戻りません。聞かれたら `vendor/ens-v2/README.md` で、固定した公式コントラクトの出どころを見せる。新しいコントラクトは書いていない。
+- **ENS での次の一手:** 推薦ごとにサブネームを作ること、AI エージェントを名前空間として扱い、それぞれに権限を持たせること（README の Roadmap）。
 - **検証の仕組み:** 署名・期限・ENS の記録を確認します。最新から2ブロック前の状態を読みます。そのあと、リポジトリの方針が判断します。
 - **サイトがなくなったら？:** Web は静的なので、自分のパソコンで、好きな RPC で動かせます。CLI は ENS を直接読みます。
 - **含まないもの:** 人間であることは証明しません。コードレビューの代わりにもなりません。示すのは、誰があなたを推薦しているかです。
+
+---
+
+## 付録：CLI で見せる場合（聞かれたときだけ）
+
+端末を repo のルートで開いておく。どれも読むだけで、取引は送らない。取得できないときは `--rpc-url https://rpc.sepolia.ethpandaops.io` を付ける。
+
+```sh
+mkdir -p .devouch/local/demo
+
+# A. ENS から原本を取り出す（Devouch のサイトを使わない）
+rm -f .devouch/local/demo/booth-fetched.json
+./exe/devouch fetch --name masusanou-dev.eth --output .devouch/local/demo/booth-fetched.json
+
+# B. repo A：valid / accepted
+./exe/devouch verify --credential .devouch/local/demo/booth-fetched.json --policy examples/demo/policy-a.json --subject github:287365775
+
+# C. repo B：valid / rejected
+./exe/devouch verify --credential .devouch/local/demo/booth-fetched.json --policy examples/demo/policy-b-reject.json --subject github:287365775
+```
