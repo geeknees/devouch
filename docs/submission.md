@@ -121,7 +121,13 @@ https://github.com/geeknees/devouch/blob/3214991e616e118d921ea9575d06d5e121b584f
 
 ## Future
 
-Next: support several active endorsements per recommender (today one resolver record holds one endorsement), guide maintainers through choosing trusted issuers and configuring the published Action, and trial the workflow with an independent open-source project. The workspace already exports a policy example, and the Action is publicly available pinned by commit SHA. I will add proof of personhood such as World ID only if it can be verified without making a central service mandatory.
+Next, I want Devouch to use more of the ENSv2 hierarchy:
+
+- **One subname per endorsement.** Today one resolver record holds one endorsement. An issuer could instead give each endorsed account its own subname under their name (for example `287365775.vouches.masusanou-dev.eth`) with its own `devouch.vouch` record. That allows many endorsements at once, each withdrawn on its own, using ENSv2's hierarchical registry and a subname registry the issuer controls.
+- **Agents as namespaces.** An AI agent that sends pull requests could get its own subname, with its own identity and only the permissions the issuer grants it through Enhanced Access Control.
+- **Verification that follows the hierarchy.** Before this ships, verification must also check changes to the parent name, the subname registry and granted roles, so that a parent change can never silently restore or forge trust.
+
+Beyond ENS: guide maintainers through choosing trusted issuers and configuring the published Action, and trial the workflow with an independent open-source project. The workspace already exports a policy example, and the Action is publicly available pinned by commit SHA. I will add proof of personhood such as World ID only if it can be verified without making a central service mandatory.
 
 ## Sepolia evidence
 
