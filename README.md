@@ -230,8 +230,10 @@ Implemented in 0.2.0 and exercised against the pinned official ENS contracts:
 
 The adoption trial in `geeknees/devouch` [passed on PR #17](https://github.com/geeknees/devouch/actions/runs/36219802283).
 This is a trial in the project's own repository; independent third-party adoption has not been demonstrated.
-The new hierarchy and agent operations were exercised on a local EVM running the pinned official contracts;
-new Sepolia subnames have not been deployed. See the [completion and trial record](docs/roadmap-plan.md).
+The hierarchy and agent operations were exercised on a local EVM running the pinned official contracts.
+On Sepolia, the issuer has connected a child registry under `geeknees.eth` and registered `vouches.geeknees.eth`.
+Endorsement publication and individual withdrawal under the new subnames, and agent permission changes, remain to be checked with a real wallet.
+See the [current wallet-test progress](docs/sepolia-namespace-check.md) and [implementation record](docs/roadmap-plan.md).
 World ID remains deferred under the conditions below.
 
 ## Boundaries

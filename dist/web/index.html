@@ -138,9 +138,9 @@
           <section id="panel-namespaces" class="panel" hidden>
             <div class="panel-heading"><span class="step-icon">⌘</span><div><h3>One name for each relationship</h3><p>Keep endorsements independent. Give agents only the access you choose.</p></div></div>
             <p class="notice subtle">For multiple endorsements, create <code>vouches.your-name.eth</code> first, then a contributor’s numeric ID below it. Each final name gets its own resolver and can be withdrawn separately.</p>
-            <label for="namespace-parent">Parent ENS name</label><input id="namespace-parent" placeholder="your-name.eth" autocomplete="off" spellcheck="false" maxlength="255">
-            <button id="namespace-inspect" class="button secondary" type="button">Inspect parent · no wallet</button>
-            <dl id="namespace-parent-details" class="details"></dl>
+            <label for="namespace-parent">Parent ENS name</label>
+            <div class="namespace-lookup"><input id="namespace-parent" placeholder="your-name.eth" autocomplete="off" spellcheck="false" maxlength="255"><button id="namespace-inspect" class="button secondary" type="button">Inspect parent · no wallet</button></div>
+            <dl id="namespace-parent-details" class="details namespace-details"></dl>
             <div class="setup-step"><span class="number">1</span><div><h4>Give the parent a child registry</h4><p>If a registry is already connected, skip these three transactions. Existing resolver records stay in place. The connected wallet must own the parent.</p>
               <button id="namespace-deploy" class="button secondary" data-wallet-write type="button">Create child registry ↗</button>
               <label for="namespace-registry">Child registry address</label><input id="namespace-registry" placeholder="0x… from the confirmed deployment" spellcheck="false">
@@ -163,8 +163,9 @@
               <div class="form-actions"><button id="namespace-record-bind" class="button secondary" data-wallet-write type="button">Connect publishing record ↗</button><button id="namespace-open-publish" class="text-button" type="button">Open in Publish →</button></div>
             </div></div>
             <section class="agent-workspace" aria-label="Agent identity and permissions"><p class="eyebrow">AGENTS AS NAMESPACES</p><h4>A profile with bounded permissions</h4>
-              <label for="agent-name">Agent ENS name</label><input id="agent-name" placeholder="agent.agents.your-name.eth" maxlength="255" spellcheck="false"><button id="agent-inspect" class="button secondary" type="button">Inspect agent · no wallet</button>
-              <div id="agent-result" hidden><dl id="agent-details" class="details"></dl><label for="agent-share-url">Share this identity</label><input id="agent-share-url" type="url" readonly></div>
+              <label for="agent-name">Agent ENS name</label>
+              <div class="namespace-lookup"><input id="agent-name" placeholder="agent.agents.your-name.eth" maxlength="255" spellcheck="false"><button id="agent-inspect" class="button secondary" type="button">Inspect agent · no wallet</button></div>
+              <div id="agent-result" hidden><dl id="agent-details" class="details namespace-details"></dl><label for="agent-share-url">Share this identity</label><input id="agent-share-url" type="url" readonly></div>
               <p class="field-note">Each agent uses its own resolver. Profile access does not allow editing endorsements, identity, ownership, or sibling names. The controller keeps the name and can revoke access.</p>
               <label for="agent-wallet">Agent wallet declared in its identity</label><input id="agent-wallet" placeholder="0x…" spellcheck="false">
               <label for="agent-key">Profile field</label><select id="agent-key"><option value="url">url</option><option value="avatar">avatar</option><option value="description">description</option></select>

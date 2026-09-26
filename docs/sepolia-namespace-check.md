@@ -12,6 +12,20 @@
 
 新しい専用resolverは最終サブネームにだけ接続する。親`geeknees.eth`の既存resolverを置き換えない。
 
+## 実機確認の進捗（2026-09-26 14:54 JST）
+
+PCのウォレット操作後、公開RPCから次を確認した。こちらから署名・取引は送信していない。
+
+| 確認対象 | 結果 |
+|---|---|
+| `geeknees.eth`の子registry | `0x00AD2DAfAF84c9A69d57AaceE129F11f14FA77A2`。`inspectSubregistry`で公式実装・履歴と、親registry `0x657eA849311d3D5823348ddEd7C2AaAFb3EDE09E` / label `geeknees`の一致を確認 |
+| 子registryの検証snapshot | `2026-09-26T05:54:12.201Z`、block `11784274` / `0xbac8b0855887a60d212a951eb850cceed9e78dd39cc08ce1c863923397328219`、2 confirmations |
+| `vouches.geeknees.eth` | 登録済み。所有者は上記issuer。resolverとこの中間名の子registryは未接続 |
+| 中間名のsnapshot | `2026-09-26T05:54:16.629Z`、block `11784275` / `0xe671328c875ab5d50fdc3083cb2d2904c5e7280881fb4f0109abc00518857719`、2 confirmations |
+| 既存`geeknees.eth`の推薦 | `valid / accepted`を維持。`2026-09-26T05:51:08.210Z`、block `11784259` / `0x0df018d48348ec20d69ce6080def15d0e5122ccdf5b6ee5332a569bbfeaa7db9` |
+
+この時点からの次の操作は、下記手順1の**6**（中間名をParentへ移して、その子registryを接続）になる。登録済みの`vouches`を再登録する必要はない。最終名の推薦公開・個別失効・agent権限の実Sepolia確認はまだ完了していない。
+
 ## 1. 親の下に名前空間を作る
 
 1. PCのウォレット拡張入りブラウザで[Namespaces](https://geeknees.github.io/devouch/#namespaces)を開く。公開更新前に試す場合はローカルの`http://127.0.0.1:4173/#namespaces`を使う。
