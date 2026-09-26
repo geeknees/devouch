@@ -8,6 +8,7 @@ import { domain, typedData } from '../../src/credential';
 import { RESOLVER_IMPL, setTextData } from '../../src/ens';
 import { validatePublishRequest } from '../../src/operations';
 import { issuer, publicClient, setupEvm, settle, testRpc, wallet } from '../support/evm';
+import { setupHierarchy } from '../support/hierarchy';
 
 async function cli(args: string[]) {
   const process = Bun.spawn(['ruby', 'exe/devouch', ...args, '--rpc-url', testRpc, '--json'], { stdout: 'pipe', stderr: 'pipe' });
@@ -15,9 +16,14 @@ async function cli(args: string[]) {
   return { status: await process.exited, report: JSON.parse(raw) };
 }
 
-test('real CLI prepares, fetches, evaluates two policies, and observes direct revocation', async () => {
-  const { name, resolver } = await setupEvm();
+for (const hierarchical of [false, true]) test(`real CLI prepares, fetches, evaluates two policies, and observes ${hierarchical ? 'subname' : 'direct'} revocation`, async () => {
+  const { name, resolver } = hierarchical ? (await setupHierarchy()).leaves[0]! : await setupEvm();
   await settle();
+  const checked = Bun.spawn(['bun', 'scripts/check-name.ts', name, testRpc], { stdout: 'pipe', stderr: 'pipe' });
+  const lines = (await new Response(checked.stdout).text()).trim().split('\n').map(line => JSON.parse(line));
+  expect(await checked.exited).toBe(0);
+  expect(lines[0]).toMatchObject({ name, owner: issuer.address, resolver });
+  expect(lines[1].ready).toBe(true);
   const dir = await mkdtemp(join(tmpdir(), 'devouch-e2e-'));
   try {
     const requestPath = join(dir, 'request.json'), vouchPath = join(dir, 'vouch.json'), hintPath = join(dir, 'publication.json');
@@ -41,6 +47,8 @@ test('real CLI prepares, fetches, evaluates two policies, and observes direct re
     await writeFile(policyB, JSON.stringify({ ...policy, repositoryId: 'demo/repo-b' }));
     const verify = (path: string, id = 'github:12345') => cli(['verify', '--credential', vouchPath, '--policy', path, '--subject', id]);
     expect((await verify(policyA)).report).toMatchObject({ evidence_status: 'valid', policy_status: 'accepted', human_verification: 'not_included' });
+    expect((await verify(policyA)).report.hierarchy.map((hop: { name: string }) => hop.name).at(-1)).toBe(name);
+    expect((await verify(policyA)).report.hierarchy.length).toBe(hierarchical ? 4 : 2);
     expect((await verify(policyB)).status).toBe(0);
     await writeFile(policyB, JSON.stringify({ ...policy, repositoryId: 'demo/repo-b', trustedIssuers: [] }));
     expect((await verify(policyB)).report).toMatchObject({ evidence_status: 'valid', policy_status: 'rejected' });

@@ -14,7 +14,12 @@ with an expiry and a withdrawal history on ENSv2, while keeping each repository'
 It is a separate implementation; it does not embed vouch. See the [source comparison](docs/hackathon-research.md#vouch-が扱っている信頼).
 
 This hackathon implementation contains a Ruby CLI, a static wallet workspace, and a read-only GitHub Action.
-It uses Sepolia's official Permissioned Resolver. There is no Devouch API, database, shared publisher key, or new registry contract.
+It uses Sepolia's official Permissioned Resolver and UserRegistry implementations.
+There is no Devouch API, database, shared publisher key, or custom endorsement contract.
+
+The `codex/roadmap-20260926` branch adds issuer-owned subnames, agent identities with limited profile permissions,
+and a maintainer setup guide in the workspace. The published `v0.1` tag preserves the original demo.
+Local implementation and public deployment evidence are tracked separately in the [Roadmap record](docs/roadmap-plan.md).
 
 **Current evidence:** local browser, CLI, and official-contract integration tests pass.
 The issuer published masusanou's endorsement on Sepolia. The CLI accepted the same original under two policies
@@ -92,6 +97,14 @@ the CLI or Action evaluates it against a repository's policy.
 4. Download the original endorsement JSON and publication position. The receiving maintainer can download a policy example.
 5. In **Withdraw**, load the endorsement, review it, and clear the exact public record. Run verification again after two more blocks.
 
+For multiple endorsements, use **Namespaces** in this branch's workspace (`http://127.0.0.1:4173/#namespaces`).
+Create `vouches.your-name.eth`, use it as the next parent, then register a contributor ID such as
+`287365775.vouches.your-name.eth` and connect its own resolver. Repeat for another contributor;
+publishing or withdrawing one record leaves its siblings independent. **Include an agent identity** adds
+a controller-declared GitHub subject and agent wallet. The controller can grant and revoke only the `url`,
+`avatar`, or `description` fields through this UI. The agent can update granted fields with its own wallet.
+The [namespace guide](docs/namespaces.md) covers the transactions, recovery, and boundaries.
+
 The demo account is [masusanou](https://github.com/masusanou), numeric ID `287365775`.
 The receiving repository is [geeknees/devouch](https://github.com/geeknees/devouch).
 The repository and workspace were made public on 2026-09-26 with the owner's approval.
@@ -158,6 +171,9 @@ The workspace has a separate **Connection settings** field.
 Add a maintainer-approved `.devouch/policy.json` and a workflow pinned to a published Devouch commit.
 Each contributor adds `.devouch/vouches/github-ID.json` with their original endorsement.
 See the [maintainer guide](docs/adoption-guide.md) and [agent operator guide](docs/agent-operator-guide.md).
+In this branch, **Maintainers** (`http://127.0.0.1:4173/#maintainers`) checks publication names without a wallet.
+Explicitly select the issuers, scopes, and resolvers your repository will accept, review the published Action SHA,
+and download the policy and workflow. Nothing is written to GitHub by this screen.
 The Action reads policy from the event's base SHA and endorsement from its head SHA via GitHub's API.
 It does not check out or execute the PR. Report mode does not approve or merge contributions.
 
@@ -199,13 +215,16 @@ Three things Devouch deliberately leaves out, and why. The reasoning and sources
 
 ## Roadmap
 
-Next, Devouch should use more of the ENSv2 hierarchy:
+Implemented on this branch and exercised against the pinned official ENS contracts:
 
-- **One subname per endorsement.** Today one resolver record holds one endorsement. An issuer could instead give each endorsed account its own subname under their name (for example `287365775.vouches.masusanou-dev.eth`) with its own `devouch.vouch` record. That allows many endorsements at once, each withdrawn on its own, using ENSv2's hierarchical registry and a subname registry the issuer controls.
-- **Agents as namespaces.** An AI agent that sends pull requests could get its own subname, with its own identity and only the permissions the issuer grants it through Enhanced Access Control.
-- **Verification that follows the hierarchy.** Before this ships, verification must also check changes to the parent name, the subname registry and granted roles, so that a parent change can never silently restore or forge trust.
+- **One subname per endorsement.** Issuers create names such as `287365775.vouches.masusanou-dev.eth`, each with its own resolver record and independent withdrawal history.
+- **Agents as namespaces.** An agent has its own name, controller-declared identity, and individual profile-field grants under ENSv2 Enhanced Access Control. Its permissions can be revoked without handing it endorsement or namespace authority.
+- **Verification through the hierarchy.** The verifier follows each parent, registry, ownership, and relevant role change. Restoring changed authority does not reactivate an old endorsement.
+- **Maintainer onboarding.** Maintainers select verified recommendations and review explicit trust policy plus a SHA-pinned, read-only Action workflow.
 
-Beyond ENS: guide maintainers through choosing trusted issuers and configuring the published Action, and trial the workflow with an independent open-source project. The workspace already exports a policy example, and the Action is publicly available pinned by commit SHA. I will add proof of personhood such as World ID only if it can be verified without making a central service mandatory.
+The user selected `geeknees/devouch` for the adoption trial. This is a trial in the project's own repository;
+independent third-party adoption has not been demonstrated. See the [completion and trial record](docs/roadmap-plan.md)
+for deployment status. World ID remains deferred under the conditions below.
 
 ## Boundaries
 
@@ -213,14 +232,21 @@ This is a reference for contribution review. It does not prove humanity, account
 `human_verification` is always `not_included`.
 [World sandbox](https://sandbox.auth.world.org/) was inspected; World authentication is not implemented or claimed.
 
-Why World ID is not integrated yet: it is a trade-off with the "no central server" choice ([Design choices](#design-choices)), not a judgment on proof of personhood.
-The integration paths checked for this event need a secret held by the app operator: World's agent sign-in (OIDC) assumes a confidential client, and IDKit requires the relying party to sign each request.
-In Devouch that operator would be the Devouch project, so every issuer and repository would depend on its key and server.
-Proof of personhood answers a different question ("is this a human?") from Devouch ("who vouches for you?"), and the two could work well together.
-It will be added once it can be verified without a mandatory central party; the research is in the [prize plan](docs/ethglobal-tokyo-2026-prize-plan.md) (Japanese).
+**Why World ID is not integrated yet:** this is a trade-off with the **No central server** choice above.
+The integration paths checked for this event require an app-controlled secret: the agent sign-in path we inspected
+uses a confidential OIDC client, and [IDKit 4.0 requires the relying party to sign proof requests](https://docs.world.org/world-id/idkit/signatures).
+A shared integration operated by Devouch would make participants using that integration depend on its key and service.
+Self-hosted integrations could distribute that responsibility, but that complete path has not been validated here.
+[On-chain proof verification already exists](https://docs.world.org/world-id/idkit/onchain-verification);
+verification alone does not remove the request-signing requirement.
+Proof of personhood and a contributor recommendation answer different questions and can complement each other.
+World ID remains deferred until a complete integration can be verified without a mandatory Devouch-operated service.
+See the [prize plan and integration conditions](docs/ethglobal-tokyo-2026-prize-plan.md#world-を追加する場合の条件) (Japanese).
 
-The first release supports one active endorsement per resolver record/key, EOA signatures, and direct normalized Sepolia `name.eth` names.
-ENSv1, subname traversal, wildcard resolution, ERC-1271, resolver upgrades, and multiple simultaneous endorsements on one record are unsupported.
+This branch supports one active endorsement per resolver record/key, EOA signatures, direct normalized Sepolia
+`name.eth` names and exact subnames through the pinned official UserRegistry, up to ten labels including `eth`.
+Separate subnames can hold simultaneous endorsements. ENSv1, wildcard resolution, CCIP Read, ERC-1271,
+unknown registry implementations, registry/resolver upgrades, and multiple endorsements in one record are unsupported.
 Changing a record and restoring its old JSON never reactivates that endorsement.
 Create a fresh request with a fresh ID and nonce.
 

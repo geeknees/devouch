@@ -10,7 +10,7 @@ actual = IO.popen(["git", "-C", source, "rev-parse", "HEAD"], &:read).strip
 abort "Expected ENS source #{commit}" unless actual == commit
 destination = File.expand_path("../vendor/ens-v2", __dir__)
 FileUtils.mkdir_p(destination)
-%w[PermissionedResolverImpl VerifiableFactory RootRegistry ETHRegistry LabelStore].each do |name|
+%w[PermissionedResolverImpl UserRegistryImpl VerifiableFactory RootRegistry ETHRegistry LabelStore].each do |name|
   original = File.binread(File.join(source, "contracts/deployments/sepolia/#{name}.json"))
   artifact = JSON.parse(original)
   subset = artifact.slice("address", "abi", "bytecode", "deployedBytecode", "immutableReferences")

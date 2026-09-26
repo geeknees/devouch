@@ -142,7 +142,7 @@ module Devouch
       unless EVIDENCE.include?(evidence["evidence_status"]) && evidence["reason_codes"].is_a?(Array)
         raise Error.new("invalid_bridge_response", "The verifier returned an invalid result.", 70)
       end
-      report = base_report.merge(evidence.slice("evidence_status", "reason_codes", "subject", "issuer", "scope", "snapshot"))
+      report = base_report.merge(evidence.slice("evidence_status", "reason_codes", "subject", "issuer", "scope", "snapshot", "hierarchy"))
       report["policy"] = @policy.description
       report["subject"] = options.fetch("subject")
       if evidence["evidence_status"] == "valid"
@@ -236,6 +236,9 @@ module Devouch
         @out.puts("Evidence: #{report["evidence_status"]} / Policy: #{report["policy_status"]}")
         @out.puts("Subject: #{report["subject"]} (supplied by caller)")
         @out.puts("Issuer: #{report["issuer"]}") if report["issuer"]
+        if report["hierarchy"].is_a?(Array)
+          @out.puts("ENS hierarchy: #{report["hierarchy"].map { |hop| hop["name"] }.join(" -> ")}")
+        end
         @out.puts("Reasons: #{report["reason_codes"].join(", ")}") unless report["reason_codes"].empty?
         @out.puts("Policy: #{report.dig("policy", "repository_id")} / #{report.dig("policy", "digest")}")
         if report["command"] == "check"

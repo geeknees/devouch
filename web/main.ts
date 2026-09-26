@@ -10,6 +10,8 @@ import { makeRequest, makeRevoke, publicationHint, validatePublishRequest, valid
 import { isWalletRejection, Submission, validatePending, type Pending } from './submission';
 import { WalletSession } from './wallet';
 import { initializeVerification } from './verify';
+import { initializeNamespaces } from './namespaces';
+import { initializeMaintainers } from './maintainers';
 
 declare global { interface Window { ethereum?: EIP1193Provider & { on?: (event: string, listener: () => void) => void } } }
 const element = <T extends HTMLElement = HTMLElement>(id: string) => document.getElementById(id) as T;
@@ -21,6 +23,7 @@ let downloadedRaw: string | null = null, downloadedPublication: Publication | nu
 const storageKey = 'devouch.pending.v1';
 const writeButtons = ['prepare', 'sign', 'publish', 'revoke', 'deploy', 'bind', 'grant', 'remove'];
 let damagedRecovery = false;
+let maintainers: ReturnType<typeof initializeMaintainers> | null = null;
 
 function restorePending(): Pending | null {
   try {
@@ -42,12 +45,14 @@ function status(message: string, tone: 'neutral' | 'success' | 'error' | 'withdr
 }
 function update() {
   for (const target of document.querySelectorAll<HTMLButtonElement>('button:not(#theme-toggle)')) target.disabled = busy;
-  for (const target of document.querySelectorAll<HTMLInputElement>('input')) target.disabled = busy;
+  for (const target of document.querySelectorAll<HTMLInputElement>('input, select, textarea')) target.disabled = busy;
   if (submission.pending || damagedRecovery) for (const id of writeButtons) button(id).disabled = true;
+  if (submission.pending || damagedRecovery) for (const target of document.querySelectorAll<HTMLButtonElement>('[data-wallet-write]')) target.disabled = true;
   button('sign').disabled ||= !publishRequest || !input('consent').checked;
   button('publish').disabled ||= !signedRaw || !input('consent').checked;
   button('revoke').disabled ||= !revokeRequest || !input('revoke-consent').checked;
   button('bind').disabled ||= !input('bind-consent').checked;
+  button('namespace-record-bind').disabled ||= !input('namespace-record-consent').checked;
   element('pending-panel').hidden = !submission.pending && !damagedRecovery;
   if (damagedRecovery) element('pending-description').textContent = 'The saved operation cannot be read. Sending is blocked. Load its recovery file in Connection settings and check your wallet history.';
   if (submission.pending) {
@@ -55,6 +60,7 @@ function update() {
     if (submission.pending.hash) input('recovery-hash').value = submission.pending.hash;
   }
   button('connect').textContent = session?.account ? session.account.slice(0, 6) + '…' + session.account.slice(-4) : 'Connect wallet ↗';
+  maintainers?.update();
 }
 function errorMessage(error: unknown) {
   const code = isWalletRejection(error) ? 'wallet_rejected'
@@ -72,7 +78,7 @@ function errorMessage(error: unknown) {
     issuer_cannot_publish: 'This wallet does not control the dedicated resolver. Check ENS setup.',
     unsupported_resolver: 'This name needs a supported dedicated ENSv2 resolver. Open ENS setup.',
     unsupported_implementation: 'This resolver implementation is not supported by this release.',
-    unsupported_namespace: 'This release supports a direct name.eth name on Sepolia.',
+    unsupported_namespace: 'Use a direct name.eth name or an issuer-owned ENSv2 subname on Sepolia.',
     record_not_initialized: 'Initialize a dedicated resolver for this name in ENS setup.',
     name_expires_before_endorsement: 'Choose an expiry before the ENS name expires, or renew the name first.',
     chain_mismatch: 'Use Sepolia in both the wallet and the RPC connection.',
@@ -85,6 +91,20 @@ function errorMessage(error: unknown) {
     expired: 'This endorsement has expired. Prepare a new one with a new identifier.',
     revoked: 'This endorsement is already withdrawn. Old signatures cannot be reactivated.',
     resolver_upgraded: 'This resolver has an upgrade history that this release cannot accept.',
+    registry_upgraded: 'This child registry has an upgrade history that this release cannot accept.',
+    unsupported_registry: 'Use an official ENSv2 UserRegistry for the subname hierarchy.',
+    subregistry_missing: 'Create and connect a child registry before registering a subname.',
+    subregistry_already_connected: 'A child registry is already connected. Inspect the parent and use its existing registry.',
+    registry_parent_mismatch: 'Set this child registry’s parent link before connecting it.',
+    name_already_registered: 'That label is already registered. Inspect the existing subname or choose another label.',
+    invalid_namespace_label: 'Enter one normalized label without dots.',
+    invalid_expiry: 'Choose a future expiry within every parent name’s expiry.',
+    agent_identity_missing: 'This resolver has no controller-published agent identity.',
+    agent_identity_mismatch: 'The agent identity does not match the name, controller, or wallet.',
+    agent_resolver_shared: 'This agent needs a resolver used only for its own name. A shared text-key grant would also affect other records.',
+    agent_permission_missing: 'This wallet does not have permission to edit that profile field.',
+    unsupported_agent_permission: 'Agent grants support only url, avatar, and description.',
+    invalid_namespace_list: 'Enter between one and eight publication ENS names.',
     transaction_reverted: 'The transaction reverted. No successful update was recorded.',
   };
   if (messages[code]) return messages[code];
@@ -175,6 +195,7 @@ async function downloads(raw: string, publication: Publication) {
   element('credential-path').textContent = '.devouch/vouches/github-' + parsed.message.subject.split(':')[1] + '.json';
 }
 async function completed(result: Awaited<ReturnType<WalletSession['recover']>>) {
+  if (namespaces.completed(result)) return;
   if (result.pending.kind === 'publish') {
     await downloads(result.pending.raw!, result.publication);
     signedRaw = null;
@@ -304,12 +325,16 @@ button('apply-rpc').addEventListener('click', () => run('Changing the read conne
   await new ChainReader(selected).snapshot();
   rpcUrl = selected; session = null; signedRaw = null;
   verification.invalidate();
+  maintainers?.invalidate();
   status('Sepolia connection checked. Reconnect the wallet before writing. Pending recovery data has been preserved.', 'success');
 }));
 window.ethereum?.on?.('accountsChanged', () => { session = null; signedRaw = null; update(); status('Wallet changed. Reconnect and review the operation again.'); });
 window.ethereum?.on?.('chainChanged', () => { session = null; signedRaw = null; update(); });
 const nextWeek = new Date(Date.now() + 7 * 86400000);
 input('expires').value = localDateTime(nextWeek).slice(0, 16);
+const namespaces = initializeNamespaces({ rpc: () => rpcUrl, connected, run, status, complete: completed, details, update,
+  publish(name) { clearReview(); input('publish-name').value = name; activate('publish'); update(); } });
+maintainers = initializeMaintainers({ rpc: () => rpcUrl, busy: () => busy, run, status, download });
 update();
-if (location.hash === '#verify') activate('verify');
+if (['#verify', '#namespaces', '#maintainers'].includes(location.hash)) activate(location.hash.slice(1));
 const verification = initializeVerification(() => rpcUrl);

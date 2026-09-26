@@ -44,6 +44,8 @@ ENSv2 Sepolia に、小さい推薦 JSON を保存する。公開原本・現在
 
 ## World を追加する場合の条件
 
+2026-09-26 Roadmap作業中に公式の[RP signatures](https://docs.world.org/world-id/idkit/signatures)と[On-chain Verification](https://docs.world.org/world-id/idkit/onchain-verification)を再確認した。v4のproof検証はオンチェーンで行えるが、標準のproof要求はアプリのRP署名鍵を必要とする。共通のDevouchサービスとして提供すれば、その統合を使う利用者は鍵とサービスに依存する。利用者別の自己運用構成まで実証したわけではない。ユーザーはこの条件を踏まえ、World IDを引き続き見送ると指定した。人間性証明そのものを否定する判断ではなく、現在の運営者不要の構成とのトレードオフである。
+
 Agents 賞では、イベント提供の公式環境を使い、要求・人間の完了・安全な結果検証・保護操作まで動かすこと、拒否・期限切れ等で操作を実行しないこと、secret を公開しないこと、初回成功までの時間や統合時の改善点の報告などが必要である。
 
 一方、確認した OIDC 経路は confidential client を前提とする。現行 IDKit にも要求署名の鍵が必要で、オンチェーン検証の存在だけでは全フローの独立性を説明できない。[追加確認](hackathon-research.md#world-と分散性の追加確認)

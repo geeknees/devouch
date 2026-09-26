@@ -4,15 +4,18 @@ import type { Address, Hex } from 'viem';
 import { EvidenceError, insist } from '../src/errors';
 import { address, object, uint } from '../src/credential';
 import { nameParts } from '../src/ens';
+import { profileKey } from '../src/agent-namespace';
 
-export type Pending = { kind: 'publish' | 'revoke' | 'deploy' | 'bind' | 'grant' | 'remove';
+export type Pending = { kind: 'publish' | 'revoke' | 'deploy' | 'bind' | 'grant' | 'remove'
+  | 'deploy-registry' | 'parent-registry' | 'bind-registry' | 'register-name' | 'grant-profile' | 'remove-profile' | 'profile';
   name: string; to: Address; data: Hex; hash?: Hex; raw?: string; recordId?: string;
-  value?: string; helper?: Address; account?: Address };
+  value?: string; helper?: Address; account?: Address; key?: string };
 
 export function validatePending(input: unknown): Pending {
   const value = object(input);
-  insist(['publish', 'revoke', 'deploy', 'bind', 'grant', 'remove'].includes(value.kind as string), 'invalid_recovery');
-  insist(Object.keys(value).every(key => ['kind', 'name', 'to', 'data', 'hash', 'raw', 'recordId', 'value', 'helper', 'account'].includes(key)), 'invalid_recovery');
+  insist(['publish', 'revoke', 'deploy', 'bind', 'grant', 'remove', 'deploy-registry', 'parent-registry',
+    'bind-registry', 'register-name', 'grant-profile', 'remove-profile', 'profile'].includes(value.kind as string), 'invalid_recovery');
+  insist(Object.keys(value).every(key => ['kind', 'name', 'to', 'data', 'hash', 'raw', 'recordId', 'value', 'helper', 'account', 'key'].includes(key)), 'invalid_recovery');
   address(value.to); address(value.account);
   insist(typeof value.name === 'string'); nameParts(value.name);
   insist(typeof value.data === 'string' && /^0x(?:[0-9a-fA-F]{2})+$/.test(value.data) && value.data.length <= 20000, 'invalid_recovery');
@@ -22,8 +25,13 @@ export function validatePending(input: unknown): Pending {
     insist(typeof value.raw === 'string' && new TextEncoder().encode(value.raw).length <= 4096, 'invalid_recovery');
     insist(value.value === (value.kind === 'publish' ? value.raw : ''), 'invalid_recovery');
   }
-  if (value.kind === 'bind') address(value.value);
-  if (value.kind === 'grant' || value.kind === 'remove') address(value.helper);
+  if (['bind', 'parent-registry', 'bind-registry'].includes(value.kind as string)) address(value.value);
+  if (value.kind === 'register-name') uint(value.value, 64);
+  if (['grant', 'remove', 'grant-profile', 'remove-profile'].includes(value.kind as string)) address(value.helper);
+  if (['grant-profile', 'remove-profile', 'profile'].includes(value.kind as string)) {
+    insist(typeof value.key === 'string', 'invalid_recovery'); profileKey(value.key);
+  } else insist(value.key === undefined, 'invalid_recovery');
+  if (value.kind === 'profile') insist(typeof value.value === 'string' && new TextEncoder().encode(value.value).length <= 2048, 'invalid_recovery');
   return value as Pending;
 }
 

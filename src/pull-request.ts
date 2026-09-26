@@ -1,6 +1,6 @@
 // ABOUTME: Binds a public PR author's endorsement to its base policy and fixed head commit.
 // ABOUTME: Reuses the signature, ENS history, snapshot, and shared repository-policy verifiers.
-import type { ChainReader, Snapshot } from './chain';
+import type { ChainEvidence, ChainReader, Snapshot } from './chain';
 import { parseCredential, type ParsedCredential } from './credential';
 import { EvidenceError, insist } from './errors';
 import { GitHubError, GitHubReader } from './github';
@@ -20,7 +20,7 @@ export async function verifyPullRequest(url: string, reader: Pick<ChainReader, '
   const raw = await github.file(pullRequest.headRepository, credentialPath, pullRequest.headSha, 4096, signal);
   let parsed: ParsedCredential | null = null;
   let signatureStatus: 'valid' | 'invalid' | 'not_verified' = 'not_verified';
-  let evidence: PolicyEvidence & { snapshot: Snapshot | null };
+  let evidence: PolicyEvidence & { snapshot: Snapshot | null; hierarchy?: ChainEvidence['hierarchy'] };
   try {
     insist(raw !== null, 'credential_missing', 'missing');
     parsed = await parseCredential(raw);
