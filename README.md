@@ -65,6 +65,13 @@ add the issuer to B's **Trusted issuers** field to make it accepted. These edita
 A saved `publication.json` can retrieve an older endorsement for verification, and **Copy link** includes that position when provided.
 No wallet is needed; `human verification: not included` applies throughout.
 
+Choose **Pull request URL** in Verify, or open the [live PR #2 verification](https://geeknees.github.io/devouch/?pr=https%3A%2F%2Fgithub.com%2Fgeeknees%2Fdevouch%2Fpull%2F2#verify).
+For a public GitHub PR, it reads `.devouch/policy.json` at the base SHA and the author's endorsement at the head SHA,
+matches the signed subject to the PR author's numeric GitHub ID, and runs the same signature and ENS-history verification as the CLI.
+It shows the actual repository decision, ENS issuer name, checked commits, policy digest, and Sepolia snapshot.
+**Copy link** lets another visitor repeat the live check without a wallet or GitHub login.
+This reads public JSON only; it does not execute PR code, update GitHub checks, or approve a merge.
+
 To explore without a wallet, choose **Try without a wallet**, then **Retrieve from ENS**.
 The demo name is prefilled. The workspace displays the signed contributor, issuer, purpose, expiry,
 and publication transaction, and downloads the original JSON. Retrieval does not establish current validity;

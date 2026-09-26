@@ -1,4 +1,4 @@
-// ABOUTME: Presents wallet-free ENS verification and two editable illustrative repository policies.
+// ABOUTME: Presents wallet-free verification by ENS name or public GitHub PR with separate policy views.
 // ABOUTME: Reuses the complete chain verifier and keeps names, evidence, and local acceptance separate.
 import { ChainReader, type Publication } from '../src/chain';
 import { strictJson } from '../src/credential';
@@ -6,6 +6,7 @@ import { EvidenceError } from '../src/errors';
 import { lookupIssuerName } from '../src/identity';
 import { publicationHint } from '../src/operations';
 import { evaluatePolicy, parsePolicy, type PolicyEvidence } from '../src/policy';
+import { initializePullRequestVerification } from './verify-pr';
 
 type Verified = Awaited<ReturnType<ChainReader['verifyName']>>;
 const element = <T extends HTMLElement = HTMLElement>(id: string) => document.getElementById(id) as T;
@@ -25,6 +26,7 @@ export function verificationUrl(base: string, name: string, publication?: Public
 }
 
 export function initializeVerification(getRpc: () => string) {
+  const pullRequest = initializePullRequestVerification(getRpc);
   let verified: Verified | null = null, evidence: PolicyEvidence | null = null;
   let checking = false, revision = 0, linkPublication: Publication | undefined;
   const controls = element<HTMLFieldSetElement>('verify-inputs');
@@ -163,7 +165,25 @@ export function initializeVerification(getRpc: () => string) {
     try { await navigator.clipboard.writeText(field('verify-share-url').value); text('verify-copy-status', 'Link copied.'); }
     catch { field('verify-share-url').focus(); field('verify-share-url').select(); text('verify-copy-status', 'Select and copy the link above.'); }
   });
-  if (location.hash === '#verify') {
+  function activateMode(mode: 'name' | 'pr') {
+    invalidate(); pullRequest.invalidate();
+    element('verify-name-view').hidden = mode !== 'name';
+    element('verify-pr-view').hidden = mode !== 'pr';
+    panel.querySelectorAll<HTMLButtonElement>('[data-verify-mode]').forEach(button => {
+      button.setAttribute('aria-pressed', String(button.dataset.verifyMode === mode));
+    });
+    text('verify-heading', mode === 'pr' ? 'Check a pull request’s endorsement.' : 'One endorsement. Two independent decisions.');
+    text('verify-intro', mode === 'pr' ? 'Check the PR author’s endorsement against the receiving repository’s policy.'
+      : 'Check live ENS evidence. See what changes when a repository trusts its issuer.');
+  }
+  panel.querySelectorAll<HTMLButtonElement>('[data-verify-mode]').forEach(button => {
+    button.addEventListener('click', () => activateMode(button.dataset.verifyMode as 'name' | 'pr'));
+  });
+  if (location.hash === '#verify' && new URLSearchParams(location.search).has('pr')) {
+    activateMode('pr');
+    pullRequest.setUrl(new URLSearchParams(location.search).get('pr')!);
+    void pullRequest.verify();
+  } else if (location.hash === '#verify') {
     const query = new URLSearchParams(location.search);
     const name = query.get('name');
     if (name) field('verify-name').value = name;
@@ -177,5 +197,5 @@ export function initializeVerification(getRpc: () => string) {
       status('The publication position in this link is invalid. Clear it or load a valid publication.json file.');
     }
   }
-  return { invalidate };
+  return { invalidate: () => { invalidate(); pullRequest.invalidate(); } };
 }
