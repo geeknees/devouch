@@ -25,7 +25,7 @@
 | Prizes | **ENS のみ**選ぶ。ENS の欄は「ENS prize form fields」を使う。World は未統合なので選ばない |
 | AI tools | 「AI tool disclosure」を貼る |
 | Video | 完成済み（ユーザー確認）。提出サイトへ直接アップロードするため、別の公開URLは不要 |
-| Future | 「Future」を貼る |
+| Future | 助成（Grant）などの紹介を希望するかを聞く画面。今回は何も選ばない（2026-09-26 提出者の判断）。今後の計画は README の Roadmap に書いてある |
 | Track / judging choice | Building from Scratch。事前設計資料を開示。Submission type は Top 10 Finalist & Partner Prizes を想定（決勝用の [台本](presentation/script.md) を用意済み）。最終判断は提出者 |
 
 Short descriptionは100文字以内。DescriptionとHow it's madeはそれぞれ280文字以上の下記原稿を使う。
@@ -121,13 +121,7 @@ https://github.com/geeknees/devouch/blob/3214991e616e118d921ea9575d06d5e121b584f
 
 ## Future
 
-Next, I want Devouch to use more of the ENSv2 hierarchy:
-
-- **One subname per endorsement.** Today one resolver record holds one endorsement. An issuer could instead give each endorsed account its own subname under their name (for example `287365775.vouches.masusanou-dev.eth`) with its own `devouch.vouch` record. That allows many endorsements at once, each withdrawn on its own, using ENSv2's hierarchical registry and a subname registry the issuer controls.
-- **Agents as namespaces.** An AI agent that sends pull requests could get its own subname, with its own identity and only the permissions the issuer grants it through Enhanced Access Control.
-- **Verification that follows the hierarchy.** Before this ships, verification must also check changes to the parent name, the subname registry and granted roles, so that a parent change can never silently restore or forge trust.
-
-Beyond ENS: guide maintainers through choosing trusted issuers and configuring the published Action, and trial the workflow with an independent open-source project. The workspace already exports a policy example, and the Action is publicly available pinned by commit SHA. I will add proof of personhood such as World ID only if it can be verified without making a central service mandatory.
+今後の計画は [README の Roadmap](../README.md#roadmap) に移した。フォームの Future 画面は助成などの紹介を希望するかを聞くもので、今後の計画を貼る欄ではない。
 
 ## Sepolia evidence
 
