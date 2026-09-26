@@ -4,13 +4,14 @@
 
 作成：2026-09-26。対象：静的ワークスペース `web/`。
 [ズームアニメーション](presentation/devouch-zoom.html) のデザインを、アプリと提出素材に揃えるための資料。
-アプリの振る舞い・ID・文言の意味は変えない。見た目だけを置き換える。
+初回はアプリの振る舞い・ID・文言の意味を保ち、見た目を置き換えた。
+同日の追加依頼でダーク／ライトの切り替えを実装した。署名・公開・失効の流れは共通とする。
 
 ## 担当の分け方
 
 | 対象 | 担当 | 状態 |
 | --- | --- | --- |
-| `web/`（HTML / CSS）と `dist/web/` の再ビルド | 開発エージェント | 未着手。区切りの良いところで適用する |
+| `web/` と `dist/web/` の再ビルド | 開発エージェント | 初回適用済み。ダーク／ライトの切替を追加し、ローカル検証済み |
 | `assets/devouch-logo.svg` | デザイン側 | 「枝分かれする d」に変更済み |
 | `assets/devouch-cover.svg` | デザイン側 | 新デザインに変更済み |
 | `scripts/capture-assets.ts` | デザイン側 | フォント読み込み待ちを1行追加済み |
@@ -48,8 +49,13 @@
 body { background: var(--void); color: var(--bone); font-family: var(--sans); }
 ```
 
-`index.html` の `<meta name="color-scheme" content="light">` は `dark` に変える。
-今回はダーク単独のデザインとする。ライト版は作らない。
+初回はダーク単独で公開した。その後のユーザー指定により、現在はダーク／ライトを切り替えられる。
+`index.html` の `color-scheme` metaは `dark light` とし、実際の配色はrootの `data-theme` とCSSで決める。
+初期表示はダーク。ライトはアイボリーの背景と深い緑の主操作を使い、ロゴと書体は共有する。
+ヘッダーの太陽／月ボタンで切り替え、選択は `devouch.theme.v1` に保存する。
+同梱の `theme.js` をheadで同期読み込みし、保存済みの配色を描画前に復元する。
+保存できない環境でもそのページでは切り替えられ、ウォレット待機中の同意・入力状態には影響しない。
+追加分の検証と公開状況は [デザイン確認](design-verification.md#ダークライト切替の追加)を参照。
 
 ### 文字
 
@@ -121,7 +127,7 @@ body { background: var(--void); color: var(--bone); font-family: var(--sans); }
 - 「推薦はコード品質・人間であること・エージェントの権限を証明しない」という表示。
 - 幅 400px 前後で横スクロールが出ないこと（`test/integration/browser.test.ts` が確認している）。
 
-## 完了の確認
+## 初回デザイン適用の完了確認
 
 1. `bun run build`、`bun run test:integration`、`bundle exec rake test` が通る。
 2. 主要な文字と背景の組み合わせが WCAG AA（本文 4.5:1）を満たす。`--dim` を小さな文字に使う箇所は特に確認する。

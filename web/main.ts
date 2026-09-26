@@ -40,7 +40,7 @@ function status(message: string, tone: 'neutral' | 'success' | 'error' | 'withdr
   target.textContent = message;
 }
 function update() {
-  for (const target of document.querySelectorAll<HTMLButtonElement>('button')) target.disabled = busy;
+  for (const target of document.querySelectorAll<HTMLButtonElement>('button:not(#theme-toggle)')) target.disabled = busy;
   for (const target of document.querySelectorAll<HTMLInputElement>('input')) target.disabled = busy;
   if (submission.pending || damagedRecovery) for (const id of writeButtons) button(id).disabled = true;
   button('sign').disabled ||= !publishRequest || !input('consent').checked;

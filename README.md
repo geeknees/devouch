@@ -28,7 +28,7 @@ Real-wallet withdrawal remains to be completed.
 The PR demonstration uses masusanou and ends at `valid / accepted`; a separate human-account PR is outside the demo scope.
 Withdrawal is demonstrated separately through the wallet and CLI.
 The published design passes the [GitHub test workflow](https://github.com/geeknees/devouch/actions/runs/36180353277).
-The [design verification](docs/design-verification.md) records the dark workspace, bundled fonts, and hosted browser checks.
+The [design verification](docs/design-verification.md) records the workspace palettes, bundled fonts, and hosted browser checks.
 
 ## Development history
 
@@ -53,6 +53,9 @@ Open **http://127.0.0.1:4173** with an Ethereum wallet extension.
 The server binds only to loopback and serves only `dist/web/`.
 The same static directory can be hosted on an HTTPS origin; there is no server-side issuance endpoint.
 The [release runbook](docs/release-runbook.md) covers the prepared manual GitHub Pages workflow and public Action checks.
+
+Use the sun/moon button in the header to switch between dark and light mode.
+The workspace starts in dark mode and remembers your choice in this browser.
 
 To explore without a wallet, choose **Try without a wallet**, then **Retrieve from ENS**.
 The demo name is prefilled. The workspace displays the signed contributor, issuer, purpose, expiry,

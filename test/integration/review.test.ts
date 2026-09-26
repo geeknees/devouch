@@ -107,6 +107,10 @@ test('signature cancellation unlocks the form and editing a signed request preve
     await page.locator('#consent').check();
     await page.locator('#sign').click();
     await browserExpect.poll(() => signatureRequests).toBe(1);
+    await page.getByRole('button', { name: 'Switch to light mode' }).click();
+    await browserExpect(page.locator('html')).toHaveCSS('color-scheme', 'light');
+    await browserExpect(page.locator('#review')).toBeVisible();
+    await browserExpect(page.locator('#consent')).toBeChecked();
     for (const id of ['publish-name', 'subject-id', 'expires', 'consent', 'request-file']) {
       await browserExpect(page.locator('#' + id)).toBeDisabled();
     }

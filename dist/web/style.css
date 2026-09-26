@@ -1,4 +1,4 @@
-/* ABOUTME: Gives the workspace the dark botanical palette and type of the Devouch presentation. */
+/* ABOUTME: Gives the workspace complementary dark and light botanical palettes with shared typography. */
 /* ABOUTME: Keeps consent, transaction state, and keyboard focus readable on every screen size. */
 @font-face {
   font-family: "Instrument Serif";
@@ -46,6 +46,7 @@
   --faint: #5d6755;
   --moss: #7f9a66;
   --lime: #d5f594;
+  --accent-hover: #e1f9b4;
   --magenta: #d6246e;
   --ember: #e08a6d;
   --serif: "Instrument Serif", "Iowan Old Style", Georgia, serif;
@@ -55,6 +56,20 @@
   color: var(--bone);
   background: var(--void);
   font-synthesis: none;
+}
+:root[data-theme="light"] {
+  color-scheme: light;
+  --void: #f6f7f0;
+  --panel: #fffef8;
+  --panel-2: #eef1e5;
+  --line: #ced5c1;
+  --bone: #20291c;
+  --dim: #59634f;
+  --faint: #7a846f;
+  --moss: #526c38;
+  --lime: #38591f;
+  --accent-hover: #2b4717;
+  --ember: #9d412b;
 }
 * { box-sizing: border-box; }
 body { margin: 0; }
@@ -73,7 +88,7 @@ code { font-family: var(--mono); font-size: .9em; overflow-wrap: anywhere; }
 
 .topbar {
   max-width: 1344px; padding: 25px 48px; margin: auto;
-  display: flex; justify-content: space-between; align-items: center;
+  display: flex; justify-content: space-between; align-items: center; gap: 16px;
   background: var(--void); border-bottom: 1px solid var(--line);
 }
 .brand {
@@ -93,9 +108,12 @@ code { font-family: var(--mono); font-size: .9em; overflow-wrap: anywhere; }
   transition: background .15s, border-color .15s;
 }
 .dark, .accent-button { color: var(--void); background: var(--lime); }
-.dark:hover:not(:disabled), .accent-button:hover:not(:disabled) { background: #e1f9b4; }
+.dark:hover:not(:disabled), .accent-button:hover:not(:disabled) { background: var(--accent-hover); }
 .secondary { color: var(--bone); background: transparent; border-color: var(--line); }
 .secondary:hover:not(:disabled) { border-color: var(--moss); background: var(--panel-2); }
+.theme-toggle { gap: 8px; flex-shrink: 0; }
+.theme-toggle svg { width: 18px; height: 18px; flex-shrink: 0; }
+:root[data-theme="light"] .theme-icon-light, :root:not([data-theme="light"]) .theme-icon-dark { display: none; }
 .danger { color: var(--ember); border-color: var(--ember); background: transparent; }
 .danger:hover:not(:disabled) { background: var(--panel-2); }
 .text-button { padding: 3px 0; border: 0; background: none; color: var(--lime); font-size: inherit; text-decoration: underline; text-underline-offset: 4px; }
@@ -249,10 +267,13 @@ footer { display: flex; justify-content: space-between; gap: 24px; max-width: 12
   footer { padding-inline: 28px; flex-wrap: wrap; gap: 12px; }
 }
 @media (max-width: 600px) {
-  .topbar { padding: 18px 20px; }
+  .topbar { padding: 18px 20px; flex-wrap: wrap; gap: 12px; }
   .brand { font-size: 24px; gap: 8px; }
   .network { display: none; }
+  .connection { margin-left: auto; gap: 8px; }
   .connection .button { padding: 9px 11px; font-size: 12px; }
+  .connection .theme-toggle { width: 44px; padding: 10px; }
+  .theme-label { display: none; }
   main { padding: 0 18px; }
   .intro { display: block; padding: 40px 3px; }
   .intro .eyebrow { max-width: 290px; font-size: 10px; }

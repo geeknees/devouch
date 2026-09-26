@@ -8,6 +8,9 @@ console.log('Built dist/bridge.mjs');
 const web = await Bun.build({ entrypoints: ['web/main.ts'], target: 'browser', format: 'esm',
   outdir: 'dist/web', naming: 'app.js', minify: true });
 if (!web.success) { console.error(web.logs); process.exit(1); }
+const theme = await Bun.build({ entrypoints: ['web/theme.ts'], target: 'browser', format: 'iife',
+  outdir: 'dist/web', naming: 'theme.js', minify: true });
+if (!theme.success) { console.error(theme.logs); process.exit(1); }
 await Bun.write('dist/web/index.html', Bun.file('web/index.html'));
 await Bun.write('dist/web/style.css', Bun.file('web/style.css'));
 await Bun.write('dist/web/devouch-logo.svg', Bun.file('assets/devouch-logo.svg'));
