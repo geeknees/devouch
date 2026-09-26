@@ -54,6 +54,11 @@ The server binds only to loopback and serves only `dist/web/`.
 The same static directory can be hosted on an HTTPS origin; there is no server-side issuance endpoint.
 The [release runbook](docs/release-runbook.md) covers the prepared manual GitHub Pages workflow and public Action checks.
 
+To explore without a wallet, choose **Try without a wallet**, then **Retrieve from ENS**.
+The demo name is prefilled. The workspace displays the signed contributor, issuer, purpose, expiry,
+and publication transaction, and downloads the original JSON. Retrieval does not establish current validity;
+the CLI or Action evaluates it against a repository's policy.
+
 1. Acquire a direct `name.eth` on Sepolia using [the ENSv2 app](https://app.ens.dev/).
 2. In **ENS setup**, create a dedicated resolver, then connect the name. Both operations require your wallet's confirmation.
 3. In **Publish**, enter the contributor's GitHub numeric ID and expiry. Review, sign, and publish in separate steps.
@@ -136,6 +141,7 @@ bun run scripts/check-name.ts masusanou-dev.eth
 On Linux, install the test browser with `bunx playwright install --with-deps chromium`.
 Integration tests start a fresh loopback EVM, install pinned official ENS bytecode, and generate disposable accounts in memory.
 They make no public-chain writes. Browser tests cover explicit consent, cancellation, unknown delivery, reload/recovery, withdrawal, and mobile overflow.
+They also cover wallet-free retrieval and require a fresh review when a prepared or signed endorsement's inputs change.
 
 The release-owned `dist/bridge.mjs` avoids dependency installation in receiving PR jobs.
 After source changes, rebuild and include the updated `dist/` files.

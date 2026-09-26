@@ -19,7 +19,7 @@ CLI の4コマンドはチェーンへ取引を送信しない。**署名・公�
 
 検証する利用者にはウォレットやガスを求めない。推薦者は ENS 名・専用 resolver を用意し、公開・失効のガスを負担する。全工程に Devouch 運営者の登録 API や共有秘密鍵を置かない。
 
-初版は ENSv2 の既存コントラクト実装を利用する案である。名の用意と専用 resolver のデプロイ・初期化は、推薦者が初めて推薦を発行する前の準備に位置づける。公式 Factory を利用する流れと、ENS / CLI の責任分担は [既存コントラクトの利用とデプロイ](hackathon-data-model.md#既存コントラクトの利用とデプロイ)を参照する。
+初版は ENSv2 の既存コントラクト実装を利用する。名の用意と専用 resolver のデプロイ・初期化は、推薦者が初めて推薦を発行する前の準備に位置づける。公式 Factory を利用する流れと、ENS / CLI の責任分担は [既存コントラクトの利用とデプロイ](hackathon-data-model.md#既存コントラクトの利用とデプロイ)を参照する。
 
 ## 2. コマンド一覧
 
@@ -50,7 +50,7 @@ devouch revoke --credential PATH --output PATH [--rpc-url URL] [--json]
 
 引数なしの `devouch` は help を表示する。help と version は RPC 接続を必要としない。未知のコマンド・オプションは利用エラーにする。
 
-既存の [CLI 実装](../lib/devouch/cli.rb)は `credential create`、`ledger publish/revoke/resolve`、`delegate`、`commit` などを持つ別の版である。特に既存の `verify` と本書の `verify` は入力も終了コードも異なる。現行バイナリで本書の操作が動くとは扱わず、実装後の配布物と版を明記する。
+このリポジトリの [CLI 実装](../lib/devouch/cli.rb)は、上記の4コマンドを持つ推薦版 `0.1.0` である。`./exe/devouch --help` で確認できる。設計時に参照した委任・Git来歴の旧版は別実装であり、その `credential`、`ledger`、`delegate`、`commit` コマンドや入力形式は今回の配布物に含めない。
 
 ## 3. 共通の入出力
 
@@ -58,13 +58,13 @@ devouch revoke --credential PATH --output PATH [--rpc-url URL] [--json]
 
 Ruby 3.4以上のCLIとNode.js 24で実行するviem bundleを組み合わせる。Bun 1.3.13はbuild/test用で、CLI実行時には不要。ActionはRubyとNodeを用意し、同梱の `dist/bridge.mjs` を使う。未公開のgemやnpmパッケージはインストールせず、リポジトリ内の `exe/devouch` を実行する。
 
-接続設定は次の優先順位で選ぶ案とする。
+接続設定は次の優先順位で選ぶ。
 
 1. `--rpc-url URL`
 2. 環境変数 `DEVOUCH_RPC_URL`
 3. 配布物に明記した認証不要の既定 RPC
 
-既定 RPC の提供元と、必要な履歴を取得できるかは未確認。設定がない場合は設定エラー、接続先を選べたが応答・履歴を取得できない場合は `unavailable` とする。利用者に Devouch 専用アカウントや手動 secret の登録を必須にしない。
+既定 RPC は `https://sepolia.gateway.tenderly.co`。代替の `https://rpc.sepolia.ethpandaops.io` とともに、実デモの公開原本と履歴の検証を [確認した](demo-evidence.md#提出前の読み取り再確認)。これらの公開RPCの可用性・履歴保持を保証するものではない。応答・履歴を取得できない場合は `unavailable` とする。利用者に Devouch 専用アカウントや手動 secret の登録を必須にしない。
 
 8時間版の対応 chain は Sepolia、`chainId: 11155111` に限定する。RPC が別の chain を返したら処理を止める。CLI は秘密鍵を引数・環境変数・ファイルから受け取らず、`.env` を自動で読み込まない。認証情報を含む RPC URL は出力へ含めない。
 
@@ -178,7 +178,7 @@ devouch revoke --credential vouch.json --output revoke-request.json
 
 ウォレットから送信し、receipt と空の公開値を確認した後、同じ `vouch.json` を `verify` へ渡す。期待する結果は `revoked / not_evaluated`、終了コード `2` である。
 
-同じ record / key に新しい推薦を公開すると、古い推薦は失効するという案を維持する。`request` は既存の公開値を案とともに表示し、Web でも置換の影響を確認できるようにする。`revoke` の案が指す推薦と、送信直前の公開値が違えば、その案では送信しない。確認と送信の間に別の取引が確定する競合まで防ぐ、chain 上の条件付き更新は未設計である。
+同じ record / key に異なる推薦を公開すると、古い推薦は失効する。`request` は既存の公開値を依頼JSONの `previousValue` に保存し、Web は置換の影響を署名前に表示する。`revoke` の案が指す推薦と、送信直前の公開値が違えば、その案では送信しない。確認と送信の間に別の取引が確定する競合を完全に排除する条件付き更新は、利用しているENSコントラクトにはない。
 
 ## 6. コマンドごとの契約
 
@@ -192,7 +192,9 @@ devouch revoke --credential vouch.json --output revoke-request.json
 | `--expires-at` | 必須 | タイムゾーンを含む RFC 3339 形式の未来の時刻。表示は UTC、推薦には Unix 秒で保存 |
 | `--output` | 必須 | 未署名の案の保存先 |
 
-初版の用途は `oss-contribution` に固定する。`id`、`requestNonce`、`issuedAt`、公開先の情報と履歴開始 block を案へ含め、署名済み推薦と同じ意味で検査できるようにする。型の詳細は [推薦データ](hackathon-data-model.md#3-公開する推薦の構造)に従う。
+`--expires-at` は実在する日付、00〜23時、00〜59分・秒、有効なUTC offsetを指定する。存在しない日付・24時・うるう秒・範囲外の時差を別の時刻へ自動補正せず、`invalid_expiry` と終了コード4で拒否する。失敗時はRPCを呼ばず、依頼ファイルを保存しない。
+
+初版の用途は `oss-contribution` に固定する。`id`、`requestNonce`、`issuedAt`、公開先の情報と履歴開始 block を案へ含め、署名済み推薦と共通の項目検査を行う。型の詳細は [v1検証契約](protocol.md#公開原本と署名)に従う。
 
 作成時点の chain 情報は送信権限の予約ではない。署名・送信時に Web が chain、公開先、期限、ウォレットを再確認する。案を修正した場合は内容を再表示し、署名対象の変更は再署名する。
 
@@ -207,7 +209,7 @@ devouch revoke --credential vouch.json --output revoke-request.json
 
 既定では `devouch.vouch` の現在値を取得する。`publication.json` の内容は [公開位置の構造](hackathon-data-model.md#4-ens-にある状態と公開位置)に従い、receipt と公開イベントを再照合する。name と取得した推薦の公開先が一致しない場合は成功にしない。
 
-現在値が空なら `missing` とする。空であることだけから、特定の推薦が失効したとは決めない。過去の公開位置を持っていれば、失効後の本文を取得できる入口を用意する。
+現在値が空なら `fetch` は `publication_missing` と終了コード2を返す。空であることだけから、特定の推薦が失効したとは決めない。過去の公開位置を持っていれば、下のコマンドで失効後の本文を取得できる。
 
 ```bash
 devouch fetch \

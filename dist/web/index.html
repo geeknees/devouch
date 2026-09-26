@@ -28,7 +28,8 @@
     <section class="intro">
       <div class="intro-copy"><p class="eyebrow">A RECOMMENDATION, WITHOUT A GATEKEEPER</p><h1>Endorse once.<br><em>Let each community decide.</em></h1>
       <p class="lead">Give a collaborator a recommendation they can carry.<br>Publish it yourself. Withdraw it when things change.</p>
-      <div class="intro-note"><span class="small-mark">↳</span>Built for people and agents contributing to open source.</div></div>
+      <div class="intro-note"><span class="small-mark">↳</span>Built for people and agents contributing to open source.</div>
+      <div class="form-actions"><button class="button secondary" data-go="retrieve">Try without a wallet <span aria-hidden="true">↓</span></button><a href="https://github.com/geeknees/devouch" target="_blank" rel="noreferrer">Read the guide ↗</a></div></div>
       <div class="flow" aria-label="An issuer publishes one endorsement on ENS. Repositories A and B independently choose whether to accept it.">
         <div class="flow-top"><span class="flow-symbol">↗</span><span>YOUR RECOMMENDATION</span><span class="flow-count">01</span></div>
         <div class="flow-node">Your wallet <span>Signs &amp; publishes</span></div><div class="flow-line"></div>
@@ -60,7 +61,7 @@
               <label for="publish-name">Your ENS name</label><input id="publish-name" name="name" value="masusanou-dev.eth" placeholder="your-name.eth" required autocomplete="off" spellcheck="false">
               <p class="field-note">Use a name you own with a dedicated resolver. <button type="button" class="text-button" data-go="setup">First time? Set it up →</button></p>
               <div class="form-row"><div><label for="subject-id">Contributor’s GitHub numeric ID</label><input id="subject-id" name="subject" value="287365775" inputmode="numeric" pattern="[1-9][0-9]*" required><p class="field-note">Demo contributor: <a href="https://github.com/masusanou" target="_blank" rel="noreferrer">masusanou ↗</a></p></div>
-              <div><label for="expires">Valid until <span class="label-note">local time</span></label><input id="expires" type="datetime-local" required></div></div>
+              <div><label for="expires">Valid until <span class="label-note">local time</span></label><input id="expires" type="datetime-local" step="1" required></div></div>
               <div class="scope-box"><span class="scope-dot"></span><div><strong>Open-source collaboration</strong><p>I recommend this account as a constructive collaborator.</p></div><span class="scope-label">oss-contribution</span></div>
               <div class="form-actions"><button id="prepare" class="button dark" type="submit">Prepare endorsement <span>→</span></button><label class="file-link">Load CLI request <input id="request-file" type="file" accept=".json,application/json"></label></div>
             </form>
@@ -101,6 +102,8 @@
           </section>
           <section id="downloads" class="downloads" hidden>
             <div class="download-top"><span class="success-mark">↓</span><div><h3>Your portable record</h3><p id="download-description"></p></div></div>
+            <dl id="download-details" class="details"></dl>
+            <p><a id="publication-link" target="_blank" rel="noreferrer">View publication on Sepolia ↗</a></p>
             <div class="form-actions"><button id="download-vouch" class="button dark">Download endorsement ↓</button><button id="download-publication" class="text-button">Save publication position ↓</button></div>
             <details class="advanced"><summary>Receiving repository setup</summary><label for="repository-id">Repository</label><input id="repository-id" value="geeknees/devouch">
               <p class="field-note">The maintainer must independently choose to trust this issuer. This file is a policy example, not an approval.</p><button id="download-policy" class="button secondary">Download policy example ↓</button>

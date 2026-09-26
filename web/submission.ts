@@ -27,6 +27,15 @@ export function validatePending(input: unknown): Pending {
   return value as Pending;
 }
 
+export function isWalletRejection(error: unknown): boolean {
+  let current = error;
+  for (let depth = 0; depth < 6 && current && typeof current === 'object'; depth++) {
+    if ('code' in current && current.code === 4001) return true;
+    current = 'cause' in current ? current.cause : undefined;
+  }
+  return false;
+}
+
 export class Submission {
   pending: Pending | null;
   constructor(private save: (value: Pending | null) => void, initial: Pending | null = null) {
@@ -42,13 +51,9 @@ export class Submission {
       this.save(this.pending);
       return hash;
     } catch (error) {
-      let current: unknown = error;
-      for (let depth = 0; depth < 6 && current && typeof current === 'object'; depth++) {
-        if ('code' in current && current.code === 4001) {
-          this.complete();
-          throw new EvidenceError('wallet_rejected');
-        }
-        current = 'cause' in current ? current.cause : undefined;
+      if (isWalletRejection(error)) {
+        this.complete();
+        throw new EvidenceError('wallet_rejected');
       }
       throw new EvidenceError('submission_unknown', 'unavailable');
     }

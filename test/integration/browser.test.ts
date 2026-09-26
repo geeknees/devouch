@@ -1,5 +1,5 @@
 // ABOUTME: Exercises the real static UI with an injected test wallet and official ENS contracts.
-// ABOUTME: Covers consent, cancellation, publication, withdrawal, recovery, and mobile overflow.
+// ABOUTME: Covers consent, recovery, wallet-free retrieval, withdrawal, and mobile overflow.
 import { expect, test } from 'bun:test';
 import { chromium, expect as browserExpect } from '@playwright/test';
 import type { Address, Hex } from 'viem';
@@ -7,7 +7,7 @@ import { ChainReader } from '../../src/chain';
 import { parseCredential } from '../../src/credential';
 import { issuer, wallet, setupEvm, settle, testRpc, rpc } from '../support/evm';
 
-test('wallet UI handles rejection and unknown submission without losing the public operation', async () => {
+test('wallet UI recovers a publication that visitors can retrieve without a wallet', async () => {
   const fixture = await setupEvm();
   await settle();
   const site = Bun.spawn(['node', 'scripts/serve.ts', '0'], { stdout: 'pipe', stderr: 'pipe' });
@@ -58,11 +58,11 @@ test('wallet UI handles rejection and unknown submission without losing the publ
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
     await page.screenshot({ path: '/tmp/devouch-mobile.png', fullPage: true });
     await page.setViewportSize({ width: 1440, height: 1080 });
-    const connectRpc = async () => {
-      await page.locator('.rpc-settings summary').click();
-      await page.locator('#rpc-url').fill(testRpc);
-      await page.locator('#apply-rpc').click();
-      await browserExpect(page.locator('#status')).toContainText('Sepolia connection checked');
+    const connectRpc = async (target = page) => {
+      await target.locator('.rpc-settings summary').click();
+      await target.locator('#rpc-url').fill(testRpc);
+      await target.locator('#apply-rpc').click();
+      await browserExpect(target.locator('#status')).toContainText('Sepolia connection checked');
     };
     await connectRpc();
     await page.locator('#connect').click();
@@ -96,8 +96,43 @@ test('wallet UI handles rejection and unknown submission without losing the publ
     await page.locator('#download-vouch').click();
     const downloaded = await downloadPromise;
     const raw = await Bun.file((await downloaded.path())!).text();
-    expect((await parseCredential(raw)).message.subject).toBe('github:287365775');
+    const parsed = await parseCredential(raw);
+    expect(parsed.message.subject).toBe('github:287365775');
     expect((await new ChainReader(testRpc).inspect(await parseCredential(raw))).evidence_status).toBe('valid');
+
+    const visitor = await browser.newPage({ viewport: { width: 390, height: 844 } });
+    visitor.on('pageerror', error => pageErrors.push(error.message));
+    const externalRequests: string[] = [];
+    await visitor.route('**/*', async route => {
+      if ([url, testRpc].includes(new URL(route.request().url()).origin)) await route.continue();
+      else { externalRequests.push(route.request().url()); await route.abort(); }
+    });
+    await visitor.goto(url);
+    expect(await visitor.evaluate(() => typeof window.ethereum)).toBe('undefined');
+    await visitor.getByRole('button', { name: 'Try without a wallet' }).click({ timeout: 5000 });
+    await browserExpect(visitor.locator('#panel-retrieve')).toBeVisible();
+    await browserExpect(visitor.locator('[data-tab="retrieve"]')).toBeFocused();
+    await connectRpc(visitor);
+    await visitor.locator('#fetch-name').fill(fixture.name);
+    await visitor.getByRole('button', { name: 'Retrieve from ENS' }).click();
+    await browserExpect(visitor.locator('#downloads')).toBeVisible();
+    for (const value of [parsed.message.subject, parsed.message.issuer, fixture.name,
+      new Date(Number(parsed.message.expiresAt) * 1000).toISOString()]) {
+      await browserExpect(visitor.locator('#download-details')).toContainText(value);
+    }
+    await browserExpect(visitor.locator('#publication-link')).toHaveAttribute('href', 'https://sepolia.etherscan.io/tx/' + lastHash);
+    const retrievedDownload = visitor.waitForEvent('download');
+    await visitor.locator('#download-vouch').click();
+    expect(await Bun.file((await (await retrievedDownload).path())!).text()).toBe(raw);
+    expect(await visitor.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+    await visitor.screenshot({ path: '/tmp/devouch-retrieved-mobile.png', fullPage: true });
+    await visitor.locator('#fetch-name').fill('unsupported');
+    await visitor.getByRole('button', { name: 'Retrieve from ENS' }).click();
+    await browserExpect(visitor.locator('#status')).toContainText('direct name.eth');
+    await browserExpect(visitor.locator('#downloads')).toBeHidden();
+    expect(externalRequests).toEqual([]);
+    await visitor.close();
+
     disposition = 'send';
     await page.locator('[data-tab="revoke"]').click();
     await page.locator('#revoke-file').setInputFiles({ name: 'vouch.json', mimeType: 'application/json', buffer: Buffer.from(raw) });

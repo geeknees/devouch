@@ -24,13 +24,14 @@
 | Other tools | Bun, Node.js, GitHub Actions, Playwright, Minitest |
 | Prizes | **ENS のみ**選ぶ。ENS の欄は「ENS prize form fields」を使う。World は未統合なので選ばない |
 | AI tools | 「AI tool disclosure」を貼る |
-| Video | 別エージェントの作業で完成済み（ユーザー確認）。提出URLは未記録 |
+| Video | 完成済み（ユーザー確認）。提出サイトへ直接アップロードするため、別の公開URLは不要 |
 | Future | 「Future」を貼る |
 | Track / judging choice | Building from Scratch。事前設計資料を開示。Submission type は Top 10 Finalist & Partner Prizes を想定（決勝用の [台本](presentation/script.md) を用意済み）。最終判断は提出者 |
 
 Short descriptionは100文字以内。DescriptionとHow it's madeはそれぞれ280文字以上の下記原稿を使う。
 提供フォームでは動画は任意だが推奨、2〜4分、720p以上、音声あり・音楽なし。
 提出動画は別エージェントの作業で完成済みとユーザー確認（2026-09-26）。本作業での再収録は不要。
+同日のユーザー確認により、動画は提出サイトへ直接アップロードする。外部の動画公開URLは提出準備の必須項目にしない。
 公式の対面審査は4分デモ＋3分Q&A。[本番台本](presentation/script.md)と [提供されたルール](info/rules.md)を参照する。
 
 ## Project description
@@ -117,7 +118,7 @@ https://github.com/geeknees/devouch/blob/3214991e616e118d921ea9575d06d5e121b584f
 
 ## Future
 
-Next: support several active endorsements per recommender (today one resolver record holds one endorsement), copy-paste policy setup so maintainers don't handle resolver addresses by hand, a published Action release pinned by commit SHA, and a trial on a real open-source project. I will add proof of personhood such as World ID only if it can be verified without making a central service mandatory.
+Next: support several active endorsements per recommender (today one resolver record holds one endorsement), guide maintainers through choosing trusted issuers and configuring the published Action, and trial the workflow with an independent open-source project. The workspace already exports a policy example, and the Action is publicly available pinned by commit SHA. I will add proof of personhood such as World ID only if it can be verified without making a central service mandatory.
 
 ## Sepolia evidence
 
@@ -163,7 +164,7 @@ Devouch carries a reference; it does not turn that reference into automatic appr
 |---|---|
 | 公開コード / license / 配布SHA | MITあり、固定Actionの匿名取得を確認済み。[公開の検証記録](release-evidence.md) |
 | ライブデモURL | 公開済み：https://geeknees.github.io/devouch/ （2026-09-26 03:03 JST に HTTP 200 を確認）。配信5ファイルの一致と公開画面からのENS取得も確認 |
-| 動画URL | 別エージェントの作業で完成したとユーザー確認（2026-09-26）。提出URLは未記録 |
+| 動画（直接アップロード） | 完成済み（ユーザー確認、2026-09-26）。提出サイトに直接アップロード。別の公開URLは不要 |
 | ENSv2の実txと失効後のreadback | 公開txと2方針の検証は取得（上記）。失効後は未取得 |
 | agent名義の実PRとAction run | masusanouのPR #2とvalid / acceptedのActionは確認済み。人間名義の実PRと失効のPR検証は対象外 |
 | 別RPC・別ホストからの実操作 | ローカルUI経由の本人公開、2社RPCの検証を確認。別ホストの実操作は未実施 |
