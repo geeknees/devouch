@@ -10,6 +10,8 @@ Namespacesで名前と専用resolverを用意した後、推薦者のwalletで�
 
 例は `287365775.vouches.your-name.eth`。`your-name.eth` は所有する名前へ置き換える。下記の名前例は公開済みの実在記録を示すものではない。
 
+ラベルは数値IDに限らず、`masusanou`のような読みやすい名前も使える。公開済みの[masusanou.vouches.geeknees.eth](https://geeknees.github.io/devouch/?name=masusanou.vouches.geeknees.eth#verify)では、署名対象を別項目の`github:287365775`で特定する。名前を変更する場合は新しいサブネームを登録し、専用resolverと新しい推薦を作る。既存名や保存した署名の文字列を書き換えて移行はできない。
+
 1. **Parent ENS name** に `your-name.eth` を入力し **Inspect parent**。所有者と既存child registryを確認する。
 2. child registryが未接続なら **Create child registry** → **Set parent link** → **Connect child registry**。三つの取引を一つずつ確認する。既存registryが対応していればこの三つは不要。
 3. **One label** に `vouches`、親の期限内の有効期限を設定して **Register subname**。
