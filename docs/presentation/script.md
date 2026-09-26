@@ -353,8 +353,8 @@ Web は `github-<数値ID>.json` という名前で保存する。同名のフ�
 
 ### What about AI agents opening PRs? / AI エージェントの PR は？
 
-- **EN:** An agent with its own GitHub account / can get a vouch, / **just like a person.** / In version 0.2, / an agent can also have / its own **ENS subname,** / with only the permissions / I give it.
-- **JA:** 自分の GitHub アカウントを持つエージェントも、人と同じように推薦を受けられます。v0.2 では、エージェントが自分の ENS のサブネームを持ち、私が渡した権限だけを使えます。
+- **EN:** An agent with its own GitHub account / can get a vouch, / **just like a person.** / An agent can also have / its own **ENS subname,** / with only the permissions / I give it.
+- **JA:** 自分の GitHub アカウントを持つエージェントも、人と同じように推薦を受けられます。エージェントは自分の ENS のサブネームも持てて、私が渡した権限だけを使えます。
 
 ### Costs and privacy? / コストとプライバシーは？
 
@@ -363,5 +363,5 @@ Web は `github-<数値ID>.json` という名前で保存する。同名のフ�
 
 ### What's next? / 今後は？
 
-- **EN:** Version 0.2 already adds / **one subname per vouch** / and agents as namespaces. / Taking back one vouch / already works / on Sepolia. / Next: / try it / with a **real** open-source project.
-- **JA:** 推薦ごとのサブネームと、エージェントの名前空間は v0.2 で入りました。1件だけの取り消しも、Sepolia で動いています。次は、実際の OSS で試すことです。
+- **EN:** Each vouch / already has / **its own subname,** / and agents / have their own names. / Taking back one vouch / works on Sepolia. / Next: / try it / with a **real** open-source project.
+- **JA:** 推薦ごとのサブネームと、エージェントの名前空間はもう動いています。1件だけの取り消しも、Sepolia で動いています。次は、実際の OSS で試すことです。

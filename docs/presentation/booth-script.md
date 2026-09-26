@@ -82,11 +82,11 @@ Then let the captions speak. If the judge looks at you, read the caption aloud o
 
 `[DEMO]` If asked, open [`vendor/ens-v2/README.md`](../../vendor/ens-v2/README.md) and show where the pinned official Sepolia contracts come from. No new contract was written.
 
-### New in 0.2: subnames and agent namespaces (ENS judges)
+### ENSv2 namespaces: subnames and agents (ENS judges)
 
 `[DEMO]` Open the agent page without a wallet: https://geeknees.github.io/devouch/?agent=masusanou.vouches.geeknees.eth#namespaces
 
-> Version 0.2 / gives each vouch / its **own subname.**
+> Each vouch / gets / its **own subname.**
 > So I can vouch / for many people, / and take back / just one.
 > An AI agent / can have / its **own ENS name,** / too.
 > I give it / only the permissions / it needs.
@@ -155,7 +155,7 @@ Be exact about what is live: the namespace, the agent identity and the subname e
 ### 深掘り（聞かれたら）
 
 - **なぜ ENSv2？:** 推薦はサーバーではなく ENS にあります。resolver は私のもので、Devouch 運営者の承認なしに公開も取り消しもできます。補助のウォレットに、一つの text key だけの権限を渡せます。記録の履歴を読むので、古い推薦は戻りません。聞かれたら `vendor/ens-v2/README.md` で、固定した公式コントラクトの出どころを見せる。新しいコントラクトは書いていない。
-- **v0.2 の新機能（ENS の審査員向け）:** 推薦ごとに自分のサブネームを持てるので、何人でも推薦でき、1件だけ取り消せます。AI エージェントも自分の ENS の名前を持ち、私が渡した権限だけを使えます。このエージェントは Sepolia 上に実在します（ウォレットなしで開けるページを見せる）。本物のウォレットで Sepolia に作ったのは、名前空間、エージェントの ID、サブネームの推薦（`masusanou.vouches.geeknees.eth`）。サブネームの推薦を1件だけ取り消すことも、Sepolia で確認済み（古いテスト用のサブネームだけが revoked になり、他は valid のまま）。エージェントに1項目の権限を渡し、エージェントが書き換え、権限を取り消す流れも Sepolia で確認済み（取り消し後の書き換えは拒否される）。ローカルだけの証拠は「古い記録を書き戻しても復活しない」ことだけ。
+- **ENSv2 の名前空間（ENS の審査員向け）:** 推薦ごとに自分のサブネームを持てるので、何人でも推薦でき、1件だけ取り消せます。AI エージェントも自分の ENS の名前を持ち、私が渡した権限だけを使えます。このエージェントは Sepolia 上に実在します（ウォレットなしで開けるページを見せる）。本物のウォレットで Sepolia に作ったのは、名前空間、エージェントの ID、サブネームの推薦（`masusanou.vouches.geeknees.eth`）。サブネームの推薦を1件だけ取り消すことも、Sepolia で確認済み（古いテスト用のサブネームだけが revoked になり、他は valid のまま）。エージェントに1項目の権限を渡し、エージェントが書き換え、権限を取り消す流れも Sepolia で確認済み（取り消し後の書き換えは拒否される）。ローカルだけの証拠は「古い記録を書き戻しても復活しない」ことだけ。
 - **検証の仕組み:** 署名・期限・ENS の記録を確認します。最新から2ブロック前の状態を読みます。そのあと、リポジトリの方針が判断します。
 - **サイトがなくなったら？:** Web は静的なので、自分のパソコンで、好きな RPC で動かせます。CLI は ENS を直接読みます。
 - **含まないもの:** コードレビューの代わりにはなりません。示すのは、誰があなたを推薦しているかです。
