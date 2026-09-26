@@ -25,6 +25,8 @@
 
 `agents.your-name.eth` → `agent.agents.your-name.eth` のように同じ登録手順を使う。最終名のresolver作成前に **Include an agent identity** を選び、エージェントのGitHub数値IDと公開walletアドレスを入力する。controllerは名前を所有する発行者walletになる。
 
+この二つの入力は選択時に必須。GitHub欄には数値だけを実際に入力する。欄外の例は初期値ではなく、GitHub名や`github:`接頭辞は入力しない。空欄や形式の誤りは、取引を送る前に該当する項目名で案内する。
+
 初期化は `devouch.agent` とETHアドレス、空の `devouch.vouch` を同時に保存する。identityはcontrollerの宣言であり、GitHubアカウント所有、人間性、コード品質、GitHub操作権限の証明ではない。人間性は常に `human verification: not included`。
 
 下部の **Inspect agent** はwalletなしでidentityと現在の権限を読む。共有欄の `?agent=...#namespaces` を開いた利用者も **Inspect agent** から同じ確認ができる。

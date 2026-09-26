@@ -3,7 +3,7 @@
 import { zeroAddress } from 'viem';
 import { ChainReader } from '../src/chain';
 import { address, strictJson } from '../src/credential';
-import { insist } from '../src/errors';
+import { EvidenceError, insist } from '../src/errors';
 import type { WalletSession } from './wallet';
 
 type Result = Awaited<ReturnType<WalletSession['recover']>>;
@@ -79,9 +79,16 @@ export function initializeNamespaces(hooks: Hooks) {
     target('namespace-parent-details').replaceChildren(); save(); preview();
     hooks.status('Use this subname as the next parent. Create its child registry, then register a contributor ID or agent label.');
   });
-  write('namespace-record-deploy', 'Creating an independent resolver for this subname…', session => session.deploy(record(),
-    field('namespace-agent-mode').checked ? { subject: 'github:' + field('namespace-agent-subject').value.trim(),
-      wallet: address(field('namespace-agent-wallet').value.trim()) } : undefined));
+  const agentIdentity = () => {
+    if (!field('namespace-agent-mode').checked) return undefined;
+    const id = field('namespace-agent-subject').value.trim();
+    insist(/^[1-9][0-9]{0,19}$/.test(id), 'invalid_agent_subject');
+    let wallet;
+    try { wallet = address(field('namespace-agent-wallet').value.trim()); }
+    catch { throw new EvidenceError('invalid_agent_wallet'); }
+    return { subject: 'github:' + id, wallet };
+  };
+  write('namespace-record-deploy', 'Creating an independent resolver for this subname…', session => session.deploy(record(), agentIdentity()));
   write('namespace-record-bind', 'Connecting the subname to its publishing record…', session => {
     insist(field('namespace-record-consent').checked, 'consent_required');
     return session.bind(record(), address(field('namespace-resolver').value.trim()));

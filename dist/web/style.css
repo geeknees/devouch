@@ -423,6 +423,7 @@ body:is([data-view="verify"], [data-view="maintainers"]) .workspace-body { grid-
 .namespace-lookup { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 12px; }
 .namespace-lookup .button { min-height: 46px; white-space: nowrap; }
 .namespace-details:empty { display: none; }
+#namespace-agent-fields input { margin-bottom: 16px; }
 .namespace-preview { overflow-wrap: anywhere; font: 13px/1.7 var(--mono); color: var(--lime); }
 .hierarchy-details { white-space: pre-line; }
 .maintainer-candidate { margin-top: 22px; padding: 20px; border: 1px solid var(--line); border-radius: 5px; overflow-wrap: anywhere; }

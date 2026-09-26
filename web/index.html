@@ -156,7 +156,11 @@
               <button id="namespace-use-parent" class="text-button" type="button">Use as parent to create another level ↑</button>
               <p class="field-note">For a final contributor or agent name, create its independent publishing record below.</p>
               <label class="consent"><input id="namespace-agent-mode" type="checkbox"><span>Include an agent identity. The controller declares its GitHub account and wallet; this does not prove account ownership.</span></label>
-              <div id="namespace-agent-fields" hidden><label for="namespace-agent-subject">Agent’s GitHub numeric ID</label><input id="namespace-agent-subject" inputmode="numeric" placeholder="287365775"><label for="namespace-agent-wallet">Agent’s public wallet address</label><input id="namespace-agent-wallet" placeholder="0x…" spellcheck="false"></div>
+              <div id="namespace-agent-fields" hidden>
+                <p class="field-note">Enter both fields to include an agent identity. Example GitHub ID: <code>287365775</code> for masusanou.</p>
+                <label for="namespace-agent-subject">Agent’s GitHub numeric ID <span class="label-note">Required</span></label><input id="namespace-agent-subject" inputmode="numeric" placeholder="Enter the numeric ID">
+                <label for="namespace-agent-wallet">Agent’s public wallet address <span class="label-note">Required</span></label><input id="namespace-agent-wallet" placeholder="Enter the full 0x address" spellcheck="false">
+              </div>
               <button id="namespace-record-deploy" class="button secondary" data-wallet-write type="button">Create independent resolver ↗</button>
               <label for="namespace-resolver">Resolver address</label><input id="namespace-resolver" placeholder="0x… from the confirmed deployment" spellcheck="false">
               <label class="consent"><input id="namespace-record-consent" type="checkbox"><span>Connect this resolver to this subname. Replacing an existing resolver invalidates its earlier endorsements.</span></label>

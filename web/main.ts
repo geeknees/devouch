@@ -99,6 +99,8 @@ function errorMessage(error: unknown) {
     name_already_registered: 'That label is already registered. Inspect the existing subname or choose another label.',
     invalid_namespace_label: 'Enter one normalized label without dots.',
     invalid_expiry: 'Choose a future expiry within every parent name’s expiry.',
+    invalid_agent_subject: 'Enter the agent’s numeric GitHub ID in the agent identity fields. Example: 287365775. The name or github: prefix is not needed.',
+    invalid_agent_wallet: 'Enter the agent’s full public wallet address in the agent identity fields, or uncheck Include an agent identity.',
     agent_identity_missing: 'This resolver has no controller-published agent identity.',
     agent_identity_mismatch: 'The agent identity does not match the name, controller, or wallet.',
     agent_resolver_shared: 'This agent needs a resolver used only for its own name. A shared text-key grant would also affect other records.',
