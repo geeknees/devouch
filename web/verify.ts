@@ -5,8 +5,10 @@ import { strictJson } from '../src/credential';
 import { EvidenceError } from '../src/errors';
 import { lookupIssuerName } from '../src/identity';
 import { publicationHint } from '../src/operations';
-import { evaluatePolicy, parsePolicy, type PolicyEvidence } from '../src/policy';
+import { evaluatePolicy, parsePolicy, type PolicyEvidence, type PolicyDecision, type RepositoryPolicy } from '../src/policy';
+import type { IssuerIdentity } from '../src/identity';
 import { initializePullRequestVerification } from './verify-pr';
+import { initializeTrustMap, type TrustMapPolicy } from './trust-map';
 
 type Verified = Awaited<ReturnType<ChainReader['verifyName']>>;
 const element = <T extends HTMLElement = HTMLElement>(id: string) => document.getElementById(id) as T;
@@ -27,21 +29,25 @@ export function verificationUrl(base: string, name: string, publication?: Public
 
 export function initializeVerification(getRpc: () => string) {
   const pullRequest = initializePullRequestVerification(getRpc);
+  const map = initializeTrustMap(element('verify-trust-map'));
   let verified: Verified | null = null, evidence: PolicyEvidence | null = null;
+  let identity: IssuerIdentity | undefined;
   let checking = false, revision = 0, linkPublication: Publication | undefined;
   const controls = element<HTMLFieldSetElement>('verify-inputs');
   const panel = element('panel-verify');
   const status = (message: string) => { text('verify-status', message); };
 
   function compare() {
+    const policies: TrustMapPolicy[] = [];
     for (const side of ['a', 'b']) {
       const prefix = 'verify-policy-' + side;
-      let decision = { policy_status: 'not_evaluated', reason_codes: evidence?.reason_codes ?? [] };
+      let decision: PolicyDecision = { policy_status: 'not_evaluated', reason_codes: evidence?.reason_codes ?? [] };
+      let policy: RepositoryPolicy | null = null;
       if (verified && evidence) {
         const m = verified.parsed.message;
         try {
           const issuers = element<HTMLTextAreaElement>(prefix + '-issuers').value.split(/[\s,]+/).filter(Boolean);
-          const policy = parsePolicy(JSON.stringify({ repositoryId: 'demo/repo-' + side, chainId: 11155111,
+          policy = parsePolicy(JSON.stringify({ repositoryId: 'demo/repo-' + side, chainId: 11155111,
             trustedIssuers: issuers, allowedScopes: [m.scope],
             allowedResolvers: [{ address: m.resolver, implementation: verified.evidence.implementation }], requiredIssuers: 1 }));
           decision = evaluatePolicy(policy, evidence);
@@ -53,11 +59,15 @@ export function initializeVerification(getRpc: () => string) {
         ? 'The issuer, scope, and resolver match this example policy.' : 'Verify an endorsement first.'));
       element<HTMLTextAreaElement>(prefix + '-issuers').disabled = !verified;
       panel.querySelector<HTMLButtonElement>('[data-trust-issuer="' + side + '"]')!.disabled = !verified;
+      policies.push({ id: 'policy-' + side, title: 'Repository ' + side.toUpperCase(), policy, decision, editTarget: prefix + '-issuers' });
     }
+    if (verified && evidence) map.update({ message: verified.parsed.message,
+      evidence: { ...evidence, snapshot: verified.evidence.snapshot }, identity, policies });
+    else map.clear();
   }
 
   function clear() {
-    revision++; verified = null; evidence = null;
+    revision++; verified = null; evidence = null; identity = undefined; map.clear();
     element('verify-result').hidden = true;
     element('verify-record').hidden = true;
     element('verify-share').hidden = true;
@@ -116,13 +126,15 @@ export function initializeVerification(getRpc: () => string) {
       compare();
       try { history.replaceState(null, '', link); } catch { /* Sharing still works when history access is restricted. */ }
       status('Evidence checked at the block below. Edit either example policy to compare decisions on this same evidence.');
-      const identity = await lookupIssuerName(reader.client, m.issuer, BigInt(proof.snapshot.block_number));
+      const foundIdentity = await lookupIssuerName(reader.client, m.issuer, BigInt(proof.snapshot.block_number));
       if (ownRevision !== revision) return;
+      identity = foundIdentity;
       text('verify-vouched-by', 'Vouched by ' + (identity.name ?? m.issuer));
       text('verify-name-status', identity.status === 'resolved'
         ? (identity.name === m.recordName ? 'Primary ENS name matches the publication name.' : 'The issuer’s primary ENS name differs from the publication name shown below.')
         : identity.status === 'not_set' ? 'No matching primary ENS name is set. Showing the issuer address.'
           : 'Primary ENS name lookup is unavailable. Showing the issuer address; evidence is unchanged.');
+      compare();
     } catch (error) {
       if (ownRevision !== revision) return;
       const failure = error instanceof EvidenceError ? error : new EvidenceError('verification_unavailable', 'unavailable');

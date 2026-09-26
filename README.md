@@ -72,6 +72,13 @@ It shows the actual repository decision, ENS issuer name, checked commits, polic
 **Copy link** lets another visitor repeat the live check without a wallet or GitHub login.
 This reads public JSON only; it does not execute PR code, update GitHub checks, or approve a merge.
 
+Both verification views include an interactive **Trust map** connecting the signer, ENS publication,
+signed GitHub subject, and repository decisions. Select a node to inspect its address, snapshot, or policy reasons;
+the ENS name and publication name remain separate. In the example comparison, select **Repository B** and
+**Edit trusted issuers** to see its branch change from rejected to accepted. In PR mode, the repository node links
+to the policy at the checked base commit. The map uses the existing verification result and makes no extra requests;
+it describes the one endorsement and the independent policies in the current check.
+
 To explore without a wallet, choose **Try without a wallet**, then **Retrieve from ENS**.
 The demo name is prefilled. The workspace displays the signed contributor, issuer, purpose, expiry,
 and publication transaction, and downloads the original JSON. Retrieval does not establish current validity;

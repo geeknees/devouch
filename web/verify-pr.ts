@@ -4,6 +4,7 @@ import { ChainReader } from '../src/chain';
 import { GitHubError, parsePullRequestUrl } from '../src/github';
 import { lookupIssuerName } from '../src/identity';
 import { verifyPullRequest } from '../src/pull-request';
+import { initializeTrustMap } from './trust-map';
 
 const element = <T extends HTMLElement = HTMLElement>(id: string) => document.getElementById('verify-pr-' + id) as T;
 const text = (id: string, value: string) => { element(id).textContent = value; };
@@ -18,10 +19,11 @@ export function pullRequestVerificationUrl(base: string, input: string) {
 }
 
 export function initializePullRequestVerification(getRpc: () => string) {
+  const map = initializeTrustMap(element('trust-map'));
   let revision = 0, checking = false, controller: AbortController | undefined;
   const controls = element<HTMLFieldSetElement>('inputs'), input = element<HTMLInputElement>('url');
   function clear() {
-    revision++; controller?.abort();
+    revision++; controller?.abort(); map.clear();
     element('result').hidden = true; element('share').hidden = true; element('record').hidden = true;
     element('vouched-by').hidden = true; text('name-status', '');
   }
@@ -67,12 +69,17 @@ export function initializePullRequestVerification(getRpc: () => string) {
       const shared = pullRequestVerificationUrl(location.href, pr.url);
       element<HTMLInputElement>('share-url').value = shared; link('share-link', shared); text('copy-status', '');
       element('result').hidden = false; element('share').hidden = false;
+      const mapReport = message ? { message, evidence: proof, author: { subject: report.subject, login: pr.authorLogin },
+        policies: [{ id: 'policy-repo', title: pr.repository, policy: report.policy, decision: report.decision,
+          source: { url: element<HTMLAnchorElement>('policy-source').href, baseSha: pr.baseSha, digest: report.policyDigest } }] } : null;
+      if (mapReport) map.update(mapReport);
       try { history.replaceState(null, '', shared); } catch { /* The visible share link remains available. */ }
       text('status', 'Checked the commits below. Verify again to refresh PR commits and ENS state. This does not update GitHub checks or approve a merge.');
       if (message && proof.snapshot) {
         text('name-status', 'Looking up the issuer’s primary ENS name…');
         const identity = await lookupIssuerName(reader.client, message.issuer, BigInt(proof.snapshot.block_number));
         if (ownRevision !== revision) return;
+        if (mapReport) map.update({ ...mapReport, identity });
         text('vouched-by', 'Vouched by ' + (identity.name ?? message.issuer));
         text('name-status', identity.status === 'resolved'
           ? (identity.name === message.recordName ? 'Primary ENS name matches the publication name.' : 'The primary ENS name differs from the publication name below.')

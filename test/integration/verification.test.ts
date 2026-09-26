@@ -67,10 +67,39 @@ test('a shared mobile URL verifies once and compares two policies without a wall
     await browserExpect(page.locator('#connect')).toBeHidden();
     expect(await page.evaluate(() => typeof window.ethereum)).toBe('undefined');
     const checkedBlock = await page.locator('#verify-block').textContent(), checkedCalls = calls;
+    const map = page.locator('#verify-trust-map');
+    await browserExpect(map).toBeVisible({ timeout: 1500 });
+    await browserExpect(map.locator('.trust-map-details')).toBeHidden();
+    await browserExpect(map.locator('[data-trust-node="issuer"]')).toContainText('issuer-primary.eth');
+    await browserExpect(map.locator('[data-trust-node="publication"]')).toContainText(fixture.name);
+    await browserExpect(map.locator('[data-trust-node="endorsement"]')).toHaveAttribute('data-state', 'valid');
+    await browserExpect(map.locator('[data-trust-node="policy-a"]')).toHaveAttribute('data-state', 'accepted');
+    await browserExpect(map.locator('[data-trust-node="policy-b"]')).toHaveAttribute('data-state', 'rejected');
+    await browserExpect(map.locator('[data-trust-edge]')).toHaveCount(4);
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    expect(await map.locator('[data-trust-node]').evaluateAll(nodes => nodes.every(node => getComputedStyle(node).animationName === 'none'))).toBe(true);
+    await page.emulateMedia({ reducedMotion: 'no-preference' });
+    await map.locator('[data-trust-node="issuer"]').focus();
+    await page.keyboard.press('Enter');
+    await browserExpect(map.locator('.trust-map-details')).toBeVisible();
+    await browserExpect(map.locator('.trust-map-details')).toContainText(issuer.address);
+    await browserExpect(map.locator('.trust-map-details')).toContainText('Primary ENS name differs from the publication name.');
+    await page.keyboard.press('Tab'); await page.keyboard.press('Space');
+    await browserExpect(map.locator('[data-trust-node="publication"]')).toHaveAttribute('aria-pressed', 'true');
+    await browserExpect(map.locator('.trust-map-details')).toContainText(fixture.resolver);
+    await map.locator('[data-trust-node="policy-b"]').click();
+    await browserExpect(map.locator('.trust-map-details')).toContainText('issuer_not_trusted');
+    await map.getByRole('button', { name: 'Edit trusted issuers' }).click();
+    await browserExpect(page.locator('#verify-policy-b-issuers')).toBeFocused();
     await page.locator('#verify-policy-b-issuers').fill(issuer.address);
     await browserExpect(page.locator('#verify-policy-b-status')).toHaveText('accepted');
+    await browserExpect(map.locator('[data-trust-node="policy-b"]')).toHaveAttribute('data-state', 'accepted');
+    await browserExpect(map.locator('[data-trust-edge="policy-b"]')).toHaveAttribute('data-state', 'accepted');
+    await browserExpect(map.locator('.trust-map-details')).not.toContainText('issuer_not_trusted');
     await page.locator('#verify-policy-b-issuers').fill('invalid address');
     await browserExpect(page.locator('#verify-policy-b-status')).toHaveText('not_evaluated');
+    await browserExpect(map.locator('[data-trust-node="policy-b"]')).toHaveAttribute('data-state', 'not_evaluated');
+    await browserExpect(map.locator('.trust-map-details')).toContainText('invalid_policy');
     await browserExpect(page.locator('#verify-policy-b-reasons')).toContainText('invalid_policy');
     await page.locator('#verify-policy-b-issuers').fill('');
     await page.locator('[data-trust-issuer="b"]').click();
@@ -87,6 +116,7 @@ test('a shared mobile URL verifies once and compares two policies without a wall
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
     await page.locator('#verify-name').fill('another.eth');
     await browserExpect(page.locator('#verify-result')).toBeHidden();
+    await browserExpect(map).toBeHidden();
     await page.locator('#verify-name').fill(fixture.name);
     for (const mode of ['absent', 'failure'] as const) {
       nameMode = mode;
@@ -95,12 +125,16 @@ test('a shared mobile URL verifies once and compares two policies without a wall
       await browserExpect(page.locator('#verify-vouched-by')).toHaveText('Vouched by ' + issuer.address);
       await browserExpect(page.locator('#verify-submit')).toBeEnabled();
       await browserExpect(page.locator('#verify-policy-a-status')).toHaveText('accepted');
+      await map.locator('[data-trust-node="issuer"]').click();
+      await browserExpect(map.locator('.trust-map-details')).toContainText(issuer.address);
+      await browserExpect(map).not.toContainText('issuer-primary.eth');
     }
     rpcFailed = true;
     await page.locator('#verify-submit').click();
     await browserExpect(page.locator('#verify-evidence-status')).toHaveText('unavailable');
     await browserExpect(page.locator('#verify-policy-a-status')).toHaveText('not_evaluated');
     await browserExpect(page.locator('#verify-vouched-by')).toBeHidden();
+    await browserExpect(map).toBeHidden();
     rpcFailed = false;
     const revoke = await wallet.sendTransaction({ to: fixture.resolver, data: setTextData(fixture.name, '') });
     await publicClient.waitForTransactionReceipt({ hash: revoke }); await settle();
@@ -109,9 +143,13 @@ test('a shared mobile URL verifies once and compares two policies without a wall
     await browserExpect(page.locator('#verify-signature-status')).toHaveText('valid');
     await browserExpect(page.locator('#verify-policy-a-status')).toHaveText('not_evaluated');
     await browserExpect(page.locator('#verify-policy-b-status')).toHaveText('not_evaluated');
+    await browserExpect(map.locator('[data-trust-node="endorsement"]')).toHaveAttribute('data-state', 'revoked');
+    await browserExpect(map.locator('[data-trust-node="issuer"]')).toHaveAttribute('data-state', 'valid');
+    await browserExpect(map.locator('[data-trust-node="policy-a"]')).toHaveAttribute('data-state', 'not_evaluated');
     expect(await page.locator('#verify-share-link').getAttribute('href')).toContain('publication=');
     await page.goto(url + '/?name=' + fixture.name + '#verify');
     await browserExpect(page.locator('#verify-evidence-status')).toHaveText('missing');
+    await browserExpect(map).toBeHidden();
     await browserExpect(page.locator('#verify-policy-a-status')).toHaveText('not_evaluated');
     const now = (await publicClient.getBlock()).timestamp;
     const expiredMessage = { ...message, id: `0x${'93'.repeat(32)}` as const, requestNonce: `0x${'94'.repeat(32)}` as const,
@@ -122,6 +160,7 @@ test('a shared mobile URL verifies once and compares two policies without a wall
     await publicClient.waitForTransactionReceipt({ hash: expiredHash }); await settle();
     await page.locator('#verify-submit').click();
     await browserExpect(page.locator('#verify-evidence-status')).toHaveText('expired');
+    await browserExpect(map.locator('[data-trust-node="endorsement"]')).toHaveAttribute('data-state', 'expired');
     await browserExpect(page.locator('#verify-signature-status')).toHaveText('valid');
     await browserExpect(page.locator('#verify-policy-a-status')).toHaveText('not_evaluated');
     await browserExpect(page.locator('#verify-submit')).toBeEnabled();
@@ -131,6 +170,7 @@ test('a shared mobile URL verifies once and compares two policies without a wall
     await page.locator('#verify-submit').click();
     await browserExpect(page.locator('#verify-evidence-status')).toHaveText('invalid');
     await browserExpect(page.locator('#verify-signature-status')).toHaveText('invalid');
+    await browserExpect(map).toBeHidden();
     await browserExpect(page.locator('#verify-policy-b-status')).toHaveText('not_evaluated');
     await browserExpect(page.locator('#verify-vouched-by')).toBeHidden();
     await page.locator('[data-tab="publish"]').click();
