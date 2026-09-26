@@ -23,6 +23,49 @@ Building from Scratch の適格性を運営が確認したとは扱わない。
 | README、導入手順、ライセンス、提出・デモ資料 | コマンド再実行とリンク検査 | 作成・更新済み。提出画像草案5点。動画は完成済みとユーザー確認（2026-09-26）。提出サイトへ直接アップロードするため、別の公開URLは不要 |
 | 公開コード・配布 SHA・静的 live URL | 公開先の readback | repoとPagesを公開。操作改善版の配信10ファイルと固定Actionの匿名取得・一致、全タブ、ウォレットなしでの実ENS原本取得を確認。[公開記録](release-evidence.md) |
 
+## PRのURLからの検証（2026-09-26）
+
+Verify内に **ENS name / Pull request URL** の切り替えを追加した。
+共有URL: https://geeknees.github.io/devouch/?pr=https%3A%2F%2Fgithub.com%2Fgeeknees%2Fdevouch%2Fpull%2F2#verify
+
+公開PRの作者IDをGitHubから取得し、base SHAの `.devouch/policy.json` と、head SHAの
+`.devouch/vouches/github-<author-id>.json` を読み取る。PR側の方針は採用しない。
+`parseCredential`、`ChainReader.inspect`、Rubyとの共通fixtureを持つ `evaluatePolicy` をそのまま再利用し、
+署名されたsubjectとPR作者の一致、ENS履歴・snapshot、repoの採否を確認する。
+実際の方針、policy digest、base/head SHA、ENS名と公開名、署名、期限、ブロックを表示する。
+
+GitHub通信は認証なしのGETだけ。公開repo専用で、token入力、PRコードの実行、GitHubへの書き込みはない。
+PR未取得・方針未設定・不正方針・通信やrate limitの失敗では採否を出さない。
+推薦がない場合は `missing / not_evaluated`、作者不一致は `invalid / not_evaluated` とし、理由コードを表示する。
+過去のAction結果の更新やmerge承認ではなく、表示したコミットと現在のENS状態の新しい読み取りであることを明記する。
+GitHubの[PR API](https://docs.github.com/en/rest/pulls/pulls#get-a-pull-request)と
+[Contents API](https://docs.github.com/en/rest/repos/contents#get-repository-content)の公開リソースを使う。
+匿名APIの[レート制限](https://docs.github.com/en/rest/using-the-rest-api/rate-limits-for-the-rest-api)はIP単位の60回/時。
+通常のPR検証は3回のGETで、CORSプリフライトの許可も実APIで確認した。
+
+### ローカル配布物から実GitHub・Sepoliaを確認
+
+- 確認日時: 2026-09-26 10:57 JST（画面のchecked_at: `2026-09-26T01:57:45.604Z`）。
+- PR: https://github.com/geeknees/devouch/pull/2 。作者 `@masusanou` / `github:287365775`。
+- base SHA: `3214991e616e118d921ea9575d06d5e121b584f4`、head SHA: `7ac246f17c441833cb3ece244cdf1377fe35e003`。
+- policy digest: `sha256:ce77f04b8a1679ab784528a7feec24e0d3779c0d3b045b25950cea939ee9f653`。
+- Sepolia block `11783136`、hash `0x23ff43e678b65ac4cb4be0e7bb14e2510fa7b9404838b23ad5207188d26cf2bf`。
+- Chromeの390px・タッチ端末エミュレーションでURLから自動検証し、signature/evidence valid、subject一致、policy accepted、`Vouched by masusanou-dev.eth` を確認。
+- PR検証はGitHub GET 3回・RPC 32回。署名・取引なし、walletなし、JavaScriptエラー0件。
+- dark/light × 320 / 390 / 600 / 768 / 1024 / 1440pxの12レイアウトに横溢れなし。
+- そのままENS nameへ切り替え、実推薦valid・A accepted / B rejected、Bへの追加でacceptedを確認。
+- `.devouch/policy.json` と `.devouch/local/demo/` の5つのJSONは作業前のSHA-256を維持。PR #2への変更・Action再実行は行っていない。
+
+### 自動検証
+
+- Ruby 52 tests / 179 assertions、TypeScript 91 tests / 200 assertions、結合24 tests / 216 Bun assertionsが成功（合計167 tests）。結合テスト内のPlaywright assertionsも成功。
+- 追加テストは固定SHAと作者照合、別repo方針の拒否、署名不正、失効・期限切れ、推薦なし、GitHubの失敗・サイズ・UTF-8、共有URLの不要情報除去を確認。
+- ブラウザでは実ローカルENSの署名・履歴を使用し、GitHub応答と任意のENS逆引きだけをstubにする。方針による拒否、作者不一致、失効、rate limit、途中のモード切り替え、古い結果の消去を確認。
+- unitの未実装moduleエラーと、結合の未実装UIエラーを先に確認。Chromeだけで起きるnative fetchのreceiverエラーも結合テストで検出・修正した。
+- strict型検査、Ruby構文検査、buildが成功。新しい依存、CDN、wallet権限は追加していない。
+- 再build後の `git diff --exit-code -- dist/` が成功。既存91個のidを維持し、追加後の133個にも重複がない。
+- stagedのprivacy-checkはuserinfo付きURLの拒否テスト2行をメール形式と誤検知。実際の個人メールや秘密情報ではないと確認した。公開前の全体・履歴検査も、この2行と既知14件だけだった。
+
 ## ウォレット不要の検証ページと方針比較（2026-09-26）
 
 共有URL: https://geeknees.github.io/devouch/?name=masusanou-dev.eth#verify
@@ -87,7 +130,7 @@ Universal Resolverの正引き一致確認を使い、推薦の公開先recordNa
 Future欄への引き継ぎ案: "Support multiple active endorsements through per-contributor subnames, such as
 `github-287365775.issuer.eth`, with independent publication and withdrawal histories. This requires extending
 the verifier beyond direct `name.eth` names and checking subname ownership and permissions; it is not part of this release."
-PR URLからの検証・信頼グラフは実装していない。追加着手は本機能の完了後に別途決める。
+PR URLからの検証は、その後のユーザー選択に従って追加した（上記記録）。信頼グラフは未着手。
 
 ## 採用範囲
 

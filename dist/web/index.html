@@ -112,8 +112,10 @@
             </details>
           </section>
           <section id="panel-verify" class="panel" hidden>
-            <div class="panel-heading"><span class="step-icon">✓</span><div><p class="eyebrow">READ A RECOMMENDATION</p><h3>One endorsement.<br>Two independent decisions.</h3><p>Check live ENS evidence. See what changes when a repository trusts its issuer.</p></div></div>
+            <div class="panel-heading"><span class="step-icon">✓</span><div><p class="eyebrow">READ A RECOMMENDATION</p><h3 id="verify-heading">One endorsement.<br>Two independent decisions.</h3><p id="verify-intro">Check live ENS evidence. See what changes when a repository trusts its issuer.</p></div></div>
             <p class="verify-readonly">Read-only · No wallet, signature, or transaction needed.</p>
+            <div class="verify-modes" role="group" aria-label="Verification source"><button class="button secondary" type="button" data-verify-mode="name" aria-pressed="true" aria-controls="verify-name-view">ENS name</button><button class="button secondary" type="button" data-verify-mode="pr" aria-pressed="false" aria-controls="verify-pr-view">Pull request URL</button></div>
+            <div id="verify-name-view">
             <form id="verify-form">
               <fieldset id="verify-inputs">
                 <label for="verify-name">Publication ENS name</label>
@@ -167,6 +169,39 @@
               <label for="verify-share-url">Share this live verification</label><input id="verify-share-url" type="url" readonly>
               <div class="form-actions"><button id="verify-copy-link" class="button secondary" type="button">Copy link</button><a id="verify-share-link">Open verification link ↗</a></div><p id="verify-copy-status" class="field-note" role="status"></p>
             </section>
+            </div>
+            <div id="verify-pr-view" hidden>
+              <form id="verify-pr-form"><fieldset id="verify-pr-inputs">
+                <label for="verify-pr-url">Public GitHub pull request</label><input id="verify-pr-url" type="url" value="https://github.com/geeknees/devouch/pull/2" placeholder="https://github.com/owner/repo/pull/123" maxlength="2048" required autocomplete="off" spellcheck="false">
+                <p class="field-note">The demo PR is prefilled. Checks the author’s endorsement against the receiving repository’s committed policy.</p>
+                <button id="verify-pr-submit" class="button dark" type="submit">Verify pull request →</button>
+              </fieldset></form>
+              <p id="verify-pr-status" class="field-note" role="status">Checks the PR’s current commits and a fresh Sepolia snapshot. Public GitHub repositories only.</p>
+              <section id="verify-pr-result" hidden aria-label="Pull request verification result">
+                <div class="verify-pr-context"><span class="eyebrow">PULL REQUEST</span><h4 id="verify-pr-title"></h4><p id="verify-pr-author" class="mono"></p><a id="verify-pr-source" target="_blank" rel="noreferrer">View pull request on GitHub ↗</a></div>
+                <div class="verify-evidence">
+                  <div class="verify-section-heading"><span class="eyebrow">01 / EVIDENCE</span><span id="verify-pr-evidence-status" class="verdict" aria-live="polite"></span></div>
+                  <p class="field-note">Is the PR author’s endorsement valid at the checked block?</p>
+                  <p class="verify-signature">Signature <span id="verify-pr-signature-status" class="mono"></span></p>
+                  <p id="verify-pr-evidence-reasons" class="verify-reasons"></p>
+                  <h4 id="verify-pr-vouched-by" hidden></h4><p id="verify-pr-name-status" class="field-note"></p>
+                  <div id="verify-pr-record" hidden><dl class="details verify-details">
+                    <dt>Subject</dt><dd><span id="verify-pr-subject"></span><br><span id="verify-pr-subject-match" class="verdict"></span></dd>
+                    <dt>Published at</dt><dd id="verify-pr-record-name"></dd><dt>Scope</dt><dd id="verify-pr-scope"></dd><dt>Expires (UTC)</dt><dd id="verify-pr-expiry"></dd>
+                  </dl><details class="advanced"><summary>Issuer address</summary><p id="verify-pr-issuer" class="verify-reasons"></p></details></div>
+                  <dl class="details verify-details"><dt>Sepolia block</dt><dd id="verify-pr-block"></dd><dt>Checked (UTC)</dt><dd id="verify-pr-checked-at"></dd></dl>
+                </div>
+                <div class="verify-policy-heading"><span class="eyebrow">02 / REPOSITORY POLICY</span><h4>Does this repository accept it?</h4></div>
+                <section class="policy-card" aria-label="Receiving repository policy">
+                  <div class="verify-section-heading"><h4 id="verify-pr-repository"></h4><span id="verify-pr-policy-status" class="verdict" aria-live="polite"></span></div>
+                  <p class="field-note">Read from the PR’s base commit. These are the repository’s actual rules.</p><p id="verify-pr-policy-reasons" class="verify-reasons"></p>
+                  <details class="advanced"><summary>View the repository policy</summary><pre id="verify-pr-policy-json" class="verify-policy-json"></pre><a id="verify-pr-policy-source" target="_blank" rel="noreferrer">View policy at this commit ↗</a></details>
+                </section>
+                <details class="advanced"><summary>Checked commits and verification details</summary><dl class="details verify-details"><dt>Base SHA</dt><dd id="verify-pr-base-sha"></dd><dt>Head SHA</dt><dd id="verify-pr-head-sha"></dd><dt>Policy digest</dt><dd id="verify-pr-policy-digest"></dd><dt>Block hash</dt><dd id="verify-pr-block-hash"></dd></dl><a id="verify-pr-credential-source" target="_blank" rel="noreferrer">View endorsement at this commit ↗</a></details>
+                <p class="field-note">This is a fresh read of the commits shown above. GitHub’s earlier checks remain unchanged. Acceptance is not a merge approval.</p>
+              </section>
+              <section id="verify-pr-share" class="verify-share" hidden aria-label="Share this PR verification"><label for="verify-pr-share-url">Share this live PR verification</label><input id="verify-pr-share-url" type="url" readonly><div class="form-actions"><button id="verify-pr-copy-link" class="button secondary" type="button">Copy link</button><a id="verify-pr-share-link">Open verification link ↗</a></div><p id="verify-pr-copy-status" class="field-note" role="status"></p></section>
+            </div>
             <p id="verify-human" class="verify-boundary">human verification: not included</p>
             <p class="field-note">An endorsement records a recommendation. It does not prove human identity, code quality, or authority to act.</p>
           </section>
