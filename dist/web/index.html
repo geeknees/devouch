@@ -129,6 +129,7 @@
             </form>
             <p id="verify-status" class="field-note" role="status">Reads the signature, complete supported ENS history, and a fresh Sepolia snapshot.</p>
             <section id="verify-result" hidden aria-label="Verification result">
+              <section id="verify-trust-map" hidden></section>
               <div class="verify-evidence">
                 <div class="verify-section-heading"><span class="eyebrow">01 / EVIDENCE</span><span id="verify-evidence-status" class="verdict" aria-live="polite"></span></div>
                 <p class="field-note">Is this endorsement valid at the checked block?</p>
@@ -179,6 +180,7 @@
               <p id="verify-pr-status" class="field-note" role="status">Checks the PR’s current commits and a fresh Sepolia snapshot. Public GitHub repositories only.</p>
               <section id="verify-pr-result" hidden aria-label="Pull request verification result">
                 <div class="verify-pr-context"><span class="eyebrow">PULL REQUEST</span><h4 id="verify-pr-title"></h4><p id="verify-pr-author" class="mono"></p><a id="verify-pr-source" target="_blank" rel="noreferrer">View pull request on GitHub ↗</a></div>
+                <section id="verify-pr-trust-map" hidden></section>
                 <div class="verify-evidence">
                   <div class="verify-section-heading"><span class="eyebrow">01 / EVIDENCE</span><span id="verify-pr-evidence-status" class="verdict" aria-live="polite"></span></div>
                   <p class="field-note">Is the PR author’s endorsement valid at the checked block?</p>

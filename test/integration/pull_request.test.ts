@@ -84,6 +84,19 @@ test('a PR link checks its author and actual base policy without a wallet', asyn
       `/repos/contributor/fork/contents/.devouch/vouches/github-12345.json?ref=${head}`]);
     expect(await page.locator('#verify-pr-share-url').inputValue()).toBe(url + '/?pr=' + encodeURIComponent(prUrl) + '#verify');
     expect(await page.locator('#verify-pr-policy-source').getAttribute('href')).toContain(`/blob/${base}/.devouch/policy.json`);
+    const map = page.locator('#verify-pr-trust-map');
+    await browserExpect(map).toBeVisible({ timeout: 1500 });
+    await browserExpect(map.locator('[data-trust-edge]')).toHaveCount(3);
+    await browserExpect(map.locator('[data-trust-node="policy-repo"]')).toHaveAttribute('data-state', 'accepted');
+    await browserExpect(map.locator('[data-trust-node="issuer"]')).toContainText('issuer-primary.eth');
+    await map.locator('[data-trust-node="policy-repo"]').click();
+    await browserExpect(map.locator('.trust-map-details')).toContainText(base);
+    await browserExpect(map.locator('.trust-map-details')).toContainText('Base-commit policy');
+    await browserExpect(map.getByRole('link', { name: 'View committed policy' })).toHaveAttribute('href', `https://github.com/maintainer/repo/blob/${base}/.devouch/policy.json`);
+    await browserExpect(map.getByRole('button', { name: 'Edit trusted issuers' })).toHaveCount(0);
+    const readsBeforeMap = reads.length, callsBeforeMap = rpcCalls;
+    for (const node of ['issuer', 'publication', 'endorsement', 'policy-repo']) await map.locator(`[data-trust-node="${node}"]`).click();
+    expect(reads.length).toBe(readsBeforeMap); expect(rpcCalls).toBe(callsBeforeMap);
     for (const theme of ['dark', 'light']) {
       if (theme === 'light') await page.getByRole('button', { name: 'Switch to light mode' }).click();
       for (const width of [320, 390, 600, 768, 1024, 1440]) {
@@ -96,23 +109,32 @@ test('a PR link checks its author and actual base policy without a wallet', asyn
     await browserExpect(page.locator('#verify-pr-evidence-status')).toHaveText('valid');
     await browserExpect(page.locator('#verify-pr-policy-status')).toHaveText('rejected');
     await browserExpect(page.locator('#verify-pr-policy-reasons')).toContainText('issuer_not_trusted');
+    await browserExpect(map.locator('[data-trust-node="policy-repo"]')).toHaveAttribute('data-state', 'rejected');
     await browserExpect(page.locator('#verify-pr-submit')).toBeEnabled();
     const callsBeforeMismatch = rpcCalls;
     mode = 'mismatch'; await page.locator('#verify-pr-submit').click();
     await browserExpect(page.locator('#verify-pr-evidence-status')).toHaveText('invalid');
     await browserExpect(page.locator('#verify-pr-subject-match')).toHaveText('does not match PR author');
     await browserExpect(page.locator('#verify-pr-policy-reasons')).toContainText('subject_mismatch');
+    await browserExpect(map.locator('[data-trust-node="publication"]')).toContainText('Not checked');
+    await browserExpect(map.locator('[data-trust-node="endorsement"]')).toHaveAttribute('data-state', 'invalid');
+    await browserExpect(map.locator('[data-trust-node="policy-repo"]')).toHaveAttribute('data-state', 'not_evaluated');
+    await map.locator('[data-trust-node="endorsement"]').click();
+    await browserExpect(map.locator('.trust-map-details')).toContainText('github:999');
+    await browserExpect(map.locator('.trust-map-details')).toContainText('subject_mismatch');
     await browserExpect(page.locator('#verify-pr-submit')).toBeEnabled();
     expect(rpcCalls).toBe(callsBeforeMismatch);
     mode = 'missing'; await page.locator('#verify-pr-submit').click();
     await browserExpect(page.locator('#verify-pr-evidence-status')).toHaveText('missing');
     await browserExpect(page.locator('#verify-pr-policy-status')).toHaveText('not_evaluated');
     await browserExpect(page.locator('#verify-pr-record')).toBeHidden();
+    await browserExpect(map).toBeHidden();
     for (const failing of ['policy_missing', 'rate'] as const) {
       mode = failing; await page.locator('#verify-pr-submit').click();
       await browserExpect(page.locator('#verify-pr-status')).toContainText(failing === 'rate' ? 'github_rate_limited' : failing);
       await browserExpect(page.locator('#verify-pr-result')).toBeHidden();
       await browserExpect(page.locator('#verify-pr-share')).toBeHidden();
+      await browserExpect(map).toBeHidden();
     }
     mode = 'hold'; await page.locator('#verify-pr-submit').click();
     await browserExpect(page.locator('#verify-pr-submit')).toBeDisabled();
@@ -125,6 +147,7 @@ test('a PR link checks its author and actual base policy without a wallet', asyn
     expect(new URL(page.url()).searchParams.has('pr')).toBe(false);
     await page.locator('[data-verify-mode="pr"]').click();
     await browserExpect(page.locator('#verify-pr-result')).toBeHidden();
+    await browserExpect(map).toBeHidden();
     mode = 'valid';
     const withdrawn = await wallet.sendTransaction({ to: fixture.resolver, data: setTextData(fixture.name, '') });
     await publicClient.waitForTransactionReceipt({ hash: withdrawn }); await settle();
@@ -132,6 +155,8 @@ test('a PR link checks its author and actual base policy without a wallet', asyn
     await browserExpect(page.locator('#verify-pr-evidence-status')).toHaveText('revoked');
     await browserExpect(page.locator('#verify-pr-signature-status')).toHaveText('valid');
     await browserExpect(page.locator('#verify-pr-policy-status')).toHaveText('not_evaluated');
+    await browserExpect(map.locator('[data-trust-node="endorsement"]')).toHaveAttribute('data-state', 'revoked');
+    await browserExpect(map.locator('[data-trust-node="policy-repo"]')).toHaveAttribute('data-state', 'not_evaluated');
     await browserExpect(page.locator('#verify-pr-submit')).toBeEnabled();
     await page.locator('#verify-pr-url').fill('https://github.com/maintainer/repo/pull/8');
     await browserExpect(page.locator('#verify-pr-result')).toBeHidden();

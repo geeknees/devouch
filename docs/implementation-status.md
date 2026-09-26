@@ -23,6 +23,41 @@ Building from Scratch の適格性を運営が確認したとは扱わない。
 | README、導入手順、ライセンス、提出・デモ資料 | コマンド再実行とリンク検査 | 作成・更新済み。提出画像草案5点。動画は完成済みとユーザー確認（2026-09-26）。提出サイトへ直接アップロードするため、別の公開URLは不要 |
 | 公開コード・配布 SHA・静的 live URL | 公開先の readback | repoとPagesを公開。操作改善版の配信10ファイルと固定Actionの匿名取得・一致、全タブ、ウォレットなしでの実ENS原本取得を確認。[公開記録](release-evidence.md) |
 
+## 推薦とrepo方針の信頼マップ（2026-09-26）
+
+ENS名検証とPR URL検証に、署名者・ENS公開先・署名されたGitHub subject・repo方針を結ぶ図を追加した。
+既存の検証結果と方針判定をそのまま表示し、nodeの選択で署名者のアドレス、公開先のsnapshot、
+期限、採否の理由を開く。Primary ENS NameとrecordNameは別nodeで表示する。
+ENSモードの方針nodeは既存のTrusted issuers欄へ移動でき、同じ証拠のまま図の採否も更新する。
+PRモードはbase SHA・policy digest・固定commitの方針リンクを表示する。
+
+- 共有URL: https://geeknees.github.io/devouch/?name=masusanou-dev.eth#verify
+- 実repoの共有URL: https://geeknees.github.io/devouch/?pr=https%3A%2F%2Fgithub.com%2Fgeeknees%2Fdevouch%2Fpull%2F2#verify
+- 図は現在検証した一つの推薦を対象にする。未探索の推薦・逆引き名からの全推薦探索・推移的な信頼は表さない。
+- 署名validでも証拠revoked/expiredなら、その状態とpolicy not_evaluatedを分ける。作者不一致でchain未検証なら公開先はNot checkedとする。
+- 署名不正・推薦なし・入力変更・取得失敗では、以前の図を隠す。逆引き未設定・失敗はアドレス表示へ戻る。
+- nodeはnative buttonで、Enter/Space・タッチで選択できる。詳細は最初は閉じ、選択時に開く。reduced motionでは登場animationを止める。
+- SVGとDOMだけで実装。図の操作と例示方針編集は追加RPC/API 0回。依存・CDN・wallet権限・検証中核の変更なし。
+
+### 自動検証
+
+- 既存のENS/PR結合テストを拡張し、未実装の図に対して失敗することを先に確認した。
+- node選択・keyboard・Primary Nameとの相違・方針編集・invalid_policy・作者不一致・失効・期限切れ・取得失敗・古い図の消去を実ローカルENSで検査した。
+- Ruby 52 tests / 179 assertions、TypeScript 91 tests / 200 assertions、結合24 tests / 219 Bun assertionsが成功（合計167 tests）。Playwright assertionsも成功。
+- strict型検査、Ruby構文検査、buildが成功。既存133個のHTML idを維持し、追加後の135個に重複なし。
+- staged配布物の再build後、`git diff --exit-code -- dist/` が成功。privacy-checkの追加差分は0件、全体・履歴は既知の著作権表記・公開承認済み氏名・公式URLと拒否テストの誤検知18件のみ。
+- `.devouch/policy.json` と `.devouch/local/demo/` の5つのJSONは作業前のSHA-256を維持。PR #2・公開推薦・Action固定先は変更していない。
+
+### ローカル配布物から実Sepoliaを確認
+
+- 確認日時: 2026-09-26 11:22 JST。Chromeの390px・タッチ端末エミュレーション。
+- ENS名のchecked_at: `2026-09-26T02:22:36.374Z`、block `11783253`、hash `0x3c11950ad82bf5bdba3e0735f8adf27fd4b0189df3f84656ed4cd1d0be233003`。
+- PR #2のchecked_at: `2026-09-26T02:22:46.367Z`、block `11783254`、hash `0x7050a259bc2951d739216665087c8364fb0ef20354a1e78d45777aa28a73d91f`。
+- ENSはvalid・A accepted / B rejected → accepted、PRはvalid / accepted。両方で `Vouched by masusanou-dev.eth` と図の名前表示を確認。
+- dark/light × 6幅 × 2モードの24レイアウトで、ページ・各nodeの横溢れなし。Enter/Space、タッチ、reduced motionを確認し、画像も目視確認した。
+- 図の選択と方針編集による追加通信0回。二つの新規検証はGitHub GET 3回と読み取りRPC 79回で、wallet・署名・取引・JavaScriptエラーなし。
+- この信頼マップの実スマートフォンでの確認は未実施。提出文・スライドQR・提出画像は引き続きClaude側の担当。
+
 ## PRのURLからの検証（2026-09-26）
 
 Verify内に **ENS name / Pull request URL** の切り替えを追加した。
@@ -148,7 +183,7 @@ Universal Resolverの正引き一致確認を使い、推薦の公開先recordNa
 Future欄への引き継ぎ案: "Support multiple active endorsements through per-contributor subnames, such as
 `github-287365775.issuer.eth`, with independent publication and withdrawal histories. This requires extending
 the verifier beyond direct `name.eth` names and checking subname ownership and permissions; it is not part of this release."
-PR URLからの検証は、その後のユーザー選択に従って追加した（上記記録）。信頼グラフは未着手。
+PR URLからの検証と、現在検証した推薦の信頼マップは、その後のユーザー選択に従って追加した（上記記録）。
 
 ## 採用範囲
 
