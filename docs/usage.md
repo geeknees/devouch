@@ -56,6 +56,10 @@ controller-declared identity and current profile grants. Successful reads save t
 withdrawal can be verified. Results are not saved or treated as current after reloading, and repository policy stays
 `not_evaluated` until you choose a repository in Verify. Removing a list entry does not withdraw the endorsement.
 
+After verification, each card shows the full 24-hour days remaining at its checked block, **Less than a day left**,
+or **Expired**. A deadline within seven days is marked **Expiring soon**. Refresh to update this display;
+it does not replace the evidence or policy result, and disappears when evidence is unchecked or unavailable.
+
 ## Publish and withdraw
 
 To explore without a wallet, choose **Try without a wallet**, then **Retrieve from ENS**.

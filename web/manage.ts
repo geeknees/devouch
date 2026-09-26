@@ -7,6 +7,7 @@ import { EvidenceError } from '../src/errors';
 import { lookupIssuerName } from '../src/identity';
 import { publicationHint } from '../src/operations';
 import { diagnosticReason } from '../src/rpc-errors';
+import { expirySummary } from './expiry';
 import { verificationUrl } from './verify';
 
 type Verified = Awaited<ReturnType<ChainReader['verifyName']>>;
@@ -67,6 +68,11 @@ export function initializeManagement(context: Context) {
       if (verified) {
         const m = verified.parsed.message, snapshot = verified.evidence.snapshot;
         card.append(node('p', 'Vouched by ' + (result.issuerName ?? m.issuer), 'management-issuer'));
+        const expiry = expirySummary(m.expiresAt, snapshot.block_timestamp);
+        const remaining = node('p', undefined, 'management-expiry');
+        remaining.dataset.expirySummary = ''; remaining.dataset.expiryState = expiry.state;
+        remaining.append(node('strong', (expiry.state === 'soon' ? 'Expiring soon · ' : '') + expiry.text), node('span', 'At last check'));
+        card.append(remaining);
         card.append(details([['Subject', m.subject], ['Scope', m.scope], ['Expires (UTC)', new Date(Number(m.expiresAt) * 1000).toISOString()],
           ['Policy', 'not_evaluated — choose a repository in Verify'], ['Snapshot block', snapshot.block_number], ['Checked at', snapshot.checked_at]]));
         if (result.usedSavedPublication) card.append(node('p', 'Saved publication checked because no current record was found.', 'field-note'));

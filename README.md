@@ -31,7 +31,7 @@ add the issuer to B's **Trusted issuers** field to make it accepted. These examp
 | In the workspace | What you can do |
 |---|---|
 | [Verify a PR](https://geeknees.github.io/devouch/?pr=https%3A%2F%2Fgithub.com%2Fgeeknees%2Fdevouch%2Fpull%2F2#verify) | Check a public PR's endorsement against its base policy and explore the result in a trust map. |
-| [My endorsements](https://geeknees.github.io/devouch/#manage) | Save up to eight ENS names in your browser, refresh evidence, and inspect agent permissions. Results reset on reload. |
+| [My endorsements](https://geeknees.github.io/devouch/#manage) | Save up to eight ENS names, refresh evidence with days left until expiry, and inspect agent permissions. Results reset on reload. |
 | [Namespaces](https://geeknees.github.io/devouch/#namespaces) | Create subnames and manage agent profile permissions with your wallet. |
 | Connection settings | Diagnose your RPC and explicitly choose another provider. |
 

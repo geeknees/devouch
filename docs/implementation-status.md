@@ -28,6 +28,16 @@ core・CLI・Web・文書の最初の実装コミットは、2026-09-26 00:30〜
 
 ユーザーが導入試験先を`geeknees/devouch`と指定した。独立した第三者による導入実績とは数えない。World IDはRP署名基盤と運営者不要の方針のトレードオフを再確認し、ユーザー指定で引き続き対象外。READMEのBoundariesも、オンチェーン検証の存在と共通サービスを採用した場合の依存を区別した。
 
+## 推薦一覧の残り日数（2026-09-26）
+
+My endorsementsで、署名された期限までの残り日数を検証blockの時刻から計算して表示する。24時間単位の満日数、24時間未満は `Less than a day left`、期限ちょうど以降は `Expired`。7日以内は `Expiring soon` と既存の強調色で示す。`At last check` を併記し、更新にはRefresh evidenceが必要。元のUTC期限・証拠・repo方針は維持し、失効済みの推薦が期限を過ぎても証拠の `revoked` を `expired` へ書き換えない。
+
+未検証・再読込・RPC変更・通信失敗時には残り日数を表示しない。保存するのは引き続き名前と公開位置だけ。検証器・方針・署名形式・取引処理は変更していない。
+
+ローカル確認: TypeScript **110 tests / 361 assertions**、Ruby **70 tests / 380 assertions**、結合 **54 tests** が成功。型・Ruby構文検査、build、配布13ファイルの再build一致も成功し、デモ原本と方針6ファイルは不変。新しい単体テストは日数の丸め方、7日の境界、24時間未満、期限ちょうどを検査する。ブラウザでは両テーマと320 / 390 / 768 / 1440px、結果の破棄、ローカルEVMの時刻を進めた期限切れ表示とrevoked判定の維持を確認した。この節は公開前のローカル実装の記録。
+
+19:16 JST、ローカルの `dist/web/` を一時Chromeで開き、ethPandaOpsを明示して実Sepoliaの `masusanou.vouches.geeknees.eth` を読み取った。snapshot `11785584`、`2026-09-26T10:16:15.489Z`でvalid、`Vouched by geeknees.eth`、期限 `2026-10-02T06:44:00Z`、`Expiring soon · 5 days left` / `At last check`を確認。両テーマ・4幅で横はみ出しなし、390pxの画像も目視した。再読込後は名前だけ維持して `not_checked`、日数は非表示。walletなし・読み取りRPCのみ・JSエラー0で、Pagesへの公開確認ではない。
+
 ## CLI SKILL・RPC診断・推薦一覧（2026-09-26）
 
 ユーザー指定により3件を追加した。スライド・提出資料は変更しない。CLIを実行できるエージェントは既存コマンドとSKILLで運用し、MCPサーバーは追加していない。

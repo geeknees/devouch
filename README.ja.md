@@ -30,7 +30,7 @@ Bの **Trusted issuers** に推薦者を追加するとacceptedに変わりま�
 | ワークスペースの画面 | できること |
 |---|---|
 | [PRの検証](https://geeknees.github.io/devouch/?pr=https%3A%2F%2Fgithub.com%2Fgeeknees%2Fdevouch%2Fpull%2F2#verify) | 公開PRの推薦をbase側の方針と照合し、信頼マップで関係を確認する。 |
-| [My endorsements](https://geeknees.github.io/devouch/#manage) | 最大8件のENS名をブラウザに保存し、推薦やエージェントの権限を再確認する。検証結果は再読み込み時にリセットされる。 |
+| [My endorsements](https://geeknees.github.io/devouch/#manage) | 最大8件のENS名をブラウザに保存し、推薦・期限までの残り日数・エージェントの権限を確認する。検証結果は再読み込み時にリセットされる。 |
 | [Namespaces](https://geeknees.github.io/devouch/#namespaces) | ウォレットを使い、サブネーム作成やエージェントのプロフィール権限を管理する。 |
 | Connection settings | RPCを診断し、接続先を明示的に切り替える。 |
 

@@ -13,7 +13,7 @@ import { setupEvm, settle, publicClient, wallet, issuer, rpc, testRpc } from '..
 
 test('saved names refresh full evidence, recover withdrawal, and diagnose failures without changing connections', async () => {
   const fixture = await setupEvm(); await settle();
-  await issueLeaf({ ...fixture, node: namehash(fixture.name), subject: 'github:287365775' });
+  const endorsement = await issueLeaf({ ...fixture, node: namehash(fixture.name), subject: 'github:287365775' });
   const agentFixture = await setupEvm(); await settle();
   const provider = { async request({ method, params }: { method: string; params?: unknown[] }) {
     if (method === 'eth_accounts' || method === 'eth_requestAccounts') return [issuer.address];
@@ -58,11 +58,27 @@ test('saved names refresh full evidence, recover withdrawal, and diagnose failur
     await page.locator('#manage-add').click();
     const row = page.locator('[data-saved-name]').first();
     await browserExpect(row.locator('[data-evidence-state]')).toHaveText('not_checked');
+    await browserExpect(row.locator('[data-expiry-summary]')).toHaveCount(0);
     await row.getByRole('button', { name: 'Refresh evidence', exact: true }).click();
     await browserExpect(row.locator('[data-evidence-state]')).toHaveText('valid', { timeout: 30000 });
     await browserExpect(row).toContainText('github:287365775');
     await browserExpect(row).toContainText('oss-contribution');
     await browserExpect(row).toContainText('not_evaluated');
+    const expiry = row.locator('[data-expiry-summary]');
+    await browserExpect(expiry).toHaveAttribute('data-expiry-state', 'soon');
+    await browserExpect(expiry).toContainText('Less than a day left');
+    await browserExpect(expiry).toContainText('Expiring soon');
+    await browserExpect(expiry).toContainText('At last check');
+    await browserExpect(row).toContainText(new Date(Number(endorsement.request.message.expiresAt) * 1000).toISOString());
+    for (const theme of ['dark', 'light'] as const) {
+      if (theme === 'light') await page.getByRole('button', { name: 'Switch to light mode' }).click();
+      for (const width of [320, 390, 768, 1440]) {
+        await page.setViewportSize({ width, height: 844 });
+        expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), `expiry in ${theme} at ${width}`).toBe(true);
+      }
+    }
+    await page.getByRole('button', { name: 'Switch to dark mode' }).click();
+    await page.setViewportSize({ width: 390, height: 844 });
     await row.getByRole('button', { name: 'Check agent permissions' }).click();
     await browserExpect(row.locator('[data-agent-result]')).toContainText('No controller-declared agent identity');
     await browserExpect(row.locator('[data-evidence-state]')).toHaveText('valid');
@@ -80,8 +96,10 @@ test('saved names refresh full evidence, recover withdrawal, and diagnose failur
     const saved = await page.evaluate(key => localStorage.getItem(key), SAVED_NAMES_KEY);
     expect(JSON.parse(saved!).names[0].publication).toBeDefined();
     expect(saved).not.toContain('evidence_status');
+    expect(saved).not.toContain('expiresAt');
     await page.reload();
     await browserExpect(row.locator('[data-evidence-state]')).toHaveText('not_checked');
+    await browserExpect(expiry).toHaveCount(0);
     const hash = await wallet.sendTransaction({ to: fixture.resolver, data: setTextData(fixture.name, '') });
     await publicClient.waitForTransactionReceipt({ hash }); await settle();
     await row.getByRole('button', { name: 'Refresh evidence', exact: true }).click();
@@ -91,6 +109,7 @@ test('saved names refresh full evidence, recover withdrawal, and diagnose failur
     unavailable = true;
     await row.getByRole('button', { name: 'Refresh evidence', exact: true }).click();
     await browserExpect(row.locator('[data-evidence-state]')).toHaveText('unavailable');
+    await browserExpect(expiry).toHaveCount(0);
     await browserExpect(row).not.toContainText('github:287365775');
     await page.locator('.rpc-settings summary').click();
     await page.locator('#rpc-url').fill(testRpc);
@@ -107,6 +126,7 @@ test('saved names refresh full evidence, recover withdrawal, and diagnose failur
     await page.locator('#apply-rpc').click();
     await browserExpect(page.locator('#status')).toContainText('Sepolia connection checked');
     await browserExpect(row.locator('[data-evidence-state]')).toHaveText('not_checked');
+    await browserExpect(expiry).toHaveCount(0);
     await page.locator('#diagnose-rpc').click();
     await browserExpect(page.locator('#rpc-diagnostics')).toContainText('historical_code_mismatch');
     await browserExpect(page.locator('#rpc-diagnostics')).toContainText('Historical event logs');
@@ -115,9 +135,20 @@ test('saved names refresh full evidence, recover withdrawal, and diagnose failur
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), 'manage at ' + width).toBe(true);
     }
     await page.getByRole('button', { name: 'Switch to light mode' }).click();
+    expect((await new ChainReader(testRpc).verifyName(fixture.name, JSON.parse(saved!).names[0].publication)).evidence.evidence_status).toBe('revoked');
+    const afterExpiry = Number(endorsement.request.message.expiresAt) + 1;
+    await rpc('evm_setNextBlockTimestamp', [afterExpiry]);
+    await rpc('hardhat_mine', ['0x3', '0x0']);
+    await page.clock.setFixedTime(afterExpiry * 1000);
+    await row.getByRole('button', { name: 'Refresh evidence', exact: true }).click();
+    await browserExpect(row.locator('[data-evidence-state]')).toHaveText('revoked', { timeout: 30000 });
+    await browserExpect(expiry).toHaveAttribute('data-expiry-state', 'expired');
+    await browserExpect(expiry).toContainText('Expired');
+    await browserExpect(expiry).not.toContainText('Expiring soon');
+    await page.setViewportSize({ width: 390, height: 844 });
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), 'expired at 390px').toBe(true);
     await row.getByRole('button', { name: 'Remove from list' }).click();
     await browserExpect(page.locator('[data-saved-name]')).toHaveCount(0);
-    expect((await new ChainReader(testRpc).verifyName(fixture.name, JSON.parse(saved!).names[0].publication)).evidence.evidence_status).toBe('revoked');
     expect([...methods].some(method => /send|sign|requestAccounts/.test(method))).toBe(false);
     expect(await page.evaluate(() => typeof window.ethereum)).toBe('undefined');
     await page.evaluate(key => localStorage.setItem(key, '{broken'), SAVED_NAMES_KEY);

@@ -436,6 +436,10 @@ body:is([data-view="verify"], [data-view="maintainers"], [data-view="manage"]) .
 .management-card-top { display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 14px; }
 .management-card h4 { margin: 0; font: 500 16px/1.6 var(--mono); overflow-wrap: anywhere; min-width: 0; }
 .management-issuer { color: var(--bone); font-size: 14px; overflow-wrap: anywhere; }
+.management-expiry { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; margin: 8px 0 18px; font-size: 13px; line-height: 1.7; }
+.management-expiry strong { font-weight: 500; }
+.management-expiry span { color: var(--dim); font-size: 12px; }
+.management-expiry[data-expiry-state="soon"], .management-expiry[data-expiry-state="expired"] { color: var(--ember); }
 .management-details { margin-block: 18px; }
 .management-agent { border-top: 1px solid var(--line); padding-top: 12px; }
 .management-card .form-actions { gap: 14px 20px; }
