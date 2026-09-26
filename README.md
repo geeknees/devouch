@@ -22,6 +22,10 @@ and a maintainer setup guide in the workspace. Its pinned [Action trial](https:/
 reports `valid / accepted` for the existing `geeknees.eth` endorsement. The published `v0.1` tag preserves the original demo.
 Local implementation and public deployment evidence are tracked separately in the [Roadmap record](docs/roadmap-plan.md).
 
+Version **0.2.0** keeps the signed endorsement format at version 1. Ordinary direct-name endorsements need no migration,
+but authority-history checks are stricter and v0.1 cannot verify new subnames. See the [measured compatibility and upgrade guide](docs/upgrading-0.2.md)
+and the [PC wallet test procedure](docs/sepolia-namespace-check.md).
+
 **Current evidence:** local browser, CLI, and official-contract integration tests pass.
 The issuer published masusanou's endorsement on Sepolia. The CLI accepted the same original under two policies
 and rejected it under a policy declining the issuer, using Tenderly and ethPandaOps at the same chain snapshot.

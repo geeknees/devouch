@@ -16,7 +16,7 @@
 
 ## 維持するもの
 
-- v0.1のタグ・公開サイト・既存のdirect ENS推薦・PR #2・公開済みの原本を維持する。
+- v0.1のタグ・既存のdirect ENS推薦・PR #2・公開済みの原本を維持する。公開サイトの既存デモ導線も維持する。後続の明示承認により、0.2.0の互換性確認と固定Actionの更新後にPRをmergeし、Pagesを更新する。
 - 署名、原本bytes、失効履歴、snapshot、evidenceとrepo policyの分離、読み取り専用のCLI/Action/検証ページを維持する。
 - 管理者の署名や取引は本人のwalletから行う。開発用の実EVMテストは使い捨てローカルアカウントを使う。
 - 未検証・取得不能・未知実装は成功にしない。人間性・GitHubアカウント所有権・コード品質を推薦から推定しない。
@@ -87,3 +87,14 @@
 修正後のhead `d0f8198421b5d2f10accbf996d641a1b3b56c238` でも、[push CI 36218359032](https://github.com/geeknees/devouch/actions/runs/36218359032)と[PR CI 36218361299](https://github.com/geeknees/devouch/actions/runs/36218361299)が成功した。Ruby70 tests、TypeScript98 tests、統合45 tests、型・構文検査、dist再build一致をGitHub runnerで確認している。
 
 この試用は自repoで既存のdirect ENS推薦を新しい検証器へ通したものである。新しい階層名・agent権限は固定した公式コントラクトのローカルEVMで検証した。実Sepoliaでの新サブネーム作成、独立した第三者による導入、Roadmap版のmainへの取り込みとPages更新はこの記録では実施済みと扱わない。既存Pages・PR #2・v0.1タグ・保存済みの推薦原本と方針を、この作業では変更していない。
+
+### 0.2.0への更新準備（2026-09-26）
+
+上記の初回試用後、ユーザーは互換性比較・version更新・移行手順・固定Action更新・CI後のmergeとPages公開を承認し、その後の実機確認にPCのウォレット拡張入りブラウザを指定した。
+
+- v0.1タグの配布物を未変更でfixtureへ保存し、SHA-256とライセンスも固定した。公式ENSの同じEVM状態と原本を旧配布物・現行sourceの両方で検証する7件のテストが成功した。
+- 通常のdirect推薦と補助grant・撤回・旧原本の復元拒否は両版で同じ結果。resolver / registryのroot権限の変更復元は新版でinvalidとなる。registryのlabel権限の変更復元は旧版でもinvalidであり、新しい非互換事項と扱わない。署名後・公開前のissuer権限喪失、新階層名、推薦と名前の両方の期限切れも比較した。
+- package・Ruby CLI・TypeScript・HTTP User-Agentを0.2.0へ揃えた。署名形式・report_versionは1のまま。CLIの実行結果とRuby JSONの版をテストで確認する。
+- 全統合52 tests、TypeScript99 tests / 304 assertions、Ruby70 tests / 380 assertions、型とRuby構文検査が成功。全13配布ファイルの再build一致と保存済みデモ・方針6ファイルの不変を確認した。
+- 追加差分のprivacy検査で検出した2件は、v0.1配布物からそのままコピーした第三者ライセンスの著作者メールのみ。出典と完全一致する必要な帰属表記として保持し、秘密情報や新しい個人情報の記録はない。
+- [更新・切り戻し](upgrading-0.2.md)と[実機確認](sepolia-namespace-check.md)の手順を追加した。`geeknees.eth`の子registryはblock11784011で未接続、既存record 2はready true。実Sepoliaの新しい取引は本人のwalletで行い、その後に別途readbackする。

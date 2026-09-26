@@ -56,7 +56,7 @@ devouch revoke --credential PATH --output PATH [--rpc-url URL] [--json]
 
 引数なしの `devouch` は help を表示する。help と version は RPC 接続を必要としない。未知のコマンド・オプションは利用エラーにする。
 
-このリポジトリの [CLI 実装](../lib/devouch/cli.rb)は、上記の5コマンドを持つ推薦版 `0.1.0` である。`./exe/devouch --help` で確認できる。設計時に参照した委任・Git来歴の旧版は別実装であり、その `credential`、`ledger`、`delegate`、`commit` コマンドや入力形式は今回の配布物に含めない。
+このリポジトリの [CLI 実装](../lib/devouch/cli.rb)は、上記の5コマンドを持つ推薦版 `0.2.0` である。`./exe/devouch --version` で確認できる。v0.1からの判定の変更と戻し方は[更新ガイド](upgrading-0.2.md)を参照する。署名形式と`report_version`は1のままで、配布物を示す`verifier_version`を0.2.0へ更新している。設計時に参照した委任・Git来歴の旧版は別実装であり、その `credential`、`ledger`、`delegate`、`commit` コマンドや入力形式は今回の配布物に含めない。
 
 ## 3. 共通の入出力
 

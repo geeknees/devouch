@@ -7,7 +7,7 @@ import { EvidenceError, insist } from './errors';
 export const CHAIN_ID = 11155111;
 export const TEXT_KEY = 'devouch.vouch';
 export const MAX_CREDENTIAL_BYTES = 4096;
-export const VERSION = '0.1.0';
+export const VERSION = '0.2.0';
 export const TYPES = { Endorsement: [
   { name: 'version', type: 'string' }, { name: 'id', type: 'bytes32' },
   { name: 'issuer', type: 'address' }, { name: 'subject', type: 'string' },

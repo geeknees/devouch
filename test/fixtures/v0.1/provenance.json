@@ -1,0 +1,15 @@
+{
+  "commit": "4fc4407a3778aad9d0b71db2e1f3e8e58051570a",
+  "files": {
+    "bridge.mjs": {
+      "path": "dist/bridge.mjs",
+      "sha256": "dede87a2fabda45dff4e03da4550e6eb2d177fae8c772b77218a49001ae0c10e",
+      "bytes": 606911
+    },
+    "THIRD_PARTY_NOTICES.txt": {
+      "path": "dist/THIRD_PARTY_NOTICES.txt",
+      "sha256": "fa59aae529b2279fd39607902ba40cf5f8f28a9595c3d8df1958d895ac3f5b65",
+      "bytes": 31666
+    }
+  }
+}

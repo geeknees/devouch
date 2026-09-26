@@ -7,7 +7,7 @@ require_relative "policy"
 require_relative "github"
 
 module Devouch
-  VERSION = "0.1.0"
+  VERSION = "0.2.0"
   DEFAULT_RPC = "https://sepolia.gateway.tenderly.co"
 
   class CLI

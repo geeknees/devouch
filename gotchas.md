@@ -3,6 +3,7 @@
 - ENSv2のtext setterはDNS wire-formatの名前を受け取る。ENSv1のnode setterとはABIが異なる。公式artifactとの照合テストを維持する。
 - registryのtoken IDには下位32bitの更新世代がある。イベントをlabelへ結び付けるとき、単純なlabelhash全体との等値比較では所有権変更を見逃す。
 - 階層の履歴はregistryとlabelの組で照合する。子のラベルが `287365775` でも、別registryの `287365775.eth` の更新とは無関係。direct名前専用のイベント判定を残したまま階層判定を追加すると、無関係な名前の更新で誤ってinvalidになる。
+- 互換性は旧sourceの読み取りだけで推定しない。固定したv0.1配布物との同一状態の比較では、registryのlabel権限変更・復元は旧版でもinvalidだった。新たに厳しくなったroot権限の履歴と区別する。比較fixtureの配布bytesとライセンスは再生成せず保持する。
 - 現在のtextだけでは失効を判定できない。proxy配備からの履歴、リンク・実装・名前の接続変更を確認する。初期配備より後のanchorを受け入れない。
 - devouch.vouchの補助grantはresolver内の同じキー全体に作用する。一つの名前だけに限定する権限とは表示しない。専用resolverを使う。
 - agentのプロフィール権限も同じキーの全recordへ作用する。独立したresolverの初期化だけでなく、読取り時にもLinkedの全履歴を確認し、後から別名・別recordを追加した共用状態を限定権限として表示しない。
