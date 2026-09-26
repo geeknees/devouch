@@ -24,9 +24,11 @@ The [live workspace](https://geeknees.github.io/devouch/) is published, and the 
 The [release verification](docs/release-evidence.md) covers the published files and real ENS retrieval from the hosted browser UI.
 Masusanou's [fork PR #2](https://github.com/geeknees/devouch/pull/2) reports
 `valid / accepted` in the [Devouch Action](https://github.com/geeknees/devouch/actions/runs/36172488074), and its normal CI passes.
-Real-wallet withdrawal remains to be completed.
+Withdrawal and rejection of restored old records are verified on the local EVM running official ENS contracts.
+The recorded demo shows publication and withdrawal on that local chain; the public Sepolia endorsement stays active for the judges' QR experience.
+Real-wallet withdrawal on Sepolia has not been performed.
 The PR demonstration uses masusanou and ends at `valid / accepted`; a separate human-account PR is outside the demo scope.
-Withdrawal is demonstrated separately through the wallet and CLI.
+The [demo runbook](docs/demo-runbook.md) lists the recording and read-only checks to use for rehearsal.
 The published design passes the [GitHub test workflow](https://github.com/geeknees/devouch/actions/runs/36180353277).
 The [design verification](docs/design-verification.md) records the workspace palettes, bundled fonts, and hosted browser checks.
 

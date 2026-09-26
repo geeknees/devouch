@@ -1,30 +1,62 @@
-# 実機デモの手順
+# 提出前確認と実機デモの手順
+
+**本番は録画＋QRからの読み取り検証を使う。** 2026-09-26の [発表台本](presentation/script.md#当日の段取り) に合わせた手順。
+録画の発行・失効は公式ENSv2コントラクトを使ったローカルEVM、Actionの場面は実GitHubのPR #2。
+QRではSepoliaに公開済みの `masusanou-dev.eth` を検証する。現在の推薦を維持して本番とリハーサルに使い、
+通常の確認手順ではウォレット接続・新規公開・失効・PRの作成や再実行を行わない。
+
+## 提出前・審査直前の読み取り確認
+
+1. [ENS名の検証URL](https://geeknees.github.io/devouch/?name=masusanou-dev.eth#verify)を開く。
+   `valid`、`Vouched by masusanou-dev.eth`、repo A `accepted`、repo B `rejected`（`issuer_not_trusted`）を確認する。
+2. Bの **Add this issuer** で `accepted` に変わること、Trust mapの点をタップして詳細を開けることを確認する。
+   例示方針の編集はブラウザ内で完結する。ページを開き直すと初期のA/B比較に戻る。
+3. [実PR #2の検証URL](https://geeknees.github.io/devouch/?pr=https%3A%2F%2Fgithub.com%2Fgeeknees%2Fdevouch%2Fpull%2F2#verify)を開く。
+   作者 `masusanou` / `github:287365775` とsubjectの一致、`valid / accepted`、base/head SHAを確認する。
+   PRのAction Summaryは過去の確認記録として、画面の新しいENS snapshotと区別する。
+4. CLIの送信前チェックを実行し、終了コード0、`valid / accepted`、投稿先commitとsnapshotを確認する。
+
+   ```sh
+   ./exe/devouch check --repo geeknees/devouch \
+     --credential .devouch/local/demo/vouch.json --subject github:287365775 --json
+   ```
+
+   この保存済み原本は開発端末にある。別端末で取得する場合は [デモ例](../examples/demo/README.md) を使い、既存の原本を上書きしない。
+5. light/darkの切り替えとスマホ幅での表示、動画の再生、スライドから動画・QRへ切り替える操作を確認する。
+   `human verification: not included` は全結果で維持する。採用は推薦の評価で、コードレビューやマージ許可は別に判断する。
+
+取得に失敗したら `unavailable` として扱い、過去のacceptedを現在の結果へ置き換えない。
+既定RPCが使えない場合の確認方法は下の「接続と復旧」を使う。
+動画は完成済みで、提出サイトへ直接アップロードする。アップロード用は音声入りの完成版を選び、
+会場再生用の字幕・無音版と区別する。動画の公開URLや再収録は準備の必須項目ではない。
+
+## 記録済みのデモ環境
 
 対象 repo は [geeknees/devouch](https://github.com/geeknees/devouch)、
 エージェントの PR 作者は [masusanou](https://github.com/masusanou)（数値 ID `287365775`）。
 この ID と repo の状態は GitHub API で確認済み。repo はpublic、既定 branch はmain。
 2026-09-26のユーザー訂正に従った送信先。同日の承認に基づき [PR #1](https://github.com/geeknees/devouch/pull/1) をmergeし、repoとPagesを公開した。
 公開結果は [検証記録](release-evidence.md)。masusanouの [実fork PR #2](https://github.com/geeknees/devouch/pull/2) は `valid / accepted` を確認済み。
-新デザインも [PR #4](https://github.com/geeknees/devouch/pull/4) と [Pages run](https://github.com/geeknees/devouch/actions/runs/36180553637) で公開済み。公開URLの全タブと同梱フォントを [確認した](design-verification.md#公開先の確認)。
-続く操作改善は [PR #6](https://github.com/geeknees/devouch/pull/6) と [Pages run](https://github.com/geeknees/devouch/actions/runs/36203893579) で公開済み。
-09:12 JSTに配信10ファイル・全24レイアウト・ウォレットなしの実ENS取得を [再確認した](release-evidence.md)。
+公開サイトはENS名検証・PR URL検証・Trust mapを備える。[公開と端末確認の記録](implementation-status.md#推薦とrepo方針の信頼マップ2026-09-26)を参照する。
+送信前チェックは [PR #15](https://github.com/geeknees/devouch/pull/15) でmainへ反映済み。
 人間名義の実PR検証は2026-09-26のユーザー指定で対象外。今回の実PRデモはmasusanou名義だけを使う。
 
-ENS名・所有者・初期化済みresolverは確認済み。Actionのローカル固定SHAと手動の公開workflowも準備済み。
+ENS名・所有者・初期化済みresolverは確認済み。Actionの固定SHAと手動のPages workflowも公開済み。
 推薦の公開取引とCLIのA/B方針比較は [実Sepoliaで確認済み](demo-evidence.md)。
-Action commitの匿名取得、live URLと公開画面からのENS取得、実fork PRのActionを確認済み。失効取引とCLIによる失効確認は未実施。
+Action commitの匿名取得、live URLと公開画面からのENS取得、実fork PRのActionを確認済み。実Sepoliaでの失効取引とそのCLI確認は未実施。
 2026-09-26のユーザー指定により、失効はPRでは検証しない。masusanouのPR確認はvalid / acceptedで完了。
-以下の欄が埋まるまで実機デモ完了とは扱わない。
+実Sepoliaでの失効は未実施の記録として残す。本番の録画＋QRの確認に失効取引は含めない。
 
-## 起動と準備
+## ローカル画面と初回セットアップ
+
+公開サイトを使える場合、現在のデモに追加セットアップは不要。ローカル画面を使う場合は、一つのターミナルで次を起動する。
 
 ```sh
 node scripts/serve.ts
-bun run scripts/probe-rpc.ts
-bun run scripts/check-name.ts masusanou-dev.eth
 ```
 
 画面は http://127.0.0.1:4173 。独立した端末で使う場合も同じ静的配布物を起動できる。
+新しい名前で初めて発行する場合の手順を以下に示す。
 ENS の取得先はユーザー指定の **https://app.ens.dev/**。
 Sepolia に接続した本人のウォレットで直接 `name.eth` を取得する。
 公式アプリは開発中の状態リセットを案内しているため、デモ直前に再確認する。
@@ -53,27 +85,35 @@ masusanouのPRでvalid / acceptedを確認済み。本人walletからの失効�
 失効確認には既存の原本とCLIを使う。現在のPRはopenで、PRのmergeや失効後の再実行はこのデモの前提ではない。
 原本の取得とCLI比較は [デモ例](../examples/demo/README.md)のコマンドを使う。
 
-PagesとActionの公開は [公開手順](release-runbook.md)に沿って行う。
+## 接続と復旧
+
+PagesとActionの公開は [公開手順](release-runbook.md)に沿って行う。既存公開先の確認だけなら再配信は不要。
+初回セットアップの状態を別ターミナルで調べるには `bun run scripts/check-name.ts masusanou-dev.eth` を使う。
 RPCの実名確認は `ready: true` まで確認する。直近runtimeだけを読むprobeの成功では代用しない。
 既定Tenderlyが取得不能なら、Connection settingsで `https://rpc.sepolia.ethpandaops.io` を選んで再確認する。
+CLIでも同じ原本と方針で履歴全体を再確認する。
+
+```sh
+./exe/devouch verify --credential .devouch/local/demo/vouch.json \
+  --subject github:287365775 --policy .devouch/policy.json \
+  --rpc-url https://rpc.sepolia.ethpandaops.io --json
+```
+
 PublicNodeは必要な過去stateを返せなかったため、今回の代替には使わない。
 公開前の785 bytes・placeholder署名の見積もりは664,611 gasだった。
 本人が送った実取引のreceiptはgasUsed 642,290。[証拠](demo-evidence.md)では見積もりと区別する。
 
-## 操作確認のリハーサル
+## 本番リハーサルと任意の取引確認
 
-以下は操作確認用の5分手順。公式の対面審査は4分デモ＋3分Q&Aなので、本番は [4分台本](presentation/script.md)を使う。
-提出動画も2〜4分へ収め、倍速にしない。事前公開済みの推薦と実行結果を用意し、待ち時間を除いて3分30秒を目安にする。
+本番は [4分台本](presentation/script.md) の録画デモ版、ブースは [ブース台本](presentation/booth-script.md) を使う。
+提出後のリハーサルでは、スライド→字幕付き動画→QRの切り替えを通し、時間を計る。
+公開・失効の操作は録画で示す。古い原本の復活拒否は既存のローカルEVM結合テストで確認済み。
 
-1. **0:00–0:40: 目的。** PR固有の承認ではなく、貢献者への推薦を持ち運ぶ。repoごとに採否を決めることを画面の図で示す。
-2. **0:40–1:40: 公開。** Publish で subject / ENS名 / 有効期限を確認し、署名してから別の取引で公開する。本人wallet、receipt、text原本、公開履歴に残る情報を示す。
-3. **1:40–2:30: 再利用。** 同じ原本を repo A / B の方針で CLI 検証する。両方 accepted を示し、Bの方針だけ trustedIssuersを空にして rejected を示す。原本や署名は変更しない。
-4. **2:30–3:30: 実 PR。** masusanou の fork PR の Summary で作者ID / base・head SHA / valid / accepted を示す。actor が別でも対象は PR 作者である。
-5. **3:30–4:30: 失効。** Withdrawで本人walletから空値を送信する。2 block進んでからA/Bの CLI を実行し、revoked / not_evaluated を示す。PRでは失効を検証しない。古いチェックが自動で書き換わらないことを説明する。
-6. **4:30–5:00: 独立動作。** 公開サイトを閉じ、別のローカル配布画面・ethPandaOps RPCから取得と本人の操作を行う。運営者のAPI・鍵・DBを呼ばない。人間性未確認と通常のコードレビューを明示する。
-
-人間名義のfork PRは追加しない。別の推薦を発行する場合は新しいID / nonceを使い、元の推薦は失効する。
-一つの record に二つの推薦を同時保持したとは扱わない。
+実Sepoliaで追加の公開・失効を確認する場合は、発行者本人がQRデモへの影響と実施時期を決める。
+同じrecordへの再公開や失効は、現在配っている推薦の検証結果を変える。
+本人が失効した後は2 block進んでから元の原本をCLIで検証し、`revoked / not_evaluated` とsnapshotを記録する。
+再推薦には新しいID / nonceが必要で、一つのrecordに二つの推薦を同時保持したとは扱わない。
+失効のPR検証、人間名義の追加PR、現在のPR #2のmergeは本番の確認範囲に含めない。
 
 ## PR に含めるもの
 
