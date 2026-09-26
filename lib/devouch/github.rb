@@ -1,4 +1,4 @@
-# ABOUTME: Retrieves bounded public PR metadata and JSON files at immutable GitHub commit SHAs.
+# ABOUTME: Retrieves bounded repository, branch, and PR metadata and JSON files at immutable GitHub commits.
 # ABOUTME: Uses read-only API requests, rejects redirects, and never runs repository content.
 require "net/http"
 require "uri"
@@ -14,6 +14,14 @@ module Devouch
 
     def pull_request(repository, number)
       get("/repos/#{repository}/pulls/#{number}")
+    end
+
+    def repository(name)
+      get("/repos/#{name}")
+    end
+
+    def branch(repository, name)
+      get("/repos/#{repository}/branches/#{URI.encode_www_form_component(name)}")
     end
 
     def file(repository, path, sha, limit:)

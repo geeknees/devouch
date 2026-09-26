@@ -114,12 +114,24 @@ Replace the uppercase inputs below with your public values. Output filenames mus
 ./exe/devouch verify --credential vouch.json --policy repo-a.json \
   --subject github:287365775 --json
 
+./exe/devouch check --repo geeknees/devouch --credential vouch.json \
+  --subject github:287365775 --json
+
 ./exe/devouch revoke --credential vouch.json --output revoke-request.json --json
 ```
 
 Use a future expiry before your ENS name expires. Keep the original JSON bytes unchanged.
 Copy the same `vouch.json` into another repository and verify it against that repository's own policy.
 The CLI's subject is supplied by its caller; the Action obtains it from GitHub's PR author.
+
+Before creating a PR, agents can run `check` with the intended author's numeric GitHub ID.
+It reads the public destination's `.devouch/policy.json` at an immutable commit on its default branch
+(or `--base BRANCH`), then reuses the full signature, ENS-history, snapshot, and policy verification.
+The JSON includes the checked branch, commit, and policy digest. Proceed with an otherwise authorized submission
+only on exit **0**; every other code stops this preflight flow. The command makes no file changes or PR submissions
+and needs no wallet or GitHub token. Acceptance concerns the endorsement at that snapshot; it does not establish
+posting permission, code quality, or human verification. Recheck before submission if the policy or ENS state changes.
+See the [agent operator guide](docs/agent-operator-guide.md#prを作る前の送信前チェック).
 
 | Exit | Meaning |
 |---|---|

@@ -12,6 +12,7 @@ Building from Scratch の適格性を運営が確認したとは扱わない。
 | 条件 | 検証方法 | 状態 |
 |---|---|---|
 | Ruby CLI の request / fetch / verify / revoke | Minitest、実 CLI の JSON と終了コード | ローカルEVMで全コマンド確認。実Sepoliaでrequest・公開後fetch/verifyも確認 |
+| PR作成前の `check --repo` | 固定commitの公開方針、既存verifier、JSONと終了コード | ローカルEVMで採用・不採用・対象不一致・失効を確認。実GitHubとSepoliaでもvalid / accepted |
 | EIP-712 署名、対象・期限・公開先・サイズの検査 | viem による正負のテスト | 実装・テスト済み |
 | ENSv2 の実装固定、本文取得、履歴・snapshot 検証 | 公式 ABI、ローカル EVM と Sepolia の readback | ローカル通し確認、実Sepoliaの公開原本をvalidと検証 |
 | 失効と再掲載拒否、リンク・実装変更の拒否 | 時系列を変えるテスト、実 EVM | ローカルEVMで確認 |
@@ -22,6 +23,45 @@ Building from Scratch の適格性を運営が確認したとは扱わない。
 | 運営者不在でローカル UI と別 RPC から操作 | ローカル配布物での通し確認 | ローカルUI経由の本人公開、2社RPCで同じ原本の検証を確認。別ホストからの実操作は未実施 |
 | README、導入手順、ライセンス、提出・デモ資料 | コマンド再実行とリンク検査 | 作成・更新済み。提出画像草案5点。動画は完成済みとユーザー確認（2026-09-26）。提出サイトへ直接アップロードするため、別の公開URLは不要 |
 | 公開コード・配布 SHA・静的 live URL | 公開先の readback | repoとPagesを公開。操作改善版の配信10ファイルと固定Actionの匿名取得・一致、全タブ、ウォレットなしでの実ENS原本取得を確認。[公開記録](release-evidence.md) |
+
+## エージェント向け送信前チェック（2026-09-26）
+
+`devouch check --repo owner/name --credential PATH --subject github:ID` を追加した。
+公開GitHub repoのdefault branch（指定時は `--base BRANCH`）を40桁commit SHAに固定し、
+そのcommitの `.devouch/policy.json` を取得する。既存のRuby `Policy` とTypeScript bridgeの
+署名・対象照合・ENS履歴・snapshot検証を再利用する。
+
+- JSONには `command: check`、`submitted: false`、投稿先・base branch・base SHA・policy digest・ENS snapshotを返す。
+- `subject_source: argument` と `human_verification: not_included` を維持する。本人認証、投稿権限、コード品質、マージ許可の証明は含まない。
+- `0` はvalid / accepted、`1` はvalid / rejected、`2` はinvalid / missing / expired / revoked、`3` はunavailable。エージェントは非0なら送信を止める。
+- 方針なし・不正・repo不一致は設定エラー4。方針のローカル上書きは受け付けない。
+- GitHubへは認証なしのGETだけを送る。tokenを読み込まず、ファイル・chain・PRを変更しない。MCPやPR自動送信機能は追加していない。
+- repo・branchの不正応答、redirect、rate limit、通信不能、応答上限超過は採用扱いにしない。後から方針やENS状態が変われば再確認する。
+
+### 検証結果
+
+- 新コマンドのテストが未実装で失敗することを先に確認してから実装した。
+- Ruby 70 tests / 374 assertions、TypeScript 91 tests / 200 assertions、結合25 tests / 231 Bun assertionsが成功（合計186 tests）。Playwright assertionsも成功。
+- `bun run build`、`bun run test:integration`、`bundle exec rake test`、strict型検査、Ruby構文検査、`git diff --exit-code -- dist/` が成功。
+- privacy-checkの追加差分は0件。全体・履歴は既知の著作権表記、公開承認済み氏名、公式URL・拒否テストの誤検知18件だけだった。
+- 実ローカルENSでは、新コマンドでvalid / accepted、issuer_not_trustedのrejected、subject_mismatch、失効後のrevokedを確認。推薦原本とファイル一覧が変わらないことも確認した。
+- 単体テストではdefault branch・明示branch・固定SHA・公開位置hint・方針欠如・不正方針・不正metadata・通信エラー・再利用時の古い結果消去を確認した。
+- `.devouch/policy.json` と `.devouch/local/demo/` の5つのJSONは作業開始前のSHA-256を維持。PR #2・公開推薦・Action固定先・Web配布物は変更していない。
+
+### 実GitHubとSepoliaの読み取り確認
+
+```sh
+./exe/devouch check --repo geeknees/devouch \
+  --credential .devouch/local/demo/vouch.json --subject github:287365775 --json
+```
+
+- 確認日時: **2026-09-26 11:58 JST**。`checked_at: 2026-09-26T02:58:45.922Z`。ローカル実装のCLIから公開APIと既定Tenderly RPCを読み取った。
+- 投稿先: [geeknees/devouch](https://github.com/geeknees/devouch)、branch `main`、commit `fb51a4d5fd27d3a6986f84a47947b8bddd19b37f`。
+- [固定commitの方針](https://github.com/geeknees/devouch/blob/fb51a4d5fd27d3a6986f84a47947b8bddd19b37f/.devouch/policy.json) のdigest: `sha256:ce77f04b8a1679ab784528a7feec24e0d3779c0d3b045b25950cea939ee9f653`。
+- 結果: `valid / accepted`、`reason_codes: []`、終了コード **0**、`submitted: false`。
+- subject: `github:287365775`。issuer: `0x894108DC5640e36c478523228addA22b58Eeb79c`。scope: `oss-contribution`。
+- Sepolia block **11783427**、hash `0x4a56b3baa0d6b60896f3f1e27b621fafdb2a812fd2342c800ad87eb541348762`、confirmations `2`。
+- 不採用・失効の確認はローカルEVMの証拠として区別する。実Sepoliaの推薦の更新・実PRの投稿は行っていない。
 
 ## 推薦とrepo方針の信頼マップ（2026-09-26）
 
