@@ -18,3 +18,4 @@
 - ローカル配信のCSPは `script-src 'self'` のため、HTML内のインライン初期化は実行されない。保存した配色は同梱の `theme.js` をheadから同期読み込みして描画前に適用する。初期配色の検証ではメインの `app.js` を遅延させ、再読み込みでも配色が戻らないことを確認する。
 - 推薦者のPrimary Nameはviemの `getEnsName({ address, blockNumber })` で取得でき、Universal Resolverが正引き一致を検査する。公開先の `recordName` とは別の値として扱い、名前未設定・取得失敗で証拠や方針の判定を変えない。
 - Ruby JSONのバージョンによっては `object_class` の `[]=` を重複キー検出に使えない。`allow_duplicate_key: false` を併用し、Ruby CLIとWebで同じ重複キーの方針fixtureを拒否することを確認する。
+- Bun内で複数のChromiumを順に起動・終了すると、後のブラウザ操作が無応答になることがある。旧ブラウザのpipe descriptorをGC時に再度閉じる[既知の報告](https://github.com/microsoft/playwright/issues/42692)と一致する症状を、既存browser/themeの2ファイルだけでも再現した。結合テストはファイルごとにBunプロセスとEVMを分け、同じ23ケースを実行する。

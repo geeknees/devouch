@@ -61,6 +61,8 @@ Universal Resolverの正引き一致確認を使い、推薦の公開先recordNa
 - 結合23 tests / 195 Bun assertionsに加え、テスト内のPlaywright assertionsも成功。strict型検査・Ruby構文検査が成功。
 - `bun run build` 後の `git diff --exit-code -- dist/` が成功し、staged配布物との再build一致を確認した。
 - privacy-checkは今回のstaged差分0件。全ファイル・履歴の14件は既存の第三者著作権表示、公開承認済みの過去の氏名、GitHub公式URLへの誤検知であり、新しい混入はない。
+- 初回のpush CIは既存wallet UIテストでタイムアウトし、同じcommitのPR CIは成功した。browser/themeの2ファイルのみでも後のブラウザが停止する現象を再現。[Bunのpipe寿命に関する既知報告](https://github.com/microsoft/playwright/issues/42692)と症状が一致するため、結合テストの実行をファイル単位のBunプロセス・EVMに分けた。依存バージョンやworkflowは変更せず、全23ケースと各assertionを維持する。
+- 分離後の全8ファイル・23 tests / 195 Bun assertionsが成功。配布物の再build一致も成功した。
 
 Pagesでの公開確認は再公開後に追記する。物理スマートフォンは未確認で、390pxブラウザ検証とは区別する。
 スライドのQR、提出文、提出画像の撮り直しはClaude側の担当。
