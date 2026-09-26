@@ -15,6 +15,7 @@
 | `.devouch/local/demo/vouch.json` | Sepolia に公開済みの推薦の原本（[本番のコマンド](script.md#live-demo-commands)） |
 | `examples/demo/policy-a.json`, `examples/demo/policy-b-reject.json` | Git管理済み |
 | 端末 | repo のルートで開いておく |
+| QR | スライドの「Try it on your phone」か、印刷した QR。検証ページ（https://geeknees.github.io/devouch/?name=masusanou-dev.eth#verify）を開く |
 | ブラウザ | Web アプリの **Retrieve** タブ、デモ用 PR の Devouch チェック、デモ動画（`clips/06-revoke.mp4` と `clips/07-revoked.mp4`） |
 
 決勝の前にリハーサルで失効させた場合は、公開し直した新しい推薦に合わせて `vouch.json` を置き直す。
@@ -78,6 +79,14 @@ rm -f .devouch/local/demo/booth-fetched.json
 > I can take a vouch back / from my wallet.
 > This part is **a recording** / on a local chain.
 > After that, / both repositories say / **revoked.**
+
+### 5b. Try it yourself (15s)
+
+`[DEMO]` Show the QR (slide "Try it on your phone" or a printout). Let the judge open it on their phone.
+
+> Please scan this. / **Try it yourself.**
+> No wallet. / It's live on Sepolia.
+> Add me to repo B, / and it changes / to **accepted.**
 
 ### 6. Close (10s)
 
@@ -157,6 +166,14 @@ rm -f .devouch/local/demo/booth-fetched.json
 > 推薦は、自分のウォレットから取り消せます。
 > ここはローカルのチェーンでの録画です。
 > 取り消した後は、両方のリポジトリが revoked になります。
+
+### 5b. 自分で試してもらう（15秒）
+
+`[DEMO]` QR を見せる（スライド「Try it on your phone」か印刷したもの）。審査員のスマホで開いてもらう。
+
+> これを読み取って、ご自身で試してみてください。
+> ウォレットは要りません。Sepolia の本物のデータです。
+> repo B に私を追加すると、accepted に変わります。
 
 ### 6. まとめ（10秒）
 

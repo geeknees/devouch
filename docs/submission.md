@@ -16,7 +16,7 @@
 | Demo URL | https://geeknees.github.io/devouch/ |
 | Short description | Portable, revocable contributor endorsements on ENSv2. Each repository keeps its own policy. |
 | GitHub repository | https://github.com/geeknees/devouch （公開済み） |
-| Images | [ロゴ・カバー・3枚の画面草案](submission-assets/README.md) |
+| Images | [ロゴ・カバー・画面5枚](submission-assets/README.md)。Screenshots は `verify.png` を先頭にする（審査員が最初に見る） |
 | Ethereum tools | viem, ENSv2, Hardhat |
 | Network | Ethereum Sepolia |
 | Languages | Ruby, TypeScript, JavaScript, HTML, CSS |
@@ -46,6 +46,8 @@ Withdrawing the ENS record invalidates the endorsement on the next check.
 Restoring an old JSON cannot resurrect it.
 The static wallet workspace handles setup, publication, key permissions, withdrawal, and transaction recovery.
 
+Anyone can try it without a wallet: the [verification page](https://geeknees.github.io/devouch/?name=masusanou-dev.eth#verify) reads a live endorsement from ENS on Sepolia, shows who vouched by their primary ENS name, and compares two example repository policies side by side. Add the issuer to repository B's trusted list and its decision changes from rejected to accepted, while the evidence stays the same.
+
 No Devouch-operated API, database, signing service, publisher key, or unique storage service is required.
 The project still depends on Ethereum/ENS, name maintenance, a wallet, GitHub for PR identity, and a reliable historical RPC provider.
 Recommendations do not prove humanity, code quality, delegation, or merge approval.
@@ -58,6 +60,7 @@ The static HTML/CSS workspace connects to an injected wallet and sends transacti
 The complete signed JSON is stored in devouch.vouch, so another verifier can retrieve it without the Devouch website.
 
 Verification checks a pinned chain snapshot, the resolver's deployment origin, exact publication bytes, subsequent text updates, and transient binding or upgrade changes.
+The wallet-free verification page reuses the same TypeScript verifier, resolves the issuer's primary name with viem's `getEnsName` (the ENSv2 Universal Resolver confirms it resolves back to the same address), and evaluates repository policies in the browser; shared test cases check that the browser and the Ruby CLI reach the same decisions and reason codes.
 A composite GitHub Action uses the PR author's numeric ID, the base commit's policy, and the head commit's endorsement without checking out PR code.
 Tests combine Minitest, Bun, Playwright, and a disposable Hardhat EVM running pinned official ENS bytecode.
 No new smart contract, backend service, database, or shared signing key was added.
@@ -95,7 +98,7 @@ ENS を選ぶと出てくる欄。画面は [project-submit-form/](project-submi
 
 **How are you using this Protocol / API?**
 
-> Each recommender publishes the complete signed endorsement JSON as the `devouch.vouch` text record on their own ENSv2 Permissioned Resolver, and withdraws it by clearing that record. Devouch's CLI and GitHub Action read the record and its resolver history straight from ENS on Sepolia, so any repository can verify an endorsement without a Devouch server.
+> Each recommender publishes the complete signed endorsement JSON as the `devouch.vouch` text record on their own ENSv2 Permissioned Resolver, and withdraws it by clearing that record. Devouch's CLI, GitHub Action and wallet-free verification page read the record and its resolver history straight from ENS on Sepolia, so anyone can verify an endorsement without a Devouch server.
 
 **Link to the line of code where the tech is used**
 

@@ -140,6 +140,10 @@ While waiting for two blocks (about 24 seconds):
 > I did **not** build / a central server.
 > Devouch does not check / if you are human. / It shows / **who vouches for you.**
 >
+`[DEMO]` Show the slide "Try it on your phone" (QR).
+
+> Scan this. / **Try it yourself** / on your phone.
+>
 > AI can make / more code. / It can't make / more **trust.**
 > **Endorse once. / Let each community decide.** / Thank you.
 
@@ -227,6 +231,10 @@ While waiting for two blocks (about 24 seconds):
 > トークン報酬も入れませんでした。
 > 中央のサーバーも作りませんでした。
 > Devouch は、人間かどうかは確かめません。示すのは、誰があなたを推薦しているかです。
+>
+`[DEMO]` スライド「Try it on your phone」（QR）を見せる。
+
+> これを読み取って、スマホで試してみてください。
 >
 > AI はコードを増やせます。でも、信頼は増やせません。
 > 推薦は一度。判断は各コミュニティで。ありがとうございました。
