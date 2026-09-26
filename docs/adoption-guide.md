@@ -103,12 +103,15 @@ jobs:
         with:
           policy-path: .devouch/policy.json
           mode: report
+          rpc-url: https://rpc.sepolia.ethpandaops.io
           github-token: ${{ github.token }}
 ```
 
 `policy-path`、`mode`、`github-token` は [action.yml](../action.yml) の入力です。`github.token` は GitHub が提供する実行用トークンを使い、PATやrepository secretの手動登録を求めません。権限は読み取りだけです。[GitHub の権限設定](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#permissions)
 
 既定 RPC は認証不要の `https://sepolia.gateway.tenderly.co` です。実際のデモ名の履歴とCLI requestまで確認しました。代替の `https://rpc.sepolia.ethpandaops.io` も配備時の状態照会まで確認済みで、`rpc-url` 入力で変更できます。PublicNodeは時間経過後に実名の準備確認が失敗したため、デモの代替には使いません。公開RPCの可用性・履歴保持・制限は保証せず、未完了の照会は unavailable にします。masusanouの実fork PRでは、手動登録のSecretを追加せず、GitHub提供tokenと既定RPCでvalid / acceptedを確認しました。初回forkの実行承認は必要でした。
+
+Roadmap版の試用では、GitHub runnerからTenderlyへの取得が2回とも`rpc_unavailable`になったため、上の例とMaintainersの出力はethPandaOpsを明示します。同じ推薦は両RPCからローカルでvalid / acceptedを確認済みです。GitHub上での結果は[Roadmap記録](roadmap-plan.md)に残します。自動的なRPC切替は行わず、履歴を確認できなければ判定を止めます。
 
 この workflow には `checkout`、PR のビルド、テスト実行を追加しません。Action 自身のコードだけで GitHub 上の JSON と chain を読みます。配布版はタグではなく commit SHA で固定します。[GitHub の Action 固定に関する説明](https://docs.github.com/en/actions/reference/security/secure-use#using-third-party-actions)
 

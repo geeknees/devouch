@@ -39,6 +39,7 @@ jobs:
         with:
           policy-path: .devouch/policy.json
           mode: report
+          rpc-url: https://rpc.sepolia.ethpandaops.io
           github-token: ${githubToken}
 `;
   return { policy, workflow };
