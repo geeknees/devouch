@@ -15,7 +15,7 @@ ETHGlobal Tokyo 2026 finalist judging: **7 minutes = 4 min demo + 3 min Q&A.**
 **本番のデモは録画で行う（2026-09-26 決定）。** 台本を見ながら PC を操作するのは負担が大きいため。デモの部分だけ、音声なし・字幕付きの動画 `tools/video/out/devouch-demo-cut-captions.mp4`（約2分10秒）を流す。字幕を読み上げてもよいし、黙って字幕に任せてもよい。
 
 - 動画の中の発行と取り消しはローカルのチェーン（公式 ENSv2 コントラクト）での録画で、画面にもそう出ている。Action の場面は GitHub 上の実際の PR #2。
-- 本番では取引を送らないので、推薦を公開し直す必要はない。Sepolia の推薦（`masusanou-dev.eth`）はそのまま残し、最後に QR で審査員に確かめてもらう。
+- 本番では取引を送らないので、推薦を公開し直す必要はない。Sepolia の推薦（QR が指す `masusanou.vouches.geeknees.eth`、予備の `masusanou-dev.eth`）はそのまま残し、最後に QR で審査員に確かめてもらう。
 - 手でライブ操作する版は、下の「ライブ操作版（予備）」に残してある。使うときだけ、その段取りに従う。
 
 準備するもの:
@@ -46,9 +46,9 @@ ETHGlobal Tokyo 2026 finalist judging: **7 minutes = 4 min demo + 3 min Q&A.**
 
 動画の前に（5秒）:
 
-> Here is a two-minute demo. / It's a recording, / so I can show you / every step.
+> Here is a two-minute demo.
 
-> 2分のデモをお見せします。録画なので、全部の手順をお見せできます。
+> 2分のデモをお見せします。
 
 動画の後は、English の「3:30 — Close」をそのまま話す（QR のスライドから）。
 動画の中でもローカルのチェーンで録ったことを話しているので、ここで繰り返さなくてよい。
@@ -157,19 +157,21 @@ While waiting for two blocks (about 24 seconds):
 
 ### 3:30 — Close (30s)
 
-> I did **not** build / a global score.
-> I did **not** add / token rewards.
-> I did **not** build / a central server.
-> Each choice / has a reason. / It's all / **in the repo.**
-> Devouch shows / **who vouches for you.**
->
-`[DEMO]` Show the slide "Try it on your phone" (QR).
+Follow the slide order: "Try it on your phone" → "What I did not build" → the last slide.
 
-> Scan this. / **Try it yourself** / on your phone. / This one is **live on Sepolia.**
->
-> AI can make / more code. / It can't make / more **trust.**
+`[DEMO]` Slide "Try it on your phone" (QR).
+
+> Scan this. / **Try it yourself.** / It's **live on Sepolia.**
+
+`[DEMO]` Slide "What I did not build".
+
+> No global score. / No token rewards. / No central server. / The reasons / are **in the repo.**
+
+`[DEMO]` Last slide.
+
 > **Endorse once. / Let each community decide.** / Thank you.
 
+"Devouch shows who vouches for you" and "AI can make more code. It can't make more trust." stay on the slides as text; you don't need to say them.
 ---
 
 ## 日本語
@@ -250,19 +252,21 @@ While waiting for two blocks (about 24 seconds):
 
 ### 3:30 — まとめ（30秒）
 
-> 全体共通のスコアは作りませんでした。
-> トークン報酬も入れませんでした。
-> 中央のサーバーも作りませんでした。
-> どれにも理由があります。詳しくは repo をご覧ください。
-> Devouch が示すのは、誰があなたを推薦しているかです。
->
-`[DEMO]` スライド「Try it on your phone」（QR）を見せる。
+スライドの順番どおりに進める：「Try it on your phone」→「What I did not build」→ 最後のスライド。
 
-> これを読み取って、スマホで試してみてください。
->
-> AI はコードを増やせます。でも、信頼は増やせません。
+`[DEMO]` スライド「Try it on your phone」（QR）。
+
+> これを読み取って、試してみてください。Sepolia の本物のデータです。
+
+`[DEMO]` スライド「What I did not build」。
+
+> 全体共通のスコア、トークン報酬、中央のサーバーは作りませんでした。理由は repo にあります。
+
+`[DEMO]` 最後のスライド。
+
 > 推薦は一度。判断は各コミュニティで。ありがとうございました。
 
+「Devouch が示すのは、誰があなたを推薦しているか」と「AI はコードを増やせるが、信頼は増やせない」は、スライドに文字として残してあるので、話さなくてよい。
 ---
 
 ## Live demo commands
