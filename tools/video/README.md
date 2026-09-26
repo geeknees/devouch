@@ -67,3 +67,15 @@ curl -L -o ~/.cache/whisper-cpp/ggml-base.en.bin https://huggingface.co/ggergano
 ```
 
 別の場所のモデルを使うときは `WHISPER_MODEL` にパスを指定する。
+
+## 発表用の切り出し
+
+`mix.ts` はデモの場面（03〜07）だけを切り出した `out/devouch-demo-cut.mp4`（声入り、約2分10秒）も作る。
+発表やブースで流す、音声なし・字幕付きの版は次で作る。
+
+```sh
+node tools/video/captions.ts   # out/devouch-demo-cut-captions.mp4
+```
+
+字幕の文と出すタイミングは `captions.ts` の `CAPTIONS` にある。各字幕は、録画の操作を動かしたのと同じ台本のフレーズで始まるので、画面の動きと合う。
+この ffmpeg には文字を描く機能がないため、字幕は ImageMagick で1行ずつ画像にして重ねている。フォントは `CAPTION_FONT` で変えられる。

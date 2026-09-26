@@ -54,10 +54,17 @@ writeFileSync(list, parts.map(p => `file '${p}'`).join('\n'));
 const final = join(OUT, 'devouch-demo-voiced.mp4');
 ffmpeg(['-f', 'concat', '-safe', '0', '-i', list, '-c', 'copy', final]);
 
+// The demo scenes alone (publish → verify → Action → withdraw → re-verify), played during the live talk.
+const cutList = join(WORK, 'demo-cut.txt');
+writeFileSync(cutList, parts.filter(p => /\/0[3-7]-[^/]+\.mp4$/.test(p)).map(p => `file '${p}'`).join('\n'));
+const cut = join(OUT, 'devouch-demo-cut.mp4');
+ffmpeg(['-f', 'concat', '-safe', '0', '-i', cutList, '-c', 'copy', cut]);
+
 const mmss = (s: number) => `${Math.floor(s / 60)}:${(s % 60).toFixed(1).padStart(4, '0')}`;
 console.log('clip                      video  speech  final  held');
 for (const p of plan) console.log(`${p.clip.padEnd(24)} ${p.video.toFixed(1).padStart(6)} ${p.speech.toFixed(1).padStart(7)} ${p.length.toFixed(1).padStart(6)} ${(p.length - p.video).toFixed(1).padStart(5)}`);
 console.log(`Voiced video: ${final} (${mmss(duration(final))})`);
+console.log(`Demo cut (scenes 03–07): ${cut} (${mmss(duration(cut))})`);
 if (total > LIMIT) {
   console.error(`Over the 4:00 limit by ${(total - LIMIT).toFixed(1)} s. Shorten the scenes with the most held time.`);
   process.exitCode = 1;
