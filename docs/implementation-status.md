@@ -48,7 +48,29 @@ SKILLのコマンドをcheckout外から実行し、公開GitHubのmain `16c5a74
 
 一覧の推薦者は3件とも `Vouched by geeknees.eth`。旧数値名の原本subjectの入力誤りとagent subjectは別々にそのまま表示され、署名済みデータを補正していない。両テーマと320 / 390 / 768 / 1440px、再読込後の `not_checked`、wallet未接続、読み取りRPC6メソッドのみ、JSエラー0を確認した。表示確認で残っていた処理中の案内文を完了表示へ修正し、最終配布物のブラウザ回帰テストも再度成功した。
 
-新画面の公開先確認は、公開後の結果をこの節に追記する。これは一時Chromeの確認であり、本人の実スマートフォンによる新画面の確認とは区別する。
+### Pages公開と確認（2026-09-26 18:00〜18:06 JST）
+
+承認後、実装commit `8f6fa69cb8dc6855217c7ce1e178ba23b451cfb4` を作業ブランチへpushし、[PR #23](https://github.com/geeknees/devouch/pull/23)の全CI成功後にmergeした。merge commitは `73fecd367324e3639a345aceacb4cd3cecc4b89b`。[main CI](https://github.com/geeknees/devouch/actions/runs/36231435804)と、このSHAを配信した[Pages公開](https://github.com/geeknees/devouch/actions/runs/36231454791)も成功した。mainへの直接pushはしていない。
+
+18:01 JST、公開先の静的11ファイルが全てcommit済み配布物とSHA-256一致した。`app.js` は `75c6a206c38fbfd19b9718eaaeaf55630a86cb8bc864ecf319baa9c95be9828e`。[配布SKILL](https://github.com/geeknees/devouch/blob/main/skills/devouch-check/SKILL.md)も固定commitのraw URLから認証なしで取得し、原本bytesと一致した（SHA-256 `c6b99167715af40a564203ef5e28472b93c46a5f99bf48a2a1414e86019e530b`）。
+
+[My endorsements](https://geeknees.github.io/devouch/#manage)を一時Chromeの390px幅から開き、ethPandaOpsを明示して確認した。RPC診断のsnapshot `11785210`（`2026-09-26T09:01:34.398Z`）、Factoryの過去state/log、完全検証のsnapshot `11785211`（`2026-09-26T09:01:45.307Z`）が成功し、証拠はvalid、方針はnot_evaluatedと表示した。
+
+| 公開一覧の名前 | 証拠 / block / checked_at | agentの独立した確認 |
+|---|---|---|
+| `masusanou.vouches.geeknees.eth` | valid / `11785215` / `2026-09-26T09:02:30.374Z` | block `11785218`、全プロフィール権限なし |
+| `geeknees.eth` | valid / `11785226` / `2026-09-26T09:04:38.665Z` | 未照会と表示 |
+| `287365775.vouches.geeknees.eth` | revoked / `11785229` / `2026-09-26T09:05:17.448Z` | block `11785233`、全プロフィール権限なし |
+
+公開先でも両テーマ、320 / 390 / 768 / 1440px、保存した名前の復元と結果の `not_checked` 化、処理完了の案内文を確認した。JSエラー0、walletなし、RPCは読み取り6メソッドだけだった。
+
+同日、本人も手元のブラウザで `masusanou.vouches.geeknees.eth` の追加→Refresh evidenceでvalid→再読込後の名前維持と `not_checked` への復帰を確認し、「追加・更新・再読み込み後の保存を確認できた」と報告した。端末機種・ブラウザ種別は共有されていないため、スマートフォン固有の確認とは断定しない。
+
+既存の[QR用検証URL](https://geeknees.github.io/devouch/?name=masusanou.vouches.geeknees.eth#verify)も標準Tenderlyでvalid、`Vouched by geeknees.eth`、A accepted / B rejected→issuer追加後accepted。snapshot `11785219`、`2026-09-26T09:03:24.125Z`、hash `0x8f7802629ffdb1d85691b5220314947e3ab16c37ed7390031240f82766256681`。
+
+[PR #2の検証URL](https://geeknees.github.io/devouch/?pr=https%3A%2F%2Fgithub.com%2Fgeeknees%2Fdevouch%2Fpull%2F2#verify)は標準Tenderlyでvalid / accepted。snapshot `11785221`、`2026-09-26T09:03:48.242Z`、hash `0x866f34bb87ec660cb96a05f9ff9f19cddcf3c8e58e65854aef0f7774f93003bf`。GitHubが返したbase SHA `3214991e616e118d921ea9575d06d5e121b584f4` とhead SHA `7ac246f17c441833cb3ece244cdf1377fe35e003` に固定して照合した。PR #2自体は同じheadでOPENのまま維持した。
+
+新しい[PR #23の固定Action](https://github.com/geeknees/devouch/actions/runs/36231329804)でも、geekneesの既存原本がvalid / accepted、CLI終了0、理由なしだった。snapshot `11785191`、`2026-09-26T08:57:49.792Z`。既存の方針・原本6ファイルとv0.1 / v0.2のタグを維持し、スライド・提出資料は変更していない。
 
 ## 完成条件と証拠
 
