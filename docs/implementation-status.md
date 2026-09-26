@@ -23,6 +23,52 @@ Building from Scratch の適格性を運営が確認したとは扱わない。
 | README、導入手順、ライセンス、提出・デモ資料 | コマンド再実行とリンク検査 | 作成・更新済み。提出画像草案5点。動画は完成済みとユーザー確認（2026-09-26）。提出サイトへ直接アップロードするため、別の公開URLは不要 |
 | 公開コード・配布 SHA・静的 live URL | 公開先の readback | repoとPagesを公開。操作改善版の配信10ファイルと固定Actionの匿名取得・一致、全タブ、ウォレットなしでの実ENS原本取得を確認。[公開記録](release-evidence.md) |
 
+## ウォレット不要の検証ページと方針比較（2026-09-26）
+
+共有URL: https://geeknees.github.io/devouch/?name=masusanou-dev.eth#verify
+
+新しいVerifyタブは、名前と任意のpublication.jsonから既存の署名・ENS履歴・snapshot検証を実行する。
+`ChainReader.verifyName` は従来のfetch内の検証結果を返し、既存fetchの返却形式・検証条件は維持する。
+evidenceとpolicyを分け、同じ証拠に対してサンプルrepo Aはaccepted、Bはrejectedとなる。
+BのTrusted issuersへ推薦者を追加すると、RPCを再実行せず同じsnapshotでacceptedへ変わる。
+サンプル方針はブラウザ内だけで編集し、実repoの方針の取得・更新やPR作者の確認は行わない。
+画面に `human verification: not included` を表示する。
+
+推薦者名はviemの `getEnsName({ address, blockNumber })` で逆引きする。
+Universal Resolverの正引き一致確認を使い、推薦の公開先recordNameと異なるPrimary Nameは区別して表示する。
+未設定・逆引きの取得失敗はアドレス表示へ戻し、証拠や採否を変えない。
+保存位置を含めた共有リンクも作成できる。URLから任意のRPCや外部JSONを読み込む機能は持たない。
+
+### ローカル配布物から実Sepoliaを確認
+
+- 確認日時: 2026-09-26 10:08 JST（画面のchecked_at: `2026-09-26T01:08:08.991Z`）。
+- URL: `http://127.0.0.1:49782/?name=masusanou-dev.eth#verify`。
+- snapshot: Sepolia block `11782895`、hash `0xf801d0ee9fb454c69855745d987cd955316e7e057023e0edd278fd44b664ee09`。
+- Chromeの390×844px・タッチ端末エミュレーションで、URLを開くだけでsignature/evidenceともvalid、`Vouched by masusanou-dev.eth` を確認。
+- 同じ証拠でA accepted、B rejected (`issuer_not_trusted`)。Bへ推薦者を追加してacceptedへ変化した。
+- ウォレットなし、JavaScriptエラー0件、画面の横溢れなし。通信先はローカル配信元とTenderly RPCのみ。
+- RPCはchain ID・block・code・call・logs・receiptの読み取りだけ。実Sepoliaへの署名・取引・失効操作は行っていない。
+- PR #2は読み取りで既存のDevouch endorsement reportと通常CIの成功を確認。Actionの再実行・mergeはしていない。
+- `.devouch/policy.json` と `.devouch/local/demo/` の5つのJSONは、作業開始時のSHA-256と一致する。
+
+### 自動検証
+
+- `test/fixtures/policy-cases.json` の33組を、Ruby CLIとTypeScriptの両方で実行。採否、理由の順序、証拠が非validのときのnot_evaluated、不正方針の拒否が一致。
+- 共通fixtureでRuby JSONの重複キー検出漏れを発見し、既存の拒否仕様を `allow_duplicate_key: false` で明示した。方針のschema・受け入れ基準は変更しない。
+- ENS名の取得成功・未設定・取得失敗を単体テスト。実ブラウザでは、Primary Nameと公開先が異なるケースも表示を確認。
+- Ruby 52 tests / 179 assertions、TypeScript単体63 tests / 114 assertionsが成功。既存のPublish / Retrieve / Withdraw / ENS setupとテーマのテストを維持。
+- ブラウザ結合テストは実ローカルENSコントラクトで推薦を公開し、名前表示だけをstubにして方針編集・失効・期限切れ・署名不正・推薦なし・RPC失敗を確認する。
+- 結合23 tests / 195 Bun assertionsに加え、テスト内のPlaywright assertionsも成功。strict型検査・Ruby構文検査が成功。
+- `bun run build` 後の `git diff --exit-code -- dist/` が成功し、staged配布物との再build一致を確認した。
+- privacy-checkは今回のstaged差分0件。全ファイル・履歴の14件は既存の第三者著作権表示、公開承認済みの過去の氏名、GitHub公式URLへの誤検知であり、新しい混入はない。
+
+Pagesでの公開確認は再公開後に追記する。物理スマートフォンは未確認で、390pxブラウザ検証とは区別する。
+スライドのQR、提出文、提出画像の撮り直しはClaude側の担当。
+Future欄への引き継ぎ案: "Support multiple active endorsements through per-contributor subnames, such as
+`github-287365775.issuer.eth`, with independent publication and withdrawal histories. This requires extending
+the verifier beyond direct `name.eth` names and checking subname ownership and permissions; it is not part of this release."
+PR URLからの検証・信頼グラフは実装していない。追加着手は本機能の完了後に別途決める。
+
 ## 採用範囲
 
 Ruby CLI、TypeScript/viem の検証補助、静的ウォレット UI、GitHub Action。

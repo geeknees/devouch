@@ -299,6 +299,11 @@ export class ChainReader {
   }
 
   async fetch(name: string, publication?: Publication) {
+    const result = await this.verifyName(name, publication);
+    return { raw: result.raw, publication: result.publication, snapshot: result.snapshot, subject: result.subject };
+  }
+
+  async verifyName(name: string, publication?: Publication) {
     nameParts(name);
     const snapshot = await this.snapshot(), block = BigInt(snapshot.block_number);
     await this.checkProtocol(block);
@@ -333,6 +338,7 @@ export class ChainReader {
     // This also reconstructs and checks the publication position; it does not apply repo policy.
     const inspected = await this.inspect(parsed, publication);
     insist(inspected.publication, 'publication_missing', 'missing');
-    return { raw, publication: publication ?? inspected.publication, snapshot: inspected.snapshot, subject: parsed.message.subject };
+    return { raw, publication: publication ?? inspected.publication, snapshot: inspected.snapshot,
+      subject: parsed.message.subject, parsed, evidence: inspected };
   }
 }

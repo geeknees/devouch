@@ -14,7 +14,7 @@ module Devouch
     end
 
     def self.parse(raw)
-      JSON.parse(raw, object_class: StrictObject, max_nesting: 16)
+      JSON.parse(raw, object_class: StrictObject, max_nesting: 16, allow_duplicate_key: false)
     end
 
     def self.read(path, limit: 4096, kind: "credential")
