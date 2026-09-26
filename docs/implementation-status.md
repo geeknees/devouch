@@ -24,6 +24,51 @@ Building from Scratch の適格性を運営が確認したとは扱わない。
 | README、導入手順、ライセンス、提出・デモ資料 | コマンド再実行とリンク検査 | 作成・更新済み。提出画像草案5点。動画は完成済みとユーザー確認（2026-09-26）。提出サイトへ直接アップロードするため、別の公開URLは不要 |
 | 公開コード・配布 SHA・静的 live URL | 公開先の readback | repoとPagesを公開。操作改善版の配信10ファイルと固定Actionの匿名取得・一致、全タブ、ウォレットなしでの実ENS原本取得を確認。[公開記録](release-evidence.md) |
 
+## 提出前の読み取り総点検（2026-09-26 12:12〜12:14 JST）
+
+対象mainは `5d82d245d09266816be7ab23e24d84c9c93af3a0`。[main CI](https://github.com/geeknees/devouch/actions/runs/36213784659) の全step成功を確認した。
+公開Pagesは `a4a729b67348aa22c97939be0f005e8b255d16fa` のままで、現在の `dist/web/` と配信11ファイルがbytes一致した。
+今回の修正はREADME・デモ手順・この記録と再発防止のgotchasだけ。録画＋QRという現在の発表構成に合わせ、通常のリハーサルから再公開・失効取引を外した。
+
+### 公開先と予備経路
+
+| 確認 | 結果 / snapshot |
+|---|---|
+| [ENS名のQR用URL](https://geeknees.github.io/devouch/?name=masusanou-dev.eth#verify) | valid、Vouched by masusanou-dev.eth、A accepted / B rejected → Add this issuerでaccepted。block `11783493`、checked_at `2026-09-26T03:12:26.844Z` |
+| [PR #2の検証URL](https://geeknees.github.io/devouch/?pr=https%3A%2F%2Fgithub.com%2Fgeeknees%2Fdevouch%2Fpull%2F2#verify) | 作者subject一致、valid / accepted、block `11783493`、checked_at `2026-09-26T03:12:37.338Z` |
+| 予備のethPandaOps RPCから `verify` | 同じ原本と実repo方針でvalid / accepted、終了0。block `11783492`、checked_at `2026-09-26T03:12:23.413Z` |
+| `check --repo geeknees/devouch` | 上記mainの方針でvalid / accepted、終了0、submitted false。block `11783500`、checked_at `2026-09-26T03:14:13.760Z` |
+
+- Browser: Chromeの390pxタッチ端末エミュレーション。両検証モード×dark/light×6幅の24レイアウト、信頼マップのタッチ・keyboard・reduced motionが成功。今回の確認は実スマートフォンではない。
+- ENS/PRのblock hash: `0xc83ab4c211ebee99a292000b18713221b40787f6369cbc4fcf1e70aa2dec645b`。
+- 予備RPCのblock hash: `0xf3bb5ff81ce1b67fb86d81ef7f42ae301299e45ae31a3cab2d98fe9584da62b6`。
+- 送信前チェックのblock hash: `0xd1e1b1c98ebacd06d6b827cd05fb3f7a4db9d38869e951bcb442a673ea9205ab`。
+- 各CLIのpolicy digest: `sha256:ce77f04b8a1679ab784528a7feec24e0d3779c0d3b045b25950cea939ee9f653`。
+- ブラウザのGitHub GETは3回、読み取りRPCは79回。図の操作による追加通信0、JS error 0、walletなし。配信 `app.js` のSHA-256は `3f469353638a69ce82ad3b16287586c32b241a03545a04600907598e90b49ea0`。
+- PR #2はopen / unmerged、作者ID `287365775`、base `3214991e616e118d921ea9575d06d5e121b584f4`、head `7ac246f17c441833cb3ece244cdf1377fe35e003`。PR・Action・推薦への書き込みは行わなかった。
+- 保護対象の `.devouch/policy.json` と `.devouch/local/demo/` の5ファイルは既存SHA-256を維持。
+
+### 動画と提出担当への引継ぎ
+
+`ffprobe` で既存動画の形式を読み取り確認した。再生成・編集・アップロードは行っていない。
+
+| `tools/video/out/` 内のファイル | 時間 | 映像 / 音声 | 用途 |
+|---|---|---|---|
+| `devouch-demo-voiced.mp4` | 234.920秒（3:54.9） | 1920×1080 H.264 / AACあり | 音声入り完成版。提出サイトへ直接アップロードする対象 |
+| `devouch-demo-cut.mp4` | 129.854秒（2:09.9） | 1920×1080 H.264 / AACあり | 発表用の声入り予備 |
+| `devouch-demo-cut-captions.mp4` | 129.833秒（2:09.8） | 1920×1080 H.264 / 音声なし | 会場で再生する字幕版 |
+
+提出文・台本・画像の担当はClaude。以下は監査時点の差異で、担当ファイルへの反映はこの作業では行わない。
+
+1. [提出文](submission.md)のSepolia evidenceにある `planned during the live demo` は録画本番の方針と食い違う。
+   実Sepolia失効は未実施、録画の失効はローカルEVM、公開推薦はQR用に維持、という説明に合わせる。提出前の表でも実失効を本番の必須残作業と誤認しない形にする。
+2. [ブース台本](presentation/booth-script.md)の `Only I can take it back` / 「取り消せるのは私だけ」はhelperへのキー権限付与と整合しない。
+   例: `I can take it back / without Devouch approval.` / 「Devouchの承認なしに取り消せます」。日本語の「すべてのrepoに届きます」は「各repoが次に検証すると失効が分かります」とする。[helperによる失効の結合テスト](../test/integration/boundaries.test.ts)が根拠。
+3. [提出画像の説明](submission-assets/README.md)のblock `11783017` は撮り直し前の値。
+   画像を目視すると `verify.png` は `11783420`、`verify-mobile.png` は `11783422`。画像自体の再撮影は不要で、説明を画像に合わせる。
+
+フォームの保存・送信完了、ENS欄の主観評価、運営による適格性判定は未確認のまま区別する。完成済み動画の公開URL取得や再収録は残作業に加えない。
+
 ## エージェント向け送信前チェック（2026-09-26）
 
 `devouch check --repo owner/name --credential PATH --subject github:ID` を追加した。
