@@ -21,7 +21,7 @@ merge commit `3214991e616e118d921ea9575d06d5e121b584f4` のCIとPages配信も�
 | 公開workflow | [`.github/workflows/pages.yml`](../.github/workflows/pages.yml) |
 | 公開URL | https://geeknees.github.io/devouch/ 。認証なしの取得とブラウザ操作を確認済み |
 
-v0.1の固定Action commitはローカルで検証し、認証なしの公開ファイル取得と内容一致も確認した。Roadmap版の固定先はローカル検証済みで、公開後の同じ照合を待っている。
+v0.1とRoadmap版の固定Action commitは、それぞれローカルで検証し、認証なしの公開ファイル取得と内容一致も確認した。Roadmap版は[PR #17の実Action](https://github.com/geeknees/devouch/actions/runs/36218361289)でもvalid / acceptedを確認した。PagesのRoadmap版への更新は別の公開操作になる。
 その後の文書や公開workflowのcommitと、検証Actionの固定commitは別でよい。
 Actionを更新するときは、ソース・配布物の一致とテストを確認し、固定先を更新する。
 

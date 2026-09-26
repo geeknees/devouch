@@ -9,7 +9,7 @@ Building from Scratch の適格性を運営が確認したとは扱わない。
 
 ## Roadmap版の作業状況（2026-09-26）
 
-`v0.1`タグを既存デモの保存点としてremote照合後、`codex/roadmap-20260926`で階層registry・複数推薦・agent identityと限定権限・メンテナー導入を実装している。[要求別の記録](roadmap-plan.md)と[操作手順](namespaces.md)を参照。以下の既存公開記録はv0.1までの証拠として保持する。
+`v0.1`タグを既存デモの保存点としてremote照合後、`codex/roadmap-20260926`で階層registry・複数推薦・agent identityと限定権限・メンテナー導入を実装し、[PR #17](https://github.com/geeknees/devouch/pull/17)を公開した。[固定SHAのAction](https://github.com/geeknees/devouch/actions/runs/36218361289)は既存のgeeknees推薦をvalid / acceptedと判定した。新しい階層のwallet操作は公式コントラクトのローカルEVMと390pxブラウザで検証している。[要求別の記録](roadmap-plan.md)と[操作手順](namespaces.md)を参照。以下の既存公開記録はv0.1までの証拠として保持する。
 
 ユーザーが導入試験先を`geeknees/devouch`と指定した。独立した第三者による導入実績とは数えない。World IDはRP署名基盤と運営者不要の方針のトレードオフを再確認し、ユーザー指定で引き続き対象外。READMEのBoundariesも、オンチェーン検証の存在と共通サービスを採用した場合の依存を区別した。
 

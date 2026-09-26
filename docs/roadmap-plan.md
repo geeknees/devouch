@@ -30,11 +30,11 @@
 | 同時に複数推薦・個別失効 | 二つ以上のサブネームでvalid、片方を失効・再掲載してももう片方はvalid | `hierarchy.test.ts`で確認 |
 | エージェントidentityと権限 | 実walletの許可操作成功、未許可キー・兄弟・親・推薦操作失敗、権限撤回後失敗 | wallet serviceとブラウザで確認。共用resolverも拒否 |
 | 階層履歴の検証 | 親の移転・復元、registry変更・復元、権限撤回・再付与、再登録、期限、同一block内変更、未知実装と欠損履歴の負例 | 14件の実EVM階層テストで確認 |
-| CLI・Web・Actionの共通判定 | 公開原本の取得・検証、PR作者照合、方針のRuby/TypeScript一致、既存direct名の回帰確認 | ローカルの全統合・共有方針fixtureが成功。新しいActionの実PR試用は下記で追跡 |
-| メンテナー導入 | 信頼する推薦者の選択、設定出力、SHA固定workflow、説明と失敗時の案内、操作テスト | 実装・390pxブラウザ確認済み。階層版の固定SHAを設定し、公開後の照合待ち |
-| 指定repoでの試用 | `geeknees/devouch` の具体的なcommit・PR・Action判定と原本・policyの照合記録 | 未実施 |
+| CLI・Web・Actionの共通判定 | 公開原本の取得・検証、PR作者照合、方針のRuby/TypeScript一致、既存direct名の回帰確認 | 全統合・共有方針fixtureが成功。公開ActionはPR #17でvalid / accepted |
+| メンテナー導入 | 信頼する推薦者の選択、設定出力、SHA固定workflow、説明と失敗時の案内、操作テスト | 実装・390pxブラウザ確認済み。固定SHAの匿名取得、実repoの同一Actionと明示RPCでの試用が成功 |
+| 指定repoでの試用 | `geeknees/devouch` の具体的なcommit・PR・Action判定と原本・policyの照合記録 | PR #17で実施済み。下記の日時・block・commit・runを照合 |
 | 中央サービス不要の人間性証明 | 公式仕様の調査結果、条件を満たす場合は任意の証明と正負の検証テスト | 再調査済み。ユーザー指定により引き続き対象外 |
-| 配布・文書の一致 | build、unit、integration、Ruby、型・構文検査、dist再build一致、privacy検査、要求別の最終監査 | ローカル検査は完了。公開後の照合待ち |
+| 配布・文書の一致 | build、unit、integration、Ruby、型・構文検査、dist再build一致、privacy検査、要求別の最終監査 | ローカル検査・公開ファイル照合・GitHub全CIが成功。RPC設定修正後もpush/PR双方のCIが成功 |
 
 ## 現在確認した設計上の前提
 
@@ -62,4 +62,28 @@
 - `check-name.ts masusanou-dev.eth` は `2026-09-26T04:21:19.430Z`、Sepolia block `11783823` / `0x05422888bbd20aac7407b605b857c5e33679f0d1d6d8d71d124e795661b74193` でowner・親経路・既存resolverを取得し、ready true / record 1 / 原本785 bytesを確認した。チェーンへの書込みなし。
 - World sandbox discoveryを再読取りし、`token_endpoint_auth_methods_supported`は`client_secret_basic` / `client_secret_post` / `private_key_jwt`だった。READMEの説明を共通運用した場合の依存として限定し、オンチェーン検証の存在を否定しない表現にした。
 - `main`のBoundaries追記 `dd4ffeb592bf78f08d1a6aac2d33293c7011d176` を取り込み、レビュー済みの表現に調整した。実装commitは `99e6466ce96e50a22a11a0205bb1d38dfbacfc81`。workflowとMaintainersの既定値をこのSHAへ固定した。現段階ではローカルcommitであり、公開済みとは扱わない。
-- 未完了: 新ブランチの公開、固定Actionの匿名取得と実repo試用、外部結果のreadback。この作業では既存Pages・PR #2・v0.1タグを変更していない。実Sepoliaで新サブネームを作成したという主張はしない。
+- この時点では新ブランチの公開、固定Actionの匿名取得と実repo試用、外部結果のreadbackが残っていた。以下で公開と試用を確認した。
+
+### 公開と自repoでの試用（2026-09-26 13:37 JST）
+
+ユーザーの明示承認後に作業ブランチをpushし、[PR #17](https://github.com/geeknees/devouch/pull/17)を作成した。本文は準備したファイルと完全一致し、base/head・作者・宛先をGitHub APIで読み戻して確認した。公開Action `99e6466ce96e50a22a11a0205bb1d38dfbacfc81` の`action.yml`・`dist/bridge.mjs`・`lib/devouch/action.rb`・`src/hierarchy.ts`を匿名取得し、検証済みcommitのbytesと一致した。
+
+| 項目 | 確認結果 |
+|---|---|
+| Action run | [36218361289](https://github.com/geeknees/devouch/actions/runs/36218361289)、success |
+| base / head | `dd4ffeb592bf78f08d1a6aac2d33293c7011d176` / `d0f8198421b5d2f10accbf996d641a1b3b56c238` |
+| 作者と推薦 | GitHub PR作者の数値ID `701242`、`github:701242`、`geeknees.eth`、`eth → geeknees.eth`の経路 |
+| 結果 | `valid / accepted`、理由コードなし、CLI/Action終了コード0、`human_verification: not_included` |
+| 確認日時 | `2026-09-26T04:37:11.504Z`（13:37:11 JST） |
+| snapshot | Sepolia `11783899`、2 confirmations、hash `0x0c5129d08f18ff7e2887838c0694800a16ecb6934519969c52eb93c4dad4cd45` |
+| 方針digest | `sha256:ce77f04b8a1679ab784528a7feec24e0d3779c0d3b045b25950cea939ee9f653` |
+| 原本 | `.devouch/vouches/github-701242.json`、777 bytes、SHA-256 `cf93358054495ef9a50de1919456266be718dee9632be4f7b3e834a0db27e9a5` |
+| RPC | `https://rpc.sepolia.ethpandaops.io` をworkflowへ明示。Maintainersの出力も同じ指定 |
+
+初回の[run 36218152051](https://github.com/geeknees/devouch/actions/runs/36218152051)とその再実行は、Tenderlyから必要なRPC応答を得られず`unavailable / not_evaluated`、CLI終了コード3で停止した。原本・署名・方針・固定Actionを変更せず、代替RPCをworkflowへ明示すると成功した。ローカルではTenderly（04:32:07Z、block 11783876）とethPandaOps（04:35:10Z、block 11783889）の両方で同じ方針を満たした。取得できなかった具体的なRPC応答の原因までは特定していない。
+
+初回head `639969f302664f5b8b053a31bba2832f8c6a1c32` の[push CI](https://github.com/geeknees/devouch/actions/runs/36218108594)と[PR CI](https://github.com/geeknees/devouch/actions/runs/36218152069)は全チェック成功。RPC設定修正後は導入の単体テスト・390pxブラウザテストを再実行し、成功した。
+
+修正後のhead `d0f8198421b5d2f10accbf996d641a1b3b56c238` でも、[push CI 36218359032](https://github.com/geeknees/devouch/actions/runs/36218359032)と[PR CI 36218361299](https://github.com/geeknees/devouch/actions/runs/36218361299)が成功した。Ruby70 tests、TypeScript98 tests、統合45 tests、型・構文検査、dist再build一致をGitHub runnerで確認している。
+
+この試用は自repoで既存のdirect ENS推薦を新しい検証器へ通したものである。新しい階層名・agent権限は固定した公式コントラクトのローカルEVMで検証した。実Sepoliaでの新サブネーム作成、独立した第三者による導入、Roadmap版のmainへの取り込みとPages更新はこの記録では実施済みと扱わない。既存Pages・PR #2・v0.1タグ・保存済みの推薦原本と方針を、この作業では変更していない。

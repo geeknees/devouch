@@ -1,6 +1,6 @@
 # Devouch 導入マニュアル
 
-更新：2026-09-26。このブランチでは階層ENSに対応した [Action](../action.yml)・[CLI](../exe/devouch)・静的画面のローカル通しテストを完了し、下記の固定commitで試用する準備をしました。新しい固定先の公開と実PRでの確認は [Roadmap記録](roadmap-plan.md) に追跡します。公開済みv0.1の匿名取得・Pages公開とmasusanouの実fork PRでのvalid / acceptedは、[公開記録](release-evidence.md)と[実PRの検証記録](demo-evidence.md#masusanouの実fork-pr)を参照してください。起動方法は [README](../README.md)にあります。
+更新：2026-09-26。このブランチでは階層ENSに対応した [Action](../action.yml)・[CLI](../exe/devouch)・静的画面のローカル通しテストを完了しました。下記の固定commitを認証なしで取得・照合し、[自repoのPR #17](https://github.com/geeknees/devouch/pull/17)で既存のgeeknees推薦がvalid / acceptedになることを確認済みです。[Roadmap記録](roadmap-plan.md)に詳細を残しました。公開済みv0.1のPagesとmasusanouの実fork PRは、[公開記録](release-evidence.md)と[実PRの検証記録](demo-evidence.md#masusanouの実fork-pr)を参照してください。起動方法は [README](../README.md)にあります。
 
 公開 OSS リポジトリのメンテナー向けに、まず PR 作者の推薦を Actions の結果に表示するところまでを扱います。メンテナーは設定と workflow の2ファイルを追加し、推薦を持つ貢献者は初回だけ推薦 JSON を追加します。推薦結果を読み、レビューへ進めるかはメンテナーが決めます。
 
@@ -111,7 +111,7 @@ jobs:
 
 既定 RPC は認証不要の `https://sepolia.gateway.tenderly.co` です。実際のデモ名の履歴とCLI requestまで確認しました。代替の `https://rpc.sepolia.ethpandaops.io` も配備時の状態照会まで確認済みで、`rpc-url` 入力で変更できます。PublicNodeは時間経過後に実名の準備確認が失敗したため、デモの代替には使いません。公開RPCの可用性・履歴保持・制限は保証せず、未完了の照会は unavailable にします。masusanouの実fork PRでは、手動登録のSecretを追加せず、GitHub提供tokenと既定RPCでvalid / acceptedを確認しました。初回forkの実行承認は必要でした。
 
-Roadmap版の試用では、GitHub runnerからTenderlyへの取得が2回とも`rpc_unavailable`になったため、上の例とMaintainersの出力はethPandaOpsを明示します。同じ推薦は両RPCからローカルでvalid / acceptedを確認済みです。GitHub上での結果は[Roadmap記録](roadmap-plan.md)に残します。自動的なRPC切替は行わず、履歴を確認できなければ判定を止めます。
+Roadmap版の試用では、GitHub runnerからTenderlyへの取得が2回とも`rpc_unavailable`になったため、上の例とMaintainersの出力はethPandaOpsを明示します。同じ推薦は両RPCからローカルでvalid / accepted、ethPandaOpsでは[実Actionもvalid / accepted](https://github.com/geeknees/devouch/actions/runs/36218361289)を確認済みです。初回失敗を含む詳細は[Roadmap記録](roadmap-plan.md)に残しました。自動的なRPC切替は行わず、履歴を確認できなければ判定を止めます。
 
 この workflow には `checkout`、PR のビルド、テスト実行を追加しません。Action 自身のコードだけで GitHub 上の JSON と chain を読みます。配布版はタグではなく commit SHA で固定します。[GitHub の Action 固定に関する説明](https://docs.github.com/en/actions/reference/security/secure-use#using-third-party-actions)
 

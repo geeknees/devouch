@@ -17,8 +17,9 @@ This hackathon implementation contains a Ruby CLI, a static wallet workspace, an
 It uses Sepolia's official Permissioned Resolver and UserRegistry implementations.
 There is no Devouch API, database, shared publisher key, or custom endorsement contract.
 
-The `codex/roadmap-20260926` branch adds issuer-owned subnames, agent identities with limited profile permissions,
-and a maintainer setup guide in the workspace. The published `v0.1` tag preserves the original demo.
+The [Roadmap PR](https://github.com/geeknees/devouch/pull/17) adds issuer-owned subnames, agent identities with limited profile permissions,
+and a maintainer setup guide in the workspace. Its pinned [Action trial](https://github.com/geeknees/devouch/actions/runs/36218361289)
+reports `valid / accepted` for the existing `geeknees.eth` endorsement. The published `v0.1` tag preserves the original demo.
 Local implementation and public deployment evidence are tracked separately in the [Roadmap record](docs/roadmap-plan.md).
 
 **Current evidence:** local browser, CLI, and official-contract integration tests pass.
@@ -222,9 +223,11 @@ Implemented on this branch and exercised against the pinned official ENS contrac
 - **Verification through the hierarchy.** The verifier follows each parent, registry, ownership, and relevant role change. Restoring changed authority does not reactivate an old endorsement.
 - **Maintainer onboarding.** Maintainers select verified recommendations and review explicit trust policy plus a SHA-pinned, read-only Action workflow.
 
-The user selected `geeknees/devouch` for the adoption trial. This is a trial in the project's own repository;
-independent third-party adoption has not been demonstrated. See the [completion and trial record](docs/roadmap-plan.md)
-for deployment status. World ID remains deferred under the conditions below.
+The adoption trial in `geeknees/devouch` [passed on PR #17](https://github.com/geeknees/devouch/actions/runs/36218361289).
+This is a trial in the project's own repository; independent third-party adoption has not been demonstrated.
+The new hierarchy and agent operations were exercised on a local EVM running the pinned official contracts;
+new Sepolia subnames have not been deployed. See the [completion and trial record](docs/roadmap-plan.md).
+World ID remains deferred under the conditions below.
 
 ## Boundaries
 
