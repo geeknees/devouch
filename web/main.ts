@@ -9,6 +9,7 @@ import { makeRequest, makeRevoke, publicationHint, validatePublishRequest, valid
   type PublishRequest, type RevokeRequest } from '../src/operations';
 import { isWalletRejection, Submission, validatePending, type Pending } from './submission';
 import { WalletSession } from './wallet';
+import { initializeVerification } from './verify';
 
 declare global { interface Window { ethereum?: EIP1193Provider & { on?: (event: string, listener: () => void) => void } } }
 const element = <T extends HTMLElement = HTMLElement>(id: string) => document.getElementById(id) as T;
@@ -113,6 +114,7 @@ async function connected() {
   return current;
 }
 function activate(tab: string) {
+  document.body.dataset.view = tab;
   for (const target of document.querySelectorAll<HTMLElement>('.panel')) target.hidden = target.id !== 'panel-' + tab;
   for (const target of document.querySelectorAll<HTMLButtonElement>('[data-tab]')) {
     const selected = target.dataset.tab === tab;
@@ -301,6 +303,7 @@ button('apply-rpc').addEventListener('click', () => run('Changing the read conne
   const selected = input('rpc-url').value.trim();
   await new ChainReader(selected).snapshot();
   rpcUrl = selected; session = null; signedRaw = null;
+  verification.invalidate();
   status('Sepolia connection checked. Reconnect the wallet before writing. Pending recovery data has been preserved.', 'success');
 }));
 window.ethereum?.on?.('accountsChanged', () => { session = null; signedRaw = null; update(); status('Wallet changed. Reconnect and review the operation again.'); });
@@ -308,3 +311,5 @@ window.ethereum?.on?.('chainChanged', () => { session = null; signedRaw = null; 
 const nextWeek = new Date(Date.now() + 7 * 86400000);
 input('expires').value = localDateTime(nextWeek).slice(0, 16);
 update();
+if (location.hash === '#verify') activate('verify');
+const verification = initializeVerification(() => rpcUrl);

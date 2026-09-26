@@ -27,11 +27,17 @@ test('official resolver publishes, archives and permanently revokes one portable
   expect(valid.evidence_status).toBe('valid');
   const fetched = await reader.fetch(name);
   expect(fetched.raw).toBe(raw);
+  expect(Object.keys(fetched).sort()).toEqual(['publication', 'raw', 'snapshot', 'subject']);
+  const verified = await reader.verifyName(name);
+  expect(verified.parsed.raw).toBe(raw);
+  expect(verified.evidence.evidence_status).toBe('valid');
+  expect(verified.snapshot).toEqual(verified.evidence.snapshot);
   const revoke = await wallet.sendTransaction({ to: resolver, data: setTextData(name, '') });
   await publicClient.waitForTransactionReceipt({ hash: revoke });
   await settle();
   expect((await reader.inspect(await parseCredential(raw))).evidence_status).toBe('revoked');
   expect((await reader.fetch(name, valid.publication!)).raw).toBe(raw);
+  expect((await reader.verifyName(name, valid.publication!)).evidence.evidence_status).toBe('revoked');
   const restore = await wallet.sendTransaction({ to: resolver, data: setTextData(name, raw) });
   await publicClient.waitForTransactionReceipt({ hash: restore });
   await settle();

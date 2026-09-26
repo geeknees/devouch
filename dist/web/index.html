@@ -53,6 +53,7 @@
         <button data-tab="publish" class="tab active" aria-current="page"><span class="tab-number" aria-hidden="true">01</span> <span>Publish</span></button>
         <button data-tab="retrieve" class="tab"><span class="tab-number" aria-hidden="true">02</span> <span>Retrieve</span></button>
         <button data-tab="revoke" class="tab"><span class="tab-number" aria-hidden="true">03</span> <span>Withdraw</span></button>
+        <button data-tab="verify" class="tab"><span class="tab-number" aria-hidden="true">04</span> <span>Verify</span></button>
         <button data-tab="setup" class="tab setup-tab"><span>ENS setup</span> ↗</button>
       </nav>
       <div id="status" class="status" role="status" aria-live="polite" hidden></div>
@@ -108,6 +109,65 @@
               <label for="helper-address">Helper’s public address</label><input id="helper-address" placeholder="0x…">
               <div class="form-actions"><button id="grant" class="button secondary">Grant key access</button><button id="remove" class="text-button">Revoke key grant</button></div>
             </details>
+          </section>
+          <section id="panel-verify" class="panel" hidden>
+            <div class="panel-heading"><span class="step-icon">✓</span><div><p class="eyebrow">READ A RECOMMENDATION</p><h3>One endorsement.<br>Two independent decisions.</h3><p>Check live ENS evidence. See what changes when a repository trusts its issuer.</p></div></div>
+            <p class="verify-readonly">Read-only · No wallet, signature, or transaction needed.</p>
+            <form id="verify-form">
+              <fieldset id="verify-inputs">
+                <label for="verify-name">Publication ENS name</label>
+                <div class="inline"><input id="verify-name" value="masusanou-dev.eth" placeholder="issuer.eth" maxlength="255" required autocomplete="off" spellcheck="false"><button id="verify-submit" class="button dark" type="submit">Verify endorsement →</button></div>
+                <details class="advanced"><summary>Use a saved publication position</summary>
+                  <p id="verify-publication-note" class="field-note">Without a saved position, verification starts from the current ENS record.</p>
+                  <label for="verify-publication-file">Optional publication.json</label><input id="verify-publication-file" type="file" accept=".json,application/json">
+                  <button id="verify-clear-publication" class="text-button" type="button">Clear saved position</button>
+                </details>
+              </fieldset>
+            </form>
+            <p id="verify-status" class="field-note" role="status">Reads the signature, complete supported ENS history, and a fresh Sepolia snapshot.</p>
+            <section id="verify-result" hidden aria-label="Verification result">
+              <div class="verify-evidence">
+                <div class="verify-section-heading"><span class="eyebrow">01 / EVIDENCE</span><span id="verify-evidence-status" class="verdict" aria-live="polite"></span></div>
+                <p class="field-note">Is this endorsement valid at the checked block?</p>
+                <p class="verify-signature">Signature <span id="verify-signature-status" class="mono"></span></p>
+                <p id="verify-evidence-reasons" class="verify-reasons"></p>
+                <h4 id="verify-vouched-by" hidden></h4><p id="verify-name-status" class="field-note"></p>
+                <div id="verify-record" hidden>
+                  <dl class="details verify-details">
+                    <dt>Published at</dt><dd id="verify-record-name"></dd>
+                    <dt>Subject</dt><dd id="verify-subject"></dd>
+                    <dt>Scope</dt><dd id="verify-scope"></dd>
+                    <dt>Expires (UTC)</dt><dd id="verify-expiry"></dd>
+                    <dt>Sepolia block</dt><dd id="verify-block"></dd>
+                  </dl>
+                  <details class="advanced"><summary>Issuer address and verification details</summary><dl class="details verify-details"><dt>Issuer address</dt><dd id="verify-issuer-address"></dd><dt>Checked (UTC)</dt><dd id="verify-checked-at"></dd><dt>Block hash</dt><dd id="verify-block-hash"></dd><dt>Resolver</dt><dd id="verify-resolver"></dd></dl></details>
+                </div>
+              </div>
+              <div class="verify-policy-heading"><span class="eyebrow">02 / REPOSITORY POLICY</span><h4>Who does each repository trust?</h4><p class="field-note">These are illustrative policies in your browser. Both allow this endorsement’s scope and resolver; edit the trusted issuers to compare. No GitHub repository policy is loaded or changed.</p></div>
+              <div class="policy-comparison">
+                <section class="policy-card" aria-label="Repository A example policy">
+                  <div class="verify-section-heading"><h4>Repository A</h4><span id="verify-policy-a-status" class="verdict" aria-live="polite">not_evaluated</span></div>
+                  <p class="field-note">Starts by trusting this issuer.</p>
+                  <label for="verify-policy-a-issuers">Trusted issuers <span class="label-note">Addresses</span></label><textarea id="verify-policy-a-issuers" rows="3" maxlength="4096" spellcheck="false" placeholder="One address per line" disabled></textarea>
+                  <button class="text-button" type="button" data-trust-issuer="a" disabled>Add this issuer</button>
+                  <p id="verify-policy-a-reasons" class="verify-reasons" aria-live="polite">Verify an endorsement first.</p>
+                </section>
+                <section class="policy-card" aria-label="Repository B example policy">
+                  <div class="verify-section-heading"><h4>Repository B</h4><span id="verify-policy-b-status" class="verdict" aria-live="polite">not_evaluated</span></div>
+                  <p class="field-note">Starts with no trusted issuer. Try adding one.</p>
+                  <label for="verify-policy-b-issuers">Trusted issuers <span class="label-note">Addresses</span></label><textarea id="verify-policy-b-issuers" rows="3" maxlength="4096" spellcheck="false" placeholder="One address per line" disabled></textarea>
+                  <button class="text-button" type="button" data-trust-issuer="b" disabled>Add this issuer</button>
+                  <p id="verify-policy-b-reasons" class="verify-reasons" aria-live="polite">Verify an endorsement first.</p>
+                </section>
+              </div>
+              <p class="field-note">Policy edits reuse the checked evidence. Verify again to check for withdrawal or expiry at a new block.</p>
+            </section>
+            <section id="verify-share" class="verify-share" hidden aria-label="Share this verification">
+              <label for="verify-share-url">Share this live verification</label><input id="verify-share-url" type="url" readonly>
+              <div class="form-actions"><button id="verify-copy-link" class="button secondary" type="button">Copy link</button><a id="verify-share-link">Open verification link ↗</a></div><p id="verify-copy-status" class="field-note" role="status"></p>
+            </section>
+            <p id="verify-human" class="verify-boundary">human verification: not included</p>
+            <p class="field-note">An endorsement records a recommendation. It does not prove human identity, code quality, or authority to act.</p>
           </section>
           <section id="downloads" class="downloads" hidden>
             <div class="download-top"><span class="success-mark">↓</span><div><h3>Your portable record</h3><p id="download-description"></p></div></div>
