@@ -13,9 +13,11 @@ Building from Scratch の適格性を運営が確認したとは扱わない。
 
 15:04 JSTには本人のPCウォレットで作った数値ラベル名の専用resolverとagent identityを確認した。その後、読みやすい`masusanou.vouches.geeknees.eth`を登録し、15:46〜15:48 JSTに推薦公開まで確認した。既存検証器がblock `11784538`で署名・ENS階層をvalid、対象を正しい`github:287365775`と判定した。公開画面も390px幅、Tenderlyのblock `11784543`でvalidと方針比較を確認。新しい名前のagent identityもblock `11784544`で読め、プロフィール権限は未付与だった。日時・公開位置・URLは[実機確認記録](sepolia-namespace-check.md)を参照。READMEの「What’s new in 0.2.0」に実装とこの実績を記載している。
 
-16:19 JST、本人が旧数値名`287365775.vouches.geeknees.eth`だけをWithdrawした。取引`0xc34d78b82250d301d8bc0c7cdf01b5981e32405c4464f8f3fd67c3000cb0ea9f`のreceipt・calldata・空レコードを照合し、16:20 JSTのblock `11784708`で旧推薦revoked、新しい共有先validを確認した。16:21 JSTのblock `11784711`では既存の二つのdirect名もvalidで、原本のSHA-256は保存済みの値と一致した。個別失効は実Sepoliaで確認済み。agentのプロフィール更新・権限撤回と、旧原本を復元しても再有効化しない検査は、引き続きローカルEVMの証拠と区別する。
+16:19 JST、本人が旧数値名`287365775.vouches.geeknees.eth`だけをWithdrawした。取引`0xc34d78b82250d301d8bc0c7cdf01b5981e32405c4464f8f3fd67c3000cb0ea9f`のreceipt・calldata・空レコードを照合し、16:20 JSTのblock `11784708`で旧推薦revoked、新しい共有先validを確認した。16:21 JSTのblock `11784711`では既存の二つのdirect名もvalidで、原本のSHA-256は保存済みの値と一致した。個別失効は実Sepoliaで確認済み。旧原本を復元しても再有効化しない検査は、引き続きローカルEVMの証拠に限る。
 
 16:22 JSTには旧名・新名のagent identity維持も確認した。公開サイトの390px画面は旧名revoked・新名validと方針比較を確認した。新名の標準Tenderly RPCはrate limitでunavailableとなったため、Connection settingsからethPandaOpsを明示指定した成功として記録している。詳細は同じ[実機確認記録](sepolia-namespace-check.md)を参照。
+
+16:54〜17:06 JST、本人が旧数値名で`description`の権限付与、agent walletによる更新、controllerによる撤回を行った。3取引はそれぞれblock `11784878`・`11784901`・`11784939`でsuccess。17:09 JSTの既存検証器のsnapshot `11784948`では全プロフィール権限がfalse、紹介文とidentity・controllerは維持されていた。読み取り専用`eth_call`は撤回前の更新を許可し、撤回後は`EACUnauthorizedAccountRoles`で拒否した。本人もPC画面で再編集時の権限不足エラーを確認した。実取引・シミュレーション・本人の画面確認を分けて[記録](sepolia-namespace-check.md)した。17:08〜17:11 JSTには旧推薦のrevoked、共有中3件のvalidと原本digest、共有用名のagent identity・未付与権限・空のプロフィールを再確認した。
 
 2026-09-26 21:00 JSTで機能を固める。それ以降は現在のSepoliaデモ推薦・PR #2・検証ページを維持する修正だけにする。READMEの試用URLは0.2.0のサブネーム版へ揃えた。
 
@@ -35,9 +37,10 @@ Building from Scratch の適格性を運営が確認したとは扱わない。
 | 二つの repo 方針で再利用、片方だけ不採用 | 同じ署名を使う通しテスト | 実Sepoliaの同一原本・snapshotでaccepted / accepted / rejectedを確認 |
 | 静的 Web の署名・公開・失効・復旧・ダウンロード | ブラウザとウォレット、receipt/readback | Chrome＋ローカルEVMで確認。本人walletの実Sepolia公開・旧サブネームの失効もreceipt/readbackで確認 |
 | 推薦者自身による resolver 準備とキー権限 | 公式 Factory と実コントラクトによるテスト | ローカルEVMで配備・接続・キー限定・grant撤回後の本人失効を確認 |
+| Agentのプロフィール限定権限 | 本人のPCウォレット、receipt/readback、撤回前後の`eth_call` | 実Sepoliaで`description`の付与・agentによる更新・controllerによる撤回、撤回後の拒否と保存値維持を確認。PCでの権限不足表示も本人確認 |
 | 読み取り専用 Action、base/head 固定、PR 作者照合 | API/CLI 境界テスト、実 fork PR | masusanouの [PR #2](https://github.com/geeknees/devouch/pull/2) でvalid / accepted。作者・base/head・原本・方針digestを照合済み |
 | 運営者不在でローカル UI と別 RPC から操作 | ローカル配布物での通し確認 | ローカルUI経由の本人公開、2社RPCで同じ原本の検証を確認。別ホストからの実操作は未実施 |
-| README、導入手順、ライセンス、提出・デモ資料 | コマンド再実行とリンク検査 | 作成・更新済み。提出画像草案5点。動画は完成済みとユーザー確認（2026-09-26）。提出サイトへ直接アップロードするため、別の公開URLは不要 |
+| README、導入手順、ライセンス、提出・デモ資料 | コマンド再実行とリンク検査、ユーザー報告 | 作成・更新済み。2026-09-26にユーザーが提出完了を報告。動画は提出サイトへ直接アップロードするため、別の公開URLは不要 |
 | 公開コード・配布 SHA・静的 live URL | 公開先の readback | repoとPagesを公開。操作改善版の配信10ファイルと固定Actionの匿名取得・一致、全タブ、ウォレットなしでの実ENS原本取得を確認。[公開記録](release-evidence.md) |
 
 ## geeknees向け推薦の追加（2026-09-26 12:27〜12:30 JST）

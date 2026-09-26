@@ -122,4 +122,12 @@ PR #17をmergeし、`046417f906852ae9432767a4f1872494c98047ee`を[Pages](https:/
 
 ### 一件だけの失効（2026-09-26 16:20〜16:21 JST）
 
-本人のwalletで旧数値名だけをWithdrawした。block `11784702`の取引は、旧専用resolverへ`devouch.vouch`の空文字列を設定するcallと一致し、receiptはsuccessだった。既存検証器がblock `11784708`で旧推薦をrevoked、新しい`masusanou.vouches.geeknees.eth`をvalidと判定した。block `11784711`では既存のdirect名2件もvalid、原本digestも一致した。公開位置・block hash・確認日時は[実機確認記録](sepolia-namespace-check.md)に残した。agentのプロフィール更新と権限撤回は引き続き未確認。
+本人のwalletで旧数値名だけをWithdrawした。block `11784702`の取引は、旧専用resolverへ`devouch.vouch`の空文字列を設定するcallと一致し、receiptはsuccessだった。既存検証器がblock `11784708`で旧推薦をrevoked、新しい`masusanou.vouches.geeknees.eth`をvalidと判定した。block `11784711`では既存のdirect名2件もvalid、原本digestも一致した。公開位置・block hash・確認日時は[実機確認記録](sepolia-namespace-check.md)に残した。この時点ではagentのプロフィール更新と権限撤回は未確認だった。
+
+### Agentプロフィール権限の実機確認（2026-09-26 16:54〜17:11 JST）
+
+旧数値名`287365775.vouches.geeknees.eth`で、controllerが`description`だけを許可し、agent walletが紹介文を更新した後、controllerが許可を撤回した。3取引のreceipt・calldata・イベントを照合し、既存検証器で紹介文とidentityの維持、プロフィール権限がすべてfalseへ戻ったことを確認した。
+
+撤回前後の`eth_call`は同じ更新を許可から`EACUnauthorizedAccountRoles`へ変えた。本人もPCウォレットをagentへ切り替えて再編集し、画面の権限不足エラーを確認した。失敗する実取引はこちらから送っていない。snapshot・hash・各確認の区別は[実機確認記録](sepolia-namespace-check.md)を参照。この一連を実Sepoliaの実績として記録し、独立した第三者導入とWorld IDは引き続き未実施として扱う。
+
+操作後も旧推薦はrevoked、共有中の3件はvalidで、原本digestは操作前と一致した。共有用サブネームのagentプロフィールは空・全権限falseを維持し、旧名だけの操作だったことを確認した。

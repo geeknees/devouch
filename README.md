@@ -238,13 +238,17 @@ The verifier checked its signature and full ENS hierarchy at block `11784538` on
 These example policies do not change a real repository's policy. See the [live wallet-test record](docs/sepolia-namespace-check.md).
 The same name also exposes its [controller-declared agent identity](https://geeknees.github.io/devouch/?agent=masusanou.vouches.geeknees.eth#namespaces), inspectable without a wallet.
 
+The issuer also completed a real-wallet profile permission test on Sepolia using
+`287365775.vouches.geeknees.eth`: grant `description`, update it from the agent wallet, then revoke access.
+The page rejected the agent's next edit, and read-only contract calls confirmed the change from allowed to denied.
+The saved description and controller-declared identity remained intact. See the [wallet-test evidence](docs/sepolia-namespace-check.md).
+
 The adoption trial in `geeknees/devouch` [passed on PR #17](https://github.com/geeknees/devouch/actions/runs/36219802283).
 The local EVM tests use the pinned official ENS contracts and cover simultaneous endorsements, individual withdrawal,
 agent field updates and permission revocation. See the [implementation and trial record](docs/roadmap-plan.md).
 
 ## Roadmap
 
-Complete the real-wallet checks for agent profile updates and permission revocation.
 Independent third-party adoption is the next adoption milestone;
 the current Action trial is in the project's own repository. World ID remains deferred under the conditions below.
 

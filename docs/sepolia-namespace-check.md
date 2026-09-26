@@ -23,7 +23,7 @@
 
 確認に使ったのは公開ENSから取得した原本と、既存TypeScript検証器・公開ブラウザ画面。本人が保存したDownloads内の2ファイルはこの実行環境から開けなかったため、その保存ファイルとのbytes一致は未確認。こちらからウォレット接続・署名・取引は行っていない。`human verification: not included`。
 
-[Agent identityの共有URL](https://geeknees.github.io/devouch/?agent=masusanou.vouches.geeknees.eth#namespaces)からInspect agentで確認できる。15:48 JST時点で名前の作成・専用resolver接続・identity作成・正しい対象への推薦公開まで確認した。その後の個別失効は下記に記録する。agent walletでのプロフィール更新と権限撤回は未確認。
+[Agent identityの共有URL](https://geeknees.github.io/devouch/?agent=masusanou.vouches.geeknees.eth#namespaces)からInspect agentで確認できる。15:48 JST時点で名前の作成・専用resolver接続・identity作成・正しい対象への推薦公開まで確認した。その後の個別失効と、旧数値名を使ったagentプロフィール権限の確認は下記に記録する。
 
 旧数値名では、初回の署名対象が`github:287365775287365775`となっていた。block `11784420`で署名・履歴はvalidだったが、意図した対象`github:287365775`を指定した既存検証器は`invalid / subject_mismatch`を返した。新しい名前での今回の推薦は正しい対象IDを持つ。旧名の取り下げは、下記のとおり16:20 JSTに確認した。
 
@@ -118,8 +118,45 @@ Verifyの例示repo方針は画面内で比較できる。実repoの方針を変
 3. `masusanou.vouches.geeknees.eth`と既存の二つのdirect名を再検証し、validを維持することを確認する。
 4. 確認日時、各取引hash、公開位置、専用resolver、検証block/hash、画面結果を記録する。端末上の実操作と、こちらのRPC読み取り結果を区別する。
 
+## 4. Agentプロフィール権限の付与・更新・撤回（2026-09-26）
+
+本人のPCウォレット拡張で、推薦を取り下げ済みの旧名`287365775.vouches.geeknees.eth`を使った。controllerは`0x894108DC5640e36c478523228addA22b58Eeb79c`、agent walletは`0xBe67b36CB5d88022ecD99650E959c02b6FAf64c4`、専用resolverは`0x7C87F8B4476c3c35AeBC528D2194E9A97a47631d`。本人が両walletを切り替えて操作し、共有された3取引を公開RPC `https://rpc.sepolia.ethpandaops.io`で照合した。
+
+[確認画面](https://geeknees.github.io/devouch/?agent=287365775.vouches.geeknees.eth#namespaces)でInspect agentを押すと、現在のidentity・権限・保存済みプロフィールをwalletなしで確認できる。
+
+| 操作 | 本人の取引とblock | 照合した結果 |
+|---|---|---|
+| controllerが`description`を許可 | `0xd95549e43b5091916ef91af3ae0bffe3e14b4a8c06b1f86fd012ec6851ff31fe` / `11784878` / `2026-09-26T07:54:24Z` | success。`grantSetterRoles`の対象名・field・agent walletが一致。対象キーの`EACRolesChanged`は`0`→`16` |
+| agent walletから更新 | `0x786bcd064c614f8c259adecb3a11ec28fcd6b70cea5f061247a854a16d25da5e` / `11784901` / `2026-09-26T07:59:00Z` | success。送信元はagent wallet。`description`へ`I help with OSS contributions.`を保存するcalldata、record `1`の`TextUpdated`、取引blockでの保存値が一致 |
+| controllerが許可を撤回 | `0x12a7456b029ebd4c7c24f6d45512cbd96e994efcc664d27ac10296392e63a59d` / `11784939` / `2026-09-26T08:06:36Z` | success。`revokeRoles`の対象キー・role `16`・agent walletが一致。`EACRolesChanged`は`16`→`0`、同blockの`hasRoles`もfalse |
+
+3取引のcanonical block hashは順に`0xce68ce9dd3e5f3f06ff25b84f53c26541cad4edb651d5adaa1e24af5bc255d9d`、`0xb8fc0193d0f9f251e89f468a65bdb42615e33685f22cd643ed28105ec7f75f43`、`0x719eb2426bb074a4f931a929b743c74bf430fe2d4c31f75087de0937cbb16b4f`。receipt・送信元・宛先・calldataと照合した。
+
+既存の`ChainReader.readAgent`で、全祖先・所有者・独立したresolver・ETHアドレスとidentityの一致を確認した。
+
+| 読み取り | 確認日時 UTC / block / hash | 状態 |
+|---|---|---|
+| 付与後 | `2026-09-26T07:56:11.881Z` / `11784883` / `0xa7e1b28e567046b6b40eaa24b231973472d59503a90c6ce43d7ad47dca411195` | `description: true`、他2項目false、プロフィール値は空 |
+| 更新後 | `2026-09-26T08:03:50.362Z` / `11784921` / `0x17881c8dcf4a3299764493bccd9a38ee3af25444ca2bdca4cb4d793bd70fea8a` | `description: true`、紹介文の保存を確認。他2項目の値は空 |
+| 撤回後 | `2026-09-26T08:09:18.933Z` / `11784948` / `0xac5db3f56ea06f35ed376fc1d2b12b15d8b17797124050c260c0f3fe5642a852` | `url` / `avatar` / `description`すべてfalse。紹介文、controller、agent identityは維持 |
+
+同じagentから別の紹介文を保存する読み取り専用`eth_call`を比較した。撤回前のblock `11784938`では成功し、撤回block `11784939`では公式ABIの`EACUnauthorizedAccountRoles`を返した。errorのresourceは`description`のhash、roleは`16`、accountは上記agent walletと一致した。同じblockでcontrollerの呼び出しは成功した。これは取引を送信しないシミュレーションであり、失敗する実取引を送った実績とは扱わない。
+
+本人もエージェント用walletへ切り替えて再接続し、**Update with permitted wallet**で別の文への更新を試した。画面に`This wallet does not have permission to edit that profile field.`が表示されたと報告した。PC上の表示は本人の確認、コントラクト側の拒否は上記のRPC検証として区別する。取り消されるのは今後の編集権限であり、保存した紹介文を削除する操作ではない。`human verification: not included`。
+
+操作後、既存の`verifyName`で4件を再検証した。いずれも原本のSHA-256は個別失効時の記録と一致した。
+
+| 推薦 | 判定 | 確認日時 UTC / block / hash |
+|---|---|---|
+| `287365775.vouches.geeknees.eth` | `revoked` / `revoked`。保存した公開位置から旧原本を検証 | `2026-09-26T08:08:59.373Z` / `11784948` / `0xac5db3f56ea06f35ed376fc1d2b12b15d8b17797124050c260c0f3fe5642a852` |
+| `masusanou.vouches.geeknees.eth` | `valid` / 理由なし | `2026-09-26T08:09:35.612Z` / `11784951` / `0x4f325980d73b9322c3c305d5371a2fd8dd6b2927d1b4b5c1454dd378dddcc00b` |
+| `masusanou-dev.eth` | `valid` / 理由なし | `2026-09-26T08:10:13.454Z` / `11784954` / `0xf2cf41a284fe1fde244712739854b905a9debbd6a17798de1c7a76487cd219f4` |
+| `geeknees.eth` | `valid` / 理由なし | `2026-09-26T08:10:34.673Z` / `11784956` / `0xaa69992f231a784826c0f73110780dc24088f3b424d3e0a41ca4de36537e3c08` |
+
+共有用`masusanou.vouches.geeknees.eth`のagent identityも別に読み直した。`2026-09-26T08:11:10.329Z`、block `11784957` / `0xb51ba56e49e0d1941ee4902f46b0d9be437aad050ee2b4306f2f36a14e18ebb8`で、controller・agent wallet・専用resolverは維持、プロフィール権限はすべてfalse、値は空だった。旧名での紹介文更新や権限操作が、こちらへ反映されていないことを確認した。既存デモ原本とrepo方針の6ファイルもbytes不変。PR #2の再実行やrepo方針の変更は行っていない。
+
 ## 中断・取得失敗時
 
 応答が不明なら再送せず、wallet履歴の取引hashを **Check transaction**へ渡して照合する。別ブラウザへ移る前は **Save recovery file**を保存する。取得不能の場合はConnection settingsのRPCを確認し、必要なら明示的に`https://rpc.sepolia.ethpandaops.io`へ変更して読み直す。
 
-agentの権限付与・撤回を実ウォレットで試す場合は、identityに記録したagent walletを本人が操作できることを確認し、[限定権限の手順](namespaces.md#エージェントの名前と限定権限)へ進む。この確認を終えるまでは、ローカルEVMでの成功を実Sepoliaの実績と扱わない。
+別のagentで権限付与・撤回を試す場合は、identityに記録したagent walletを本人が操作できることを確認し、[限定権限の手順](namespaces.md#エージェントの名前と限定権限)へ進む。今回確認した名前とwallet以外の実機確認まで完了したとは扱わない。
