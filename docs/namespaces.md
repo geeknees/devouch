@@ -4,6 +4,8 @@
 
 [Namespaces](https://geeknees.github.io/devouch/#namespaces)を開く。ローカルの場合は`node scripts/serve.ts`で起動し、`http://127.0.0.1:4173/#namespaces`を開く。読み取りのInspectはwallet不要。作成・接続・登録・権限変更は本人のSepolia walletが各取引を確認する。秘密鍵をDevouchへ入力しない。
 
+Namespacesで名前と専用resolverを用意した後、推薦者のwalletで通常のPublishのPrepare → Sign → Publishへ進む。**Open in Publish**は対象名を引き継ぐ。agent identityの作成や **Update with permitted wallet** によるプロフィール更新だけでは推薦は公開されない。
+
 ## 複数の推薦を同時に持つ
 
 例は `287365775.vouches.your-name.eth`。`your-name.eth` は所有する名前へ置き換える。下記の名前例は公開済みの実在記録を示すものではない。
@@ -18,6 +20,8 @@
 8. 原本JSONとpublication.jsonを保存する。同じ親に別の数値IDを登録し、手順6以降を繰り返す。
 
 一つの最終名に一つの独立したresolverを作る。二人目の公開で一人目を上書きしない。Withdrawで一件だけを空にしても、兄弟の推薦は維持される。一度失効した原本は再掲載してもrevokedのまま。再推薦は新しいID・nonce・署名で作る。
+
+Withdrawは対象名の推薦用textキー`devouch.vouch`へ空文字を保存する。サブネームの登録、resolverとそのrecord、`devouch.agent`、アドレスやプロフィール、付与済みの権限は残る。過去の推薦内容はチェーン履歴から消えない。プロフィール編集権限の撤回は別の **Revoke field access** で行い、その操作でも保存済みのプロフィール値は残る。
 
 親の所有権、registry接続、関連する権限を変更すると、その経路で公開済みの推薦はinvalidになる。後から元へ戻しても復活しない。変更が必要なら、その後に新しい推薦を発行する。共通の親の権限を変える操作は、その下の複数推薦に影響する。
 

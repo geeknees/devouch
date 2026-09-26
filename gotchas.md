@@ -9,6 +9,7 @@
 - agentのプロフィール権限も同じキーの全recordへ作用する。独立したresolverの初期化だけでなく、読取り時にもLinkedの全履歴を確認し、後から別名・別recordを追加した共用状態を限定権限として表示しない。
 - wallet取引のcalldataをreceiptから照合するときはhex文字列の大小文字ではなくbytesの一致を比較する。bytes引数へchecksum付きアドレスを渡すと、符号化済み文字列に大文字が残ってもRPCは小文字で返す場合がある。
 - identity入力の数値例をplaceholderだけで示すと、入力済みの値と誤認される。例は欄外に置き、入力欄には入力を促す文言を使う。未入力を架空のidentityで自動補完せず、必要な項目名を示す。原本用の汎用`invalid_format`へ落とさず、取引を送らないこともブラウザテストで確認する。
+- 入力欄の直後に単独ボタンを置く場合も既存の`form-actions`で囲む。裸のbuttonはtextareaとの間隔が0になり、PCとスマホの両方で操作が詰まって見える。入力から操作への余白は両テーマ・画面幅で確認する。
 - 公開RPCがローカルで成功してもGitHub runnerでの到達性・制限は同じとは限らない。PR #17ではTenderlyが2回とも`rpc_unavailable`、同じ固定ActionをethPandaOpsへ明示変更するとvalid / acceptedだった。導入手順と出力workflowの接続先を実行結果へ揃え、取得失敗を受入れ判定へ変えたり、黙って別RPCへ切り替えたりしない。
 - 1件の制限は同じresolver / recordId / keyに対するもの。同じ所有者は別の直接ENS名と別recordIdで推薦を併存できる。実Sepoliaでmasusanou-dev.eth（record 1）とgeeknees.eth（record 2）が同じresolver上で両方valid / acceptedと確認済み。新しい名前だけを理由にresolverの追加配備やrepo方針の変更を必須にしない。独立した推薦者間では補助grantの作用範囲を共有しない。
 - 過去原本を取得するpublication hintは現在の名前の接続先に依存させない。receiptの原本・署名・公開先を照合し、通常の履歴検証へ戻す。
