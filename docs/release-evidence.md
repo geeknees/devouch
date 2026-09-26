@@ -1,5 +1,39 @@
 # 公開と配信の検証記録
 
+## 操作改善の公開（2026-09-26 09:12 JST）
+
+[PR #6](https://github.com/geeknees/devouch/pull/6) で入力変更時の確認・署名の解除、
+ウォレットなしの取得導線と取得結果、CLIの日時検査、提出・導入資料を更新した。
+
+| 項目 | 確認結果 |
+|---|---|
+| 公開画面 | https://geeknees.github.io/devouch/ |
+| 検証したPR head | `0cde0713cf1469cb9b5446c9b3f3528876b09e13` |
+| merge・配信commit | `e514d40d7baf78c6e5a387423c90450836c95b48` |
+| PRのテスト | [Test run](https://github.com/geeknees/devouch/actions/runs/36203607078)、success |
+| mainのテスト | [Test run](https://github.com/geeknees/devouch/actions/runs/36203712016)、success |
+| Pagesの配信 | [Publish workspace](https://github.com/geeknees/devouch/actions/runs/36203893579)、success |
+
+Ruby 19、TypeScript単体25、結合15の計59テストと型・構文検査、配布物の再build一致を確認した。
+認証なしで配信10ファイルを取得し、上記commitの `dist/web/` とbyte単位で一致した。
+同commitのREADMEと固定Action `9ce4525f269f590d4d8fd0e123ff35d33dce8efa` の
+`action.yml`・`dist/bridge.mjs` も匿名取得し、Git内容との一致を確認した。
+今回更新した配信ファイルは次の2点。他の8ファイルには同梱フォント・ロゴ・CSS・licenseを含む。
+
+| ファイル | bytes | SHA-256 |
+|---|---:|---|
+| `index.html` | 14303 | `831abb0199018b611adf55cd76814cd03c8762ff2cfcf0a94fc0e76bcd1fdbff` |
+| `app.js` | 644917 | `5588e765275bf2d9d761ea542ea9f5ebb860787eace98b8eb741b2dff43b38f0` |
+
+公開URLを新規Chromeで開き、320 / 390 / 600 / 768 / 1024 / 1440pxの全4タブを確認した。
+24通りで横溢れはなく、JavaScriptエラーと許可外の通信は0件。
+ウォレットを持たないブラウザから「Try without a wallet」で実Sepoliaの推薦を取得し、
+推薦者・対象・期限・公開取引リンクを確認した。ダウンロードは785 bytes、
+SHA-256 `744713f4d8d2b1685054969db5358d527cb1c6c6a12bca362160f742ef744256` で原本に一致した。
+RPCは読み取りのみ。本人walletの失効リハーサルは提出後の計画に従い、今回の公開では実施していない。
+
+## 新デザインと初回公開
+
 新デザインは2026-09-26に [PR #4](https://github.com/geeknees/devouch/pull/4) をmergeし、
 `53afeae72e095a6c401c3df53708fbcb0bf28bb7` を [Pages run](https://github.com/geeknees/devouch/actions/runs/36180553637) で公開した。
 同梱フォントを含む10ファイルの照合、公開画面とREADMEロゴの確認は [デザイン検証記録](design-verification.md#公開先の確認) を参照。

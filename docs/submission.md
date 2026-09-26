@@ -163,7 +163,7 @@ Devouch carries a reference; it does not turn that reference into automatic appr
 | 項目 | 状態 |
 |---|---|
 | 公開コード / license / 配布SHA | MITあり、固定Actionの匿名取得を確認済み。[公開の検証記録](release-evidence.md) |
-| ライブデモURL | 公開済み：https://geeknees.github.io/devouch/ （2026-09-26 03:03 JST に HTTP 200 を確認）。配信5ファイルの一致と公開画面からのENS取得も確認 |
+| ライブデモURL | 公開済み：https://geeknees.github.io/devouch/ 。2026-09-26 09:12 JSTに操作改善版の配信10ファイルの一致、全24レイアウト、ウォレットなしの実ENS取得を確認。[公開記録](release-evidence.md) |
 | 動画（直接アップロード） | 完成済み（ユーザー確認、2026-09-26）。提出サイトに直接アップロード。別の公開URLは不要 |
 | ENSv2の実txと失効後のreadback | 公開txと2方針の検証は取得（上記）。失効後は未取得 |
 | agent名義の実PRとAction run | masusanouのPR #2とvalid / acceptedのActionは確認済み。人間名義の実PRと失効のPR検証は対象外 |

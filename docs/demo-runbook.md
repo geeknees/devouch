@@ -6,6 +6,8 @@
 2026-09-26のユーザー訂正に従った送信先。同日の承認に基づき [PR #1](https://github.com/geeknees/devouch/pull/1) をmergeし、repoとPagesを公開した。
 公開結果は [検証記録](release-evidence.md)。masusanouの [実fork PR #2](https://github.com/geeknees/devouch/pull/2) は `valid / accepted` を確認済み。
 新デザインも [PR #4](https://github.com/geeknees/devouch/pull/4) と [Pages run](https://github.com/geeknees/devouch/actions/runs/36180553637) で公開済み。公開URLの全タブと同梱フォントを [確認した](design-verification.md#公開先の確認)。
+続く操作改善は [PR #6](https://github.com/geeknees/devouch/pull/6) と [Pages run](https://github.com/geeknees/devouch/actions/runs/36203893579) で公開済み。
+09:12 JSTに配信10ファイル・全24レイアウト・ウォレットなしの実ENS取得を [再確認した](release-evidence.md)。
 人間名義の実PR検証は2026-09-26のユーザー指定で対象外。今回の実PRデモはmasusanou名義だけを使う。
 
 ENS名・所有者・初期化済みresolverは確認済み。Actionのローカル固定SHAと手動の公開workflowも準備済み。

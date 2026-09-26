@@ -21,7 +21,7 @@ Building from Scratch の適格性を運営が確認したとは扱わない。
 | 読み取り専用 Action、base/head 固定、PR 作者照合 | API/CLI 境界テスト、実 fork PR | masusanouの [PR #2](https://github.com/geeknees/devouch/pull/2) でvalid / accepted。作者・base/head・原本・方針digestを照合済み |
 | 運営者不在でローカル UI と別 RPC から操作 | ローカル配布物での通し確認 | ローカルUI経由の本人公開、2社RPCで同じ原本の検証を確認。別ホストからの実操作は未実施 |
 | README、導入手順、ライセンス、提出・デモ資料 | コマンド再実行とリンク検査 | 作成・更新済み。提出画像草案5点。動画は完成済みとユーザー確認（2026-09-26）。提出サイトへ直接アップロードするため、別の公開URLは不要 |
-| 公開コード・配布 SHA・静的 live URL | 公開先の readback | repoとPagesを公開。固定Actionの匿名取得と初回公開画面からのENS原本取得を確認。新デザインでは同梱フォントを含む配信10ファイルの一致と全タブを確認 |
+| 公開コード・配布 SHA・静的 live URL | 公開先の readback | repoとPagesを公開。操作改善版の配信10ファイルと固定Actionの匿名取得・一致、全タブ、ウォレットなしでの実ENS原本取得を確認。[公開記録](release-evidence.md) |
 
 ## 採用範囲
 
@@ -52,7 +52,10 @@ masusanouのPRは完了扱い。人間名義の実PR検証も同日のユーザ�
 Rubyは19 tests / 113 assertionsとなり、構文検査・結合15 tests / 67 Bun assertionsも再度成功。実CLIでも不正日付の終了4を確認した。
 CLI・導入・送信者向けの文書に残っていた旧版コマンド、RPC未確認、ダウンロード未実装の説明を現在の実装へ合わせた。
 
-この操作改善はローカルで確認した内容。公開サイトへの反映・今回の変更に対するGitHub CIは未実施。
+[PR #6](https://github.com/geeknees/devouch/pull/6) の全チェックと、merge commit
+`e514d40d7baf78c6e5a387423c90450836c95b48` の [main CI](https://github.com/geeknees/devouch/actions/runs/36203712016) が成功した。
+同commitを [Pages run](https://github.com/geeknees/devouch/actions/runs/36203893579) で公開し、
+09:12 JSTに配信10ファイルの一致、全24レイアウト、ウォレットなしでの実ENS原本取得を確認した。[公開記録](release-evidence.md) を参照。
 今回の作業で実Sepoliaの取引は送信していない。本人walletの失効リハーサルは、提出後に行う既存の [当日計画](presentation/script.md)に従う。
 
 外部の公開・push・ホスティング・Sepolia 取引は、成果物と操作対象を準備した後に
