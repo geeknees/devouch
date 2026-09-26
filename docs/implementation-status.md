@@ -9,7 +9,7 @@ Building from Scratch の適格性を運営が確認したとは扱わない。
 
 ## Roadmap版の作業状況（2026-09-26）
 
-追加の公開準備として配布versionを0.2.0へ揃えた。署名形式とreport_versionは1のまま。保存したv0.1配布物と現行検証器を同じ原本・同じ公式ENSのEVM状態へ通す7件の比較を追加し、通常の互換性と権限履歴・期限切れの判定差を確認した。[更新・切り戻し手順](upgrading-0.2.md)と[PCウォレットでの実Sepolia確認手順](sepolia-namespace-check.md)を追加した。全統合52 tests、TypeScript99 tests / 304 assertions、Ruby70 tests / 380 assertions、型・Ruby構文検査が成功。全13配布ファイルの再build一致と、保存済みデモ・方針6ファイルの不変も確認した。ここまでの結果はローカル検証であり、0.2.0の固定Action公開・CI・merge・Pagesは後続の公開記録で確認する。
+配布versionを0.2.0へ揃えた。署名形式とreport_versionは1のまま。保存したv0.1配布物と現行検証器を同じ原本・同じ公式ENSのEVM状態へ通す7件の比較を追加し、通常の互換性と権限履歴・期限切れの判定差を確認した。[更新・切り戻し手順](upgrading-0.2.md)と[PCウォレットでの実Sepolia確認手順](sepolia-namespace-check.md)を追加した。全統合52 tests、TypeScript99 tests / 304 assertions、Ruby70 tests / 380 assertions、型・Ruby構文検査が成功。全13配布ファイルの再build一致と、保存済みデモ・方針6ファイルの不変も確認した。0.2.0の[実PR Action](https://github.com/geeknees/devouch/actions/runs/36219802283)もvalid / acceptedで、全CI成功後にPR #17をmergeし、Pagesを更新した。公開先の確認は[0.2.0公開記録](release-evidence.md#020の公開2026-09-26)を参照。新しいSepoliaサブネームの実wallet操作は未実施。
 
 `v0.1`タグを既存デモの保存点としてremote照合後、`codex/roadmap-20260926`で階層registry・複数推薦・agent identityと限定権限・メンテナー導入を実装し、[PR #17](https://github.com/geeknees/devouch/pull/17)を公開した。[固定SHAのAction](https://github.com/geeknees/devouch/actions/runs/36218361289)は既存のgeeknees推薦をvalid / acceptedと判定した。新しい階層のwallet操作は公式コントラクトのローカルEVMと390pxブラウザで検証している。[要求別の記録](roadmap-plan.md)と[操作手順](namespaces.md)を参照。以下の既存公開記録はv0.1までの証拠として保持する。
 

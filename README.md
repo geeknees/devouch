@@ -17,12 +17,13 @@ This hackathon implementation contains a Ruby CLI, a static wallet workspace, an
 It uses Sepolia's official Permissioned Resolver and UserRegistry implementations.
 There is no Devouch API, database, shared publisher key, or custom endorsement contract.
 
-The [Roadmap PR](https://github.com/geeknees/devouch/pull/17) adds issuer-owned subnames, agent identities with limited profile permissions,
-and a maintainer setup guide in the workspace. Its pinned [Action trial](https://github.com/geeknees/devouch/actions/runs/36218361289)
-reports `valid / accepted` for the existing `geeknees.eth` endorsement. The published `v0.1` tag preserves the original demo.
-Local implementation and public deployment evidence are tracked separately in the [Roadmap record](docs/roadmap-plan.md).
+Version **0.2.0**, merged through [PR #17](https://github.com/geeknees/devouch/pull/17), adds issuer-owned subnames,
+agent identities with limited profile permissions, and maintainer setup to the [live workspace](https://geeknees.github.io/devouch/).
+Its pinned [Action trial](https://github.com/geeknees/devouch/actions/runs/36219802283) reports `valid / accepted`
+with `verifier_version: 0.2.0` for the existing `geeknees.eth` endorsement. The published `v0.1` tag preserves the original demo.
+Local implementation, public deployment, and real-wallet testing are distinguished in the [release record](docs/release-evidence.md).
 
-Version **0.2.0** keeps the signed endorsement format at version 1. Ordinary direct-name endorsements need no migration,
+The signed endorsement format remains at version 1. Ordinary direct-name endorsements need no migration,
 but authority-history checks are stricter and v0.1 cannot verify new subnames. See the [measured compatibility and upgrade guide](docs/upgrading-0.2.md)
 and the [PC wallet test procedure](docs/sepolia-namespace-check.md).
 
@@ -220,14 +221,14 @@ Three things Devouch deliberately leaves out, and why. The reasoning and sources
 
 ## Roadmap
 
-Implemented on this branch and exercised against the pinned official ENS contracts:
+Implemented in 0.2.0 and exercised against the pinned official ENS contracts:
 
 - **One subname per endorsement.** Issuers create names such as `287365775.vouches.masusanou-dev.eth`, each with its own resolver record and independent withdrawal history.
 - **Agents as namespaces.** An agent has its own name, controller-declared identity, and individual profile-field grants under ENSv2 Enhanced Access Control. Its permissions can be revoked without handing it endorsement or namespace authority.
 - **Verification through the hierarchy.** The verifier follows each parent, registry, ownership, and relevant role change. Restoring changed authority does not reactivate an old endorsement.
 - **Maintainer onboarding.** Maintainers select verified recommendations and review explicit trust policy plus a SHA-pinned, read-only Action workflow.
 
-The adoption trial in `geeknees/devouch` [passed on PR #17](https://github.com/geeknees/devouch/actions/runs/36218361289).
+The adoption trial in `geeknees/devouch` [passed on PR #17](https://github.com/geeknees/devouch/actions/runs/36219802283).
 This is a trial in the project's own repository; independent third-party adoption has not been demonstrated.
 The new hierarchy and agent operations were exercised on a local EVM running the pinned official contracts;
 new Sepolia subnames have not been deployed. See the [completion and trial record](docs/roadmap-plan.md).
@@ -250,7 +251,7 @@ Proof of personhood and a contributor recommendation answer different questions 
 World ID remains deferred until a complete integration can be verified without a mandatory Devouch-operated service.
 See the [prize plan and integration conditions](docs/ethglobal-tokyo-2026-prize-plan.md#world-を追加する場合の条件) (Japanese).
 
-This branch supports one active endorsement per resolver record/key, EOA signatures, direct normalized Sepolia
+Version 0.2.0 supports one active endorsement per resolver record/key, EOA signatures, direct normalized Sepolia
 `name.eth` names and exact subnames through the pinned official UserRegistry, up to ten labels including `eth`.
 Separate subnames can hold simultaneous endorsements. ENSv1, wildcard resolution, CCIP Read, ERC-1271,
 unknown registry implementations, registry/resolver upgrades, and multiple endorsements in one record are unsupported.

@@ -98,3 +98,11 @@
 - 全統合52 tests、TypeScript99 tests / 304 assertions、Ruby70 tests / 380 assertions、型とRuby構文検査が成功。全13配布ファイルの再build一致と保存済みデモ・方針6ファイルの不変を確認した。
 - 追加差分のprivacy検査で検出した2件は、v0.1配布物からそのままコピーした第三者ライセンスの著作者メールのみ。出典と完全一致する必要な帰属表記として保持し、秘密情報や新しい個人情報の記録はない。
 - [更新・切り戻し](upgrading-0.2.md)と[実機確認](sepolia-namespace-check.md)の手順を追加した。`geeknees.eth`の子registryはblock11784011で未接続、既存record 2はready true。実Sepoliaの新しい取引は本人のwalletで行い、その後に別途readbackする。
+
+### 0.2.0固定Actionと公開の完了（2026-09-26 14:13 JST）
+
+配布version更新のcommitは`4aa03f7f6bea64701a6bbab0ff6420df1457b2fb`。これに固定したhead `af98bf9545c0373b65a9d9b28323cbcbf760cf64`のPR / push CIが成功し、[実PR Action](https://github.com/geeknees/devouch/actions/runs/36219802283)もverifier_version 0.2.0でvalid / acceptedだった。匿名取得したActionの4ファイルは固定commitとbytes一致。
+
+PR #17をmergeし、`046417f906852ae9432767a4f1872494c98047ee`を[Pages](https://github.com/geeknees/devouch/actions/runs/36220008983)へ公開した。merge後mainのCIも成功した。配信全11ファイルを照合し、新規Chromeで二つの既存推薦、方針比較、Namespacesの親検査、Maintainersの出力、390 / 1280pxの全7タブを確認した。日時・block・URL・保持したdemo / tag / PRの記録は[公開記録](release-evidence.md#020の公開2026-09-26)にまとめた。
+
+新しいSepoliaサブネームのwallet操作は次の確認段階。PCのウォレット拡張入りブラウザを使い、`geeknees.eth`の下だけに検証用名前空間を作る。本人の取引確認と、その後のreadbackが済むまで、実機確認完了とは扱わない。
