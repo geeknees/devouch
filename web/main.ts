@@ -12,6 +12,8 @@ import { WalletSession } from './wallet';
 import { initializeVerification } from './verify';
 import { initializeNamespaces } from './namespaces';
 import { initializeMaintainers } from './maintainers';
+import { initializeManagement } from './manage';
+import { initializeRpcDiagnostics } from './rpc';
 
 declare global { interface Window { ethereum?: EIP1193Provider & { on?: (event: string, listener: () => void) => void } } }
 const element = <T extends HTMLElement = HTMLElement>(id: string) => document.getElementById(id) as T;
@@ -24,6 +26,7 @@ const storageKey = 'devouch.pending.v1';
 const writeButtons = ['prepare', 'sign', 'publish', 'revoke', 'deploy', 'bind', 'grant', 'remove'];
 let damagedRecovery = false;
 let maintainers: ReturnType<typeof initializeMaintainers> | null = null;
+let management: ReturnType<typeof initializeManagement> | null = null;
 
 function restorePending(): Pending | null {
   try {
@@ -61,6 +64,7 @@ function update() {
   }
   button('connect').textContent = session?.account ? session.account.slice(0, 6) + '…' + session.account.slice(-4) : 'Connect wallet ↗';
   maintainers?.update();
+  management?.update();
 }
 function errorMessage(error: unknown) {
   const code = isWalletRejection(error) ? 'wallet_rejected'
@@ -107,6 +111,9 @@ function errorMessage(error: unknown) {
     agent_permission_missing: 'This wallet does not have permission to edit that profile field.',
     unsupported_agent_permission: 'Agent grants support only url, avatar, and description.',
     invalid_namespace_list: 'Enter between one and eight publication ENS names.',
+    name_already_saved: 'That ENS name is already in your saved list.',
+    saved_name_limit: 'Save up to eight ENS names. Remove a list entry before adding another.',
+    invalid_publication: 'Choose a valid publication.json file with the public transaction and block position.',
     transaction_reverted: 'The transaction reverted. No successful update was recorded.',
   };
   if (messages[code]) return messages[code];
@@ -328,6 +335,8 @@ button('apply-rpc').addEventListener('click', () => run('Changing the read conne
   rpcUrl = selected; session = null; signedRaw = null;
   verification.invalidate();
   maintainers?.invalidate();
+  management?.invalidate();
+  rpcDiagnostics.invalidate();
   status('Sepolia connection checked. Reconnect the wallet before writing. Pending recovery data has been preserved.', 'success');
 }));
 window.ethereum?.on?.('accountsChanged', () => { session = null; signedRaw = null; update(); status('Wallet changed. Reconnect and review the operation again.'); });
@@ -337,6 +346,8 @@ input('expires').value = localDateTime(nextWeek).slice(0, 16);
 const namespaces = initializeNamespaces({ rpc: () => rpcUrl, connected, run, status, complete: completed, details, update,
   publish(name) { clearReview(); input('publish-name').value = name; activate('publish'); update(); } });
 maintainers = initializeMaintainers({ rpc: () => rpcUrl, busy: () => busy, run, status, download });
+management = initializeManagement({ rpc: () => rpcUrl, busy: () => busy, run, status });
+const rpcDiagnostics = initializeRpcDiagnostics({ rpc: () => rpcUrl, run, status });
 update();
-if (['#verify', '#namespaces', '#maintainers'].includes(location.hash)) activate(location.hash.slice(1));
+if (['#verify', '#namespaces', '#maintainers', '#manage'].includes(location.hash)) activate(location.hash.slice(1));
 const verification = initializeVerification(() => rpcUrl);

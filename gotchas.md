@@ -1,5 +1,9 @@
 # 実装時の注意
 
+- CLIを使えるエージェントの送信前確認は、既存CLIと配布用SKILLで完結する。ユーザーが2026-09-26にこの構成を選択した。ホスト側の接続要件がないままMCPを追加しない。
+- Factoryのproxy検査で通信失敗を一律にunsupported_registry / unsupported_resolverへ置き換えると、正しい名前を作り直す誤操作につながる。実コントラクトのrevertとRPC失敗を分け、後者はunavailableのまま表示する。-32005だけではレート制限と検索範囲制限を区別できない。
+- 保存する推薦一覧には名前と公開位置だけを入れる。再読込やRPC変更後に前回validを現在の証拠として復元しない。現在値が空なら保存位置から元の推薦を検証し、単なる欠如と失効を分ける。一覧から削除してもENSの推薦は消さない。
+
 - ENSv2のtext setterはDNS wire-formatの名前を受け取る。ENSv1のnode setterとはABIが異なる。公式artifactとの照合テストを維持する。
 - registryのtoken IDには下位32bitの更新世代がある。イベントをlabelへ結び付けるとき、単純なlabelhash全体との等値比較では所有権変更を見逃す。
 - 階層の履歴はregistryとlabelの組で照合する。子のラベルが `287365775` でも、別registryの `287365775.eth` の更新とは無関係。direct名前専用のイベント判定を残したまま階層判定を追加すると、無関係な名前の更新で誤ってinvalidになる。

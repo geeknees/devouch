@@ -94,6 +94,19 @@ the ENS name and publication name remain separate. In the example comparison, se
 to the policy at the checked base commit. The map uses the existing verification result and makes no extra requests;
 it describes the one endorsement and the independent policies in the current check.
 
+Open **[My endorsements](https://geeknees.github.io/devouch/#manage)** to save up to eight publication ENS names
+in this browser, including direct names and subnames. **Refresh evidence** checks each recommendation's subject,
+scope, expiry, and current evidence with the full verifier; **Check agent permissions** independently reads its
+controller-declared identity and current profile grants. Successful reads save the publication position so a later
+withdrawal can be verified. Results are not saved or treated as current after reloading, and repository policy stays
+`not_evaluated` until you choose a repository in Verify. Removing a list entry does not withdraw the endorsement.
+
+In **Connection settings**, **Diagnose selected RPC** checks Sepolia, a fresh snapshot, and sample historical
+state/log reads. Enter an optional ENS name to run complete endorsement verification after those probes pass.
+Failures distinguish rate limits, unavailable history, and connection errors without exposing provider messages.
+**Fill public alternative** fills another public URL; only **Use this connection** changes the active provider.
+Diagnostics do not imply repository acceptance, and RPC URLs are not saved in browser storage.
+
 To explore without a wallet, choose **Try without a wallet**, then **Retrieve from ENS**.
 The demo name is prefilled. The workspace displays the signed contributor, issuer, purpose, expiry,
 and publication transaction, and downloads the original JSON. Retrieval does not establish current validity;
@@ -158,6 +171,11 @@ only on exit **0**; every other code stops this preflight flow. The command make
 and needs no wallet or GitHub token. Acceptance concerns the endorsement at that snapshot; it does not establish
 posting permission, code quality, or human verification. Recheck before submission if the policy or ENS state changes.
 See the [agent operator guide](docs/agent-operator-guide.md#prを作る前の送信前チェック).
+
+CLI-capable agents can use the portable **[devouch-check SKILL](skills/devouch-check/SKILL.md)**.
+Copy the `skills/devouch-check/` folder to the skill location supported by your agent, or load its instructions
+directly. It checks the receiving repository and actual PR author's numeric ID, preserves the signed original,
+and stops submission for every nonzero exit status. It uses the existing CLI and needs no MCP server.
 
 | Exit | Meaning |
 |---|---|
