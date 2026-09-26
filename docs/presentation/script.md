@@ -68,6 +68,49 @@ QR のスライドでは「This one is live on Sepolia.」と一言添えると�
 | maintainer | メイン**テ**イナー | tai |
 | contributor | コン**トリ**ビューター | tri |
 
+## 発音の注意（録音の文字起こしから）
+
+動画用の録音（2026-09-26）を whisper.cpp（英語の小さめのモデル base.en）で書き起こし、台本と食い違った語をまとめた。モデル側の聞き違いもあり得るので、「見直す候補」として使う。「static page, no API key, no database」「Two repositories check the same endorsement」などは台本どおりに書き起こされていて、全体はよく伝わっている。上の表にある語の読み方はそちらを見る。
+
+| 優先 | 台本 | 書き起こされた言葉 | 直し方 |
+| --- | --- | --- | --- |
+| 1 | Endorse **once**. Let each **community** **decide**. | and those ones / commentate the side | once は「ワンス」で s で止める（ones にしない）。community は「コ**ミュー**ニティ」。decide は「ディ**サイ**ド」を切らずに一続きで。決め台詞なので一番練習する |
+| 2 | **Devouch** / **vouch** | the Verge, diverge, The voice, voted | 「ディ**ヴァウ**チ」。ouch（アウチ）に v を付け、最後の「チ」まで言う |
+| 3 | R と L | run → land、clear → create、Ruby → lib | R は舌をどこにも付けず唇を少し丸める。L は舌先を上の歯の裏に付ける。台本では repo・record・rejected・revoked が R、clear・pull が L |
+| 4 | maintainer | mentors, maintenance | 「メンテナンス」の感覚にしない。2音節目の「**テイ**」を伸ばす |
+| 5 | Repo **A** trusts | repo way draws | A は「エイ」と、repo から少し離す。trusts は語尾の「スツ」まで |
+| 6 | issuer / resolver | issue / reservoir | 「**イ**シューアー」と最後の「アー」まで。「リ**ゾ**ルヴァー」 |
+| 7 | 長い音・短い音 | cheap → chip、sees → says、sitting → setting、stays → states | ee（イー）はしっかり伸ばす。短い i（イ）は「エ」に寄せない。stays は濁った z で終える |
+| 8 | ENSv2 | ENSA video, ENS virtual | 「イー・エン・エス・**ヴィー・トゥー**」と1文字ずつ区切る |
+
+## 動画の字幕（読み上げの練習用）
+
+決勝とブースで流す `devouch-demo-cut-captions.mp4`（音声なし、2:10）の字幕。動画に合わせて読み上げる練習に使う。時刻は動画の中の時刻で、字幕は操作の場面に合わせて出る。字幕の元は `tools/video/captions.ts`。ブースで一言足す例は [booth-script.md](booth-script.md) の表にある。
+
+| 時刻 | 字幕（`/` は息継ぎ） |
+| --- | --- |
+| 0:00 | A static page. / No Devouch server. |
+| 0:08 | Recorded on a local chain / with the official ENSv2 contracts |
+| 0:15 | Enter my ENS name / and the contributor's GitHub ID, / then review |
+| 0:26 | Sign, then publish: / two separate steps |
+| 0:30 | The signed JSON goes / to my own ENSv2 resolver |
+| 0:38 | Two repositories / check the same vouch |
+| 0:44 | Repo A trusts me: / valid · accepted |
+| 0:49 | Repo B doesn't: / valid · rejected |
+| 0:57 | Same evidence. / Different decisions. |
+| 1:02 | Maintainers add two files: / a policy and a workflow |
+| 1:08 | On every PR, / the Action checks / the author's vouch |
+| 1:16 | A real run on fork PR #2. / Read-only, / no PR code runs, / no secrets. |
+| 1:26 | Trust must be / easy to take back |
+| 1:30 | Load the vouch, / confirm, / and clear the record |
+| 1:37 | Only the issuer / can do this |
+| 1:45 | The old file / is still in both repositories |
+| 1:50 | Devouch reads / the record's history / on ENS |
+| 1:55 | Both now say / revoked |
+| 2:03 | Putting the old JSON back / won't revive it |
+
+黙って字幕に任せる場合も、少なくとも「Repo A trusts me」「Repo B doesn't」「Both now say revoked」の3か所は声に出すと、要点が伝わりやすい。
+
 ## Timeline
 
 | Time      | Section           | Screen                                   |
