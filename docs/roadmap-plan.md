@@ -112,3 +112,9 @@ PR #17をmergeし、`046417f906852ae9432767a4f1872494c98047ee`を[Pages](https:/
 本人が`geeknees.eth`→`vouches.geeknees.eth`→`287365775.vouches.geeknees.eth`の子registryと名前を作り、専用resolverを接続した。`readAgent`はblock `11784326`で階層・resolverの独立性・controller宣言のGitHub IDとwalletを照合して成功した。現在のプロフィール権限は未付与。本人からOpen in Publishへの移動も確認を受けた。
 
 日時・snapshot・共有URLと次の操作は[実機確認記録](sepolia-namespace-check.md)へまとめた。新しい推薦の公開・独立失効・agent権限の付与と撤回はまだ確認中であり、ローカルEVMの実績と区別する。実装済みの機能はREADMEの「What’s new in 0.2.0」に記載し、独立した第三者導入とWorld IDの条件をRoadmapに残した。
+
+### 読みやすいサブネームでの公開（2026-09-26 15:48 JST）
+
+本人の希望に合わせて`masusanou.vouches.geeknees.eth`を新規作成し、専用resolverへ推薦を公開した。既存のTypeScript検証器はblock `11784538`で署名・階層履歴をvalid、対象を`github:287365775`と確認した。公開URLの390pxブラウザでも、標準Tenderly RPCのblock `11784543`でvalid、例示A accepted・B rejectedからBへ推薦者を追加してacceptedになることを確認した。
+
+新しい名前のagent identityもblock `11784544`で取得した。GitHub数値IDと宣言されたwalletが一致し、プロフィール権限は未付与。本人の保存ファイルは直接開けなかったため、ファイルとのbytes比較は未確認。共有URL・公開取引・snapshot・残る実機確認は[記録](sepolia-namespace-check.md)に集約した。既存のrepo方針・デモ原本は変更していない。

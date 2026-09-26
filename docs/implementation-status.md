@@ -11,7 +11,7 @@ Building from Scratch の適格性を運営が確認したとは扱わない。
 
 配布versionを0.2.0へ揃えた。署名形式とreport_versionは1のまま。保存したv0.1配布物と現行検証器を同じ原本・同じ公式ENSのEVM状態へ通す7件の比較を追加し、通常の互換性と権限履歴・期限切れの判定差を確認した。[更新・切り戻し手順](upgrading-0.2.md)と[PCウォレットでの実Sepolia確認手順](sepolia-namespace-check.md)を追加した。全統合52 tests、TypeScript99 tests / 304 assertions、Ruby70 tests / 380 assertions、型・Ruby構文検査が成功。全13配布ファイルの再build一致と、保存済みデモ・方針6ファイルの不変も確認した。0.2.0の[実PR Action](https://github.com/geeknees/devouch/actions/runs/36219802283)もvalid / acceptedで、全CI成功後にPR #17をmergeし、Pagesを更新した。公開先の確認は[0.2.0公開記録](release-evidence.md#020の公開2026-09-26)を参照。
 
-15:04 JSTには本人のPCウォレットで作った`287365775.vouches.geeknees.eth`の専用resolver接続とagent identityを実Sepoliaから読み取った。block `11784326`で全祖先、宣言されたGitHub IDとwallet、独立resolverの履歴を検証し、プロフィール権限は未付与だった。新しい最終名の推薦公開・個別失効・agent権限変更は[実機確認](sepolia-namespace-check.md)を継続する。READMEではこれらの実装を「What’s new in 0.2.0」に移し、今後の検証・導入と分けている。
+15:04 JSTには本人のPCウォレットで作った数値ラベル名の専用resolverとagent identityを確認した。その後、読みやすい`masusanou.vouches.geeknees.eth`を登録し、15:46〜15:48 JSTに推薦公開まで確認した。既存検証器がblock `11784538`で署名・ENS階層をvalid、対象を正しい`github:287365775`と判定した。公開画面も390px幅、Tenderlyのblock `11784543`でvalidと方針比較を確認。新しい名前のagent identityもblock `11784544`で読め、プロフィール権限は未付与だった。日時・公開位置・URLは[実機確認記録](sepolia-namespace-check.md)を参照。個別失効とagent権限変更は未確認。READMEの「What’s new in 0.2.0」に実装とこの実績を記載している。
 
 `v0.1`タグを既存デモの保存点としてremote照合後、`codex/roadmap-20260926`で階層registry・複数推薦・agent identityと限定権限・メンテナー導入を実装し、[PR #17](https://github.com/geeknees/devouch/pull/17)を公開した。[固定SHAのAction](https://github.com/geeknees/devouch/actions/runs/36218361289)は既存のgeeknees推薦をvalid / acceptedと判定した。新しい階層のwallet操作は公式コントラクトのローカルEVMと390pxブラウザで検証している。[要求別の記録](roadmap-plan.md)と[操作手順](namespaces.md)を参照。以下の既存公開記録はv0.1までの証拠として保持する。
 

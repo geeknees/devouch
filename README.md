@@ -223,17 +223,18 @@ Three things Devouch deliberately leaves out, and why. The reasoning and sources
 
 Issuers can now manage multiple endorsements and agent identities beneath their own ENS namespace:
 
-- **One subname per endorsement.** Names such as `287365775.vouches.geeknees.eth` have their own resolver record and independent withdrawal history. Publishing a second endorsement does not overwrite the first.
+- **One subname per endorsement.** Names such as `masusanou.vouches.geeknees.eth` have their own resolver record and independent withdrawal history. Publishing a second endorsement does not overwrite the first. The readable label is separate from the signed GitHub numeric ID.
 - **Agents as namespaces.** An agent has its own name and controller-declared GitHub identity and wallet. Controllers can grant and revoke access to individual profile fields through ENSv2 Enhanced Access Control, keeping endorsement and namespace authority with the issuer.
 - **Verification through the hierarchy.** The verifier follows each parent, registry, ownership, and relevant role change. Restoring changed authority does not reactivate an old endorsement.
 - **Maintainer onboarding.** Maintainers select verified recommendations and review explicit trust policy plus a SHA-pinned, read-only Action workflow.
 
-**Live on Sepolia:** the issuer created `vouches.geeknees.eth` and `287365775.vouches.geeknees.eth`
-using a PC wallet, then connected a dedicated resolver to the final name. Its controller-declared identity (`github:287365775` and its agent wallet)
-was read back through the full ENS hierarchy at block `11784326` on September 26, 2026.
-[Inspect the agent without a wallet](https://geeknees.github.io/devouch/?agent=287365775.vouches.geeknees.eth#namespaces).
-At that snapshot its profile permissions were ungranted. Identity publication does not prove account ownership or humanity.
-See the [live wallet-test record](docs/sepolia-namespace-check.md).
+**Live on Sepolia:** the issuer used a PC wallet to publish an endorsement at
+[`masusanou.vouches.geeknees.eth`](https://geeknees.github.io/devouch/?name=masusanou.vouches.geeknees.eth#verify).
+The verifier checked its signature and full ENS hierarchy at block `11784538` on September 26, 2026:
+`valid`, with the intended subject `github:287365775`. The hosted page also passed at 390px width:
+`Vouched by geeknees.eth`, example repository A `accepted`, and B `rejected` until its policy trusts the issuer.
+These example policies do not change a real repository's policy. See the [live wallet-test record](docs/sepolia-namespace-check.md).
+The same name also exposes its [controller-declared agent identity](https://geeknees.github.io/devouch/?agent=masusanou.vouches.geeknees.eth#namespaces), inspectable without a wallet.
 
 The adoption trial in `geeknees/devouch` [passed on PR #17](https://github.com/geeknees/devouch/actions/runs/36219802283).
 The local EVM tests use the pinned official ENS contracts and cover simultaneous endorsements, individual withdrawal,
@@ -241,8 +242,8 @@ agent field updates and permission revocation. See the [implementation and trial
 
 ## Roadmap
 
-Complete the real-wallet checks for endorsement publication and individual withdrawal under the new subnames,
-and agent profile permission changes. Independent third-party adoption is the next adoption milestone;
+Complete the real-wallet checks for independent withdrawal under the new subnames and agent profile permission changes.
+Independent third-party adoption is the next adoption milestone;
 the current Action trial is in the project's own repository. World ID remains deferred under the conditions below.
 
 ## Boundaries

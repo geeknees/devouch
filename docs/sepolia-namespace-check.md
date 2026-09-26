@@ -2,6 +2,31 @@
 
 対象はSepoliaの`geeknees.eth`。新しい`vouches.geeknees.eth`以下だけで複数推薦を試す。既存の`geeknees.eth`と`masusanou-dev.eth`の推薦、PR #2、repo方針は維持する。本人のPCウォレットで子registry・最終名・専用resolverとagent identityを作成し、公開RPCの読み取りで照合した。推薦公開以降の進捗は下記に記録する。
 
+## 現在の共有先と公開確認（2026-09-26 15:48 JST）
+
+本人のPCウォレットで`masusanou.vouches.geeknees.eth`へ推薦を公開した。数値ラベルの旧名と区別し、以後の共有にはこの読みやすい名前を使う。署名対象のGitHub数値IDは`287365775`のまま。
+
+| 項目 | 確認結果 |
+|---|---|
+| 共有URL | [masusanou.vouches.geeknees.eth](https://geeknees.github.io/devouch/?name=masusanou.vouches.geeknees.eth#verify) |
+| 対象・scope | `github:287365775` / `oss-contribution` |
+| 推薦者 | `0x894108DC5640e36c478523228addA22b58Eeb79c`、画面では`Vouched by geeknees.eth` |
+| 専用resolver | `0xd2063D439ca487c114432876886318FBcDC5c010` |
+| 公開取引 | `0x6bcf744e235c186cb234962529fe1decaac32a33c0b97a9e0fd93b6b909fad31` |
+| 公開block / hash | `11784535` / `0xd9184ee26544fb4e42ccc3667cac6c191a4019e0ac6b8c7698c47be1fdb5e445` |
+| 署名・ENS履歴の検証 | `valid`、reason_codesは空。ethPandaOps、`2026-09-26T06:46:55.567Z`、block `11784538` / `0x072710952eae28759d60d302ae8fb538bfee2560cdd0f11ddf9a4a623e8fafe7`、2 confirmations |
+| 推薦期限 | `2026-10-02T06:44:00Z`（2026-10-02 15:44 JST） |
+| 公開画面 | 390px幅の新規Chrome、標準のTenderly RPC。`2026-09-26T06:48:16.185Z`、block `11784543`。署名・証拠valid、対象ID一致、横溢れ・page errorなし |
+| 方針比較 | 例示Aはaccepted、Bはrejected / `issuer_not_trusted`。BのAdd this issuerでaccepted。実repoの方針は変更していない |
+| Agent identity | 同じ名前とresolverで`github:287365775`、controllerは上記推薦者、agent walletは`0xBe67b36CB5d88022ecD99650E959c02b6FAf64c4`。ETHアドレスと全祖先・専用resolverの履歴も照合 |
+| Agentのsnapshot | `2026-09-26T06:48:29.084Z`、block `11784544` / `0xe7e6d7fdcaedc3d8bbe0215d8aaca6b1bf46827b142f45821c1444db5a8a09a3`、4 confirmations。`url` / `avatar` / `description`の権限はfalse、値は空 |
+
+確認に使ったのは公開ENSから取得した原本と、既存TypeScript検証器・公開ブラウザ画面。本人が保存したDownloads内の2ファイルはこの実行環境から開けなかったため、その保存ファイルとのbytes一致は未確認。こちらからウォレット接続・署名・取引は行っていない。`human verification: not included`。
+
+[Agent identityの共有URL](https://geeknees.github.io/devouch/?agent=masusanou.vouches.geeknees.eth#namespaces)からInspect agentで確認できる。名前の作成・専用resolver接続・identity作成・正しい対象への推薦公開まで確認済み。実Sepoliaでの個別失効、agent walletでのプロフィール更新と権限撤回は、今回の確認範囲に含めない。
+
+旧数値名では、初回の署名対象が`github:287365775287365775`となっていた。block `11784420`で署名・履歴はvalidだったが、意図した対象`github:287365775`を指定した既存検証器は`invalid / subject_mismatch`を返した。新しい名前での今回の推薦は正しい対象IDを持つ。旧名の取り下げはまだ確認していない。
+
 ## 開始前の読み取り確認
 
 2026-09-26 14:00:52 JST（`2026-09-26T05:00:52.758Z`）、Sepolia block `11784011` / `0x3f202dd5bfc11cbc56276fb714b2c277038dd6fdce44156dfb7836ca1d78b041`で、`check-name.ts geeknees.eth`から以下を確認した。
@@ -12,7 +37,7 @@
 
 新しい専用resolverは最終サブネームにだけ接続する。親`geeknees.eth`の既存resolverを置き換えない。
 
-## 実機確認の進捗（2026-09-26 15:04 JST）
+## 初回の名前空間作成（2026-09-26 15:04 JST）
 
 PCのウォレット操作後、公開RPCから次を確認した。こちらから署名・取引は送信していない。
 
@@ -27,9 +52,9 @@ PCのウォレット操作後、公開RPCから次を確認した。こちらか
 | Agentのsnapshot | `2026-09-26T06:04:49.875Z`、block `11784326` / `0x6f77b91cae401090289c1c14ebb30b61ffa49baac9251d04018e525bac8cb83b`、4 confirmations。`url` / `avatar` / `description`の権限はすべてfalse、値は空 |
 | 既存`geeknees.eth`の推薦 | `valid / accepted`を維持。`2026-09-26T05:51:08.210Z`、block `11784259` / `0x0df018d48348ec20d69ce6080def15d0e5122ccdf5b6ee5332a569bbfeaa7db9` |
 
-本人は **Connect publishing record** と **Open in Publish** の完了を報告した。次は手順2の**3**から、GitHub ID `287365775`と推薦期限を確認してPrepare → Sign → Publishへ進む。登録・resolver作成・接続のやり直しは不要。[Agent identityの共有URL](https://geeknees.github.io/devouch/?agent=287365775.vouches.geeknees.eth#namespaces)ではInspect agentから読み取れる。宣言されたidentityであり、`human verification: not included`。
+この時点で本人は **Connect publishing record** と **Open in Publish** の完了を報告した。[旧数値名のAgent identity](https://geeknees.github.io/devouch/?agent=287365775.vouches.geeknees.eth#namespaces)はInspect agentから読み取った。宣言されたidentityであり、`human verification: not included`。その後、読みやすい`masusanou`ラベルへ作業先を移し、冒頭の公開確認を完了した。
 
-同時刻の`check-name.ts`では名前の接続は読めたが、続くprepareが一度`rpc_unavailable`となった。別の`readAgent`はprepareを含めて成功した。取得失敗を未接続や推薦無効とは扱わない。最終名の推薦公開・個別失効・agentの権限付与と撤回はまだ確認していない。
+同時刻の`check-name.ts`では名前の接続は読めたが、続くprepareが一度`rpc_unavailable`となった。別の`readAgent`はprepareを含めて成功した。取得失敗を未接続や推薦無効とは扱わない。個別失効・agentの権限付与と撤回はまだ確認していない。
 
 ## 1. 親の下に名前空間を作る
 
@@ -40,27 +65,31 @@ PCのウォレット操作後、公開RPCから次を確認した。こちらか
 5. **One label**を`vouches`、名前の期限を親の期限内（既定の約7日を目安）にして **Register subname**。
 6. **Use as parent to create another level**を押し、Parentが`vouches.geeknees.eth`になったことを確認する。この親についても手順4の3取引を実行する。中間名`vouches.geeknees.eth`には推薦用resolverを作る必要はない。
 
-## 2. 二つの独立した推薦を公開する
+## 2. 公開の手順（masusanouは完了）
 
-| 最終名 | PublishのGitHub数値ID |
-|---|---|
-| `287365775.vouches.geeknees.eth` | `287365775`（masusanou） |
-| `701242.vouches.geeknees.eth` | `701242`（geeknees） |
+| 最終名 | PublishのGitHub数値ID | 状態 |
+|---|---|---|
+| `masusanou.vouches.geeknees.eth` | `287365775`（masusanou） | 公開・検証済み |
+| `701242.vouches.geeknees.eth` | `701242`（geeknees） | 二件目の試用例。未検証 |
 
-1. Parentを`vouches.geeknees.eth`のままにし、**One label**へ`287365775`を入力して登録する。期限は親以下にする。通常の推薦だけなら **Include an agent identity**は不要。今回の`287365775`では本人が選択し、agent identityも保存した。
+公開済みの`masusanou`を再登録・再作成する必要はない。以下は実施した手順の参照用。二件目を試す場合は名前・対象ID・保存先を分ける。
+
+1. Parentを`vouches.geeknees.eth`にし、Inspectで既存の子registryを読む。**One label**へ`masusanou`を入力して登録する。期限は親以下にする。通常の推薦だけなら **Include an agent identity**は不要。今回の名前では本人が選択し、agent identityも保存した。**Registered subname**の入力だけを変更しても、新しい名前は登録されない。
 2. **Registered subname**が表の最終名であることを確認する。agent identityを含める場合は、**Agent’s GitHub numeric ID**へ数字を実際に入力し、**Agent’s public wallet address**へagentの公開アドレスを入力する。例やplaceholderは入力値ではない。**Create independent resolver**、表示された対象名・専用resolverを確認して同意し、**Connect publishing record**。
-3. 2 block待ち、**Open in Publish**。対象名と数値IDを確認し、推薦期限は全祖先より短くする（確認用なら約24時間）。Prepare → 内容確認 → Sign → Publishの順で操作する。
-4. 原本JSONとpublication.jsonを新しい専用フォルダへ保存する。例: `.devouch/local/namespace-check/287365775/`。既存の`.devouch/local/demo/`や`.devouch/local/geeknees/`のファイルへ上書きしない。
+3. 2 block待ち、**Open in Publish**。対象名と数値IDを確認し、推薦期限は全祖先より短くする（確認用なら約24時間）。IDを入力し直すときは全選択して`287365775`へ置き換え、Prepare後のContributorが`github:287365775`であることを確認する。内容確認 → 同意 → Sign → Publishの順で操作する。
+4. 原本JSONとpublication.jsonを新しい専用フォルダへ保存する。例: `.devouch/local/namespace-check/masusanou/`。既存の`.devouch/local/demo/`や`.devouch/local/geeknees/`のファイルへ上書きしない。
 5. Namespacesへ戻り、Parentが`vouches.geeknees.eth`であることを確認。ラベル`701242`について同じ手順を行い、別のresolver・保存先を使う。
-6. [masusanouの新推薦](https://geeknees.github.io/devouch/?name=287365775.vouches.geeknees.eth#verify)と[geekneesの新推薦](https://geeknees.github.io/devouch/?name=701242.vouches.geeknees.eth#verify)を読み取り検証する。両方のvalid、subject、経路、期限、snapshotを確認する。名前は本人の宣言であり、`human verification: not included`。
+6. [masusanouの新推薦](https://geeknees.github.io/devouch/?name=masusanou.vouches.geeknees.eth#verify)を読み取り検証する。二件目も公開した場合は、両方のvalid、subject、経路、期限、snapshotを確認する。名前は本人の宣言であり、`human verification: not included`。
 
 Verifyの例示repo方針は画面内で比較できる。実repoの方針を変える場合は、新しい専用resolverを許可する独立のレビューが必要。この実機確認では既存repo方針を変更しない。
 
-## 3. 一件だけの失効を確認する
+## 3. 一件だけの失効を確認する場合（未実施）
 
-1. Withdrawへ新しい`287365775.vouches.geeknees.eth`の原本だけを読み込む。表示がこのサブネームであることを確認して失効する。既存のdirect名の原本は使わない。
+共有中の`masusanou.vouches.geeknees.eth`を維持し、旧数値名の推薦を整理する場合の手順。ここまでの読み取り確認では実行していない。
+
+1. Withdrawへ旧`287365775.vouches.geeknees.eth`の原本だけを読み込む。表示がこの旧サブネームであることを確認して失効する。共有中の新しい名前や既存のdirect名の原本は使わない。
 2. 2 block後、保存したpublication.jsonを指定して検証する。消去後は現在値から原本を取得できないため、過去の公開位置が必要。結果はrevokedとなる。
-3. `701242.vouches.geeknees.eth`と既存の二つのdirect名を再検証し、validを維持することを確認する。
+3. `masusanou.vouches.geeknees.eth`と既存の二つのdirect名を再検証し、validを維持することを確認する。
 4. 確認日時、各取引hash、公開位置、専用resolver、検証block/hash、画面結果を記録する。端末上の実操作と、こちらのRPC読み取り結果を区別する。
 
 ## 中断・取得失敗時
