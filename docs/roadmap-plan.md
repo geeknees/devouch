@@ -20,6 +20,7 @@
 - 署名、原本bytes、失効履歴、snapshot、evidenceとrepo policyの分離、読み取り専用のCLI/Action/検証ページを維持する。
 - 管理者の署名や取引は本人のwalletから行う。開発用の実EVMテストは使い捨てローカルアカウントを使う。
 - 未検証・取得不能・未知実装は成功にしない。人間性・GitHubアカウント所有権・コード品質を推薦から推定しない。
+- 2026-09-26 21:00 JSTで機能を固める。それ以降は既存のSepolia推薦2件、共有中のサブネーム、PR #2、検証ページを維持する修正だけにする。
 - 既存の外部サービスへの書き込みと新しい公開は、具体的な差分と検証結果が揃った状態で扱う。
 
 ## 実装と検証の追跡
@@ -27,7 +28,7 @@
 | 要件 | 完了を示す証拠 | 現在 |
 |---|---|---|
 | 階層registryの作成・接続・子の登録 | 固定した公式UserRegistry/Factoryを使う実EVMテスト、wallet UIのreceipt/readback、復旧 | 実装済み。公式コントラクトのローカルEVMと390pxブラウザで確認 |
-| 同時に複数推薦・個別失効 | 二つ以上のサブネームでvalid、片方を失効・再掲載してももう片方はvalid | `hierarchy.test.ts`で確認 |
+| 同時に複数推薦・個別失効 | 二つ以上のサブネームでvalid、片方を失効・再掲載してももう片方はvalid | `hierarchy.test.ts`で全項目を確認。実Sepoliaでは旧数値名revoked・兄弟の共有名validと、既存direct名の維持を確認。再掲載拒否はローカルEVMの証拠 |
 | エージェントidentityと権限 | 実walletの許可操作成功、未許可キー・兄弟・親・推薦操作失敗、権限撤回後失敗 | wallet serviceとブラウザで確認。共用resolverも拒否 |
 | 階層履歴の検証 | 親の移転・復元、registry変更・復元、権限撤回・再付与、再登録、期限、同一block内変更、未知実装と欠損履歴の負例 | 14件の実EVM階層テストで確認 |
 | CLI・Web・Actionの共通判定 | 公開原本の取得・検証、PR作者照合、方針のRuby/TypeScript一致、既存direct名の回帰確認 | 全統合・共有方針fixtureが成功。公開ActionはPR #17でvalid / accepted |
@@ -118,3 +119,7 @@ PR #17をmergeし、`046417f906852ae9432767a4f1872494c98047ee`を[Pages](https:/
 本人の希望に合わせて`masusanou.vouches.geeknees.eth`を新規作成し、専用resolverへ推薦を公開した。既存のTypeScript検証器はblock `11784538`で署名・階層履歴をvalid、対象を`github:287365775`と確認した。公開URLの390pxブラウザでも、標準Tenderly RPCのblock `11784543`でvalid、例示A accepted・B rejectedからBへ推薦者を追加してacceptedになることを確認した。
 
 新しい名前のagent identityもblock `11784544`で取得した。GitHub数値IDと宣言されたwalletが一致し、プロフィール権限は未付与。本人の保存ファイルは直接開けなかったため、ファイルとのbytes比較は未確認。共有URL・公開取引・snapshot・残る実機確認は[記録](sepolia-namespace-check.md)に集約した。既存のrepo方針・デモ原本は変更していない。
+
+### 一件だけの失効（2026-09-26 16:20〜16:21 JST）
+
+本人のwalletで旧数値名だけをWithdrawした。block `11784702`の取引は、旧専用resolverへ`devouch.vouch`の空文字列を設定するcallと一致し、receiptはsuccessだった。既存検証器がblock `11784708`で旧推薦をrevoked、新しい`masusanou.vouches.geeknees.eth`をvalidと判定した。block `11784711`では既存のdirect名2件もvalid、原本digestも一致した。公開位置・block hash・確認日時は[実機確認記録](sepolia-namespace-check.md)に残した。agentのプロフィール更新と権限撤回は引き続き未確認。

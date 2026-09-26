@@ -37,7 +37,9 @@ Masusanou's [fork PR #2](https://github.com/geeknees/devouch/pull/2) reports
 `valid / accepted` in the [Devouch Action](https://github.com/geeknees/devouch/actions/runs/36172488074), and its normal CI passes.
 Withdrawal and rejection of restored old records are verified on the local EVM running official ENS contracts.
 The recorded demo shows publication and withdrawal on that local chain; the public Sepolia endorsement stays active for the judges' QR experience.
-Real-wallet withdrawal on Sepolia has not been performed.
+The issuer also withdrew a separate Sepolia test endorsement: the old numeric subname is `revoked`,
+while the current QR subname and both direct-name endorsements remain `valid`.
+See the [individual withdrawal record](docs/sepolia-namespace-check.md).
 The PR demonstration uses masusanou and ends at `valid / accepted`; a separate human-account PR is outside the demo scope.
 The [demo runbook](docs/demo-runbook.md) lists the recording and read-only checks to use for rehearsal.
 The published design passes the [GitHub test workflow](https://github.com/geeknees/devouch/actions/runs/36180353277).
@@ -70,8 +72,8 @@ The [release runbook](docs/release-runbook.md) covers the prepared manual GitHub
 Use the sun/moon button in the header to switch between dark and light mode.
 The workspace starts in dark mode and remembers your choice in this browser.
 
-Open the [wallet-free verification page](https://geeknees.github.io/devouch/?name=masusanou-dev.eth#verify)
-to check the demo endorsement's signature and ENS history at a fresh Sepolia block.
+Open the [wallet-free verification page](https://geeknees.github.io/devouch/?name=masusanou.vouches.geeknees.eth#verify)
+to check the 0.2.0 subname endorsement's signature and ENS hierarchy at a fresh Sepolia block.
 It displays the issuer's reverse-resolved ENS name (or address), subject, scope, expiry, and evidence status.
 The same evidence starts as **accepted** by example repository A and **rejected** by B (`issuer_not_trusted`);
 add the issuer to B's **Trusted issuers** field to make it accepted. These editable examples do not change any real repository policy.
@@ -242,7 +244,7 @@ agent field updates and permission revocation. See the [implementation and trial
 
 ## Roadmap
 
-Complete the real-wallet checks for independent withdrawal under the new subnames and agent profile permission changes.
+Complete the real-wallet checks for agent profile updates and permission revocation.
 Independent third-party adoption is the next adoption milestone;
 the current Action trial is in the project's own repository. World ID remains deferred under the conditions below.
 
