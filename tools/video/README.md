@@ -21,7 +21,7 @@ node tools/video/run.ts
 2. カバー（アイデア）
 3. Web で推薦を発行（署名と公開を別々に確認）
 4. 同じ推薦を二つの repo 方針で CLI 検証（accepted / rejected）
-5. **差し替え枠**：実 fork PR の GitHub Action の画面
+5. 実 fork PR（#2）の GitHub Action（公開ページ）
 6. Web で失効
 7. 両 repo で CLI 再検証（revoked）
 8. まとめ

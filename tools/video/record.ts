@@ -23,9 +23,9 @@ const clips: Clip[] = [];
 type Cue = { at: (phrase: string, offset?: number) => Promise<void>; end: () => Promise<void> };
 
 async function recordClip(browser: Browser, name: string, body: (page: Page, start: () => Cue) => Promise<void>,
-  options: { overlay?: boolean } = {}) {
+  options: { overlay?: Overlay } = {}) {
   const context = await browser.newContext({ viewport: VIEW, deviceScaleFactor: 1, recordVideo: { dir: RAW, size: VIEW } });
-  if (options.overlay) await context.addInitScript(overlayScript);
+  if (options.overlay) await context.addInitScript(overlayScript, options.overlay);
   await installWallet(context);
   const page = await context.newPage();
   const opened = Date.now();
@@ -57,21 +57,23 @@ async function recordClip(browser: Browser, name: string, body: (page: Page, sta
   console.log(`recorded ${name}: ${(end - start).toFixed(1)} s (${timing.source} timing)` + (late.length ? `; late: ${late.join(', ')}` : ''));
 }
 
-// A visible cursor and an honest "local EVM" label, injected into recorded app pages only.
-function overlayScript() {
+// A visible cursor and an honest label saying where the footage comes from, injected into recorded pages only.
+type Overlay = { zoom: number; label: string };
+const LOCAL: Overlay = { zoom: 1.3, label: 'Recorded on a local EVM running the official ENSv2 contracts · not Sepolia' };
+function overlayScript({ zoom, label }: Overlay) {
   addEventListener('DOMContentLoaded', () => {
-    document.documentElement.style.zoom = '1.3';
+    document.documentElement.style.zoom = String(zoom);
     const cursor = document.createElement('div');
     Object.assign(cursor.style, { position: 'fixed', left: '-40px', top: '-40px', width: '26px', height: '26px', margin: '-13px 0 0 -13px',
       borderRadius: '50%', border: '2px solid #466231', background: 'rgba(213,245,148,.45)', pointerEvents: 'none',
       zIndex: '2147483647', transition: 'transform .12s ease' });
     const badge = document.createElement('div');
-    badge.textContent = 'Recorded on a local EVM running the official ENSv2 contracts · not Sepolia';
+    badge.textContent = label;
     Object.assign(badge.style, { position: 'fixed', left: '16px', bottom: '14px', padding: '7px 12px', borderRadius: '999px',
       font: '500 12px ui-monospace, Menlo, monospace', color: '#e8ecdd', background: 'rgba(11,14,10,.82)', zIndex: '2147483646',
       pointerEvents: 'none', letterSpacing: '.02em' });
     document.body.append(cursor, badge);
-    addEventListener('mousemove', e => { cursor.style.left = e.clientX / 1.3 + 'px'; cursor.style.top = e.clientY / 1.3 + 'px'; }, true);
+    addEventListener('mousemove', e => { cursor.style.left = e.clientX / zoom + 'px'; cursor.style.top = e.clientY / zoom + 'px'; }, true);
     addEventListener('mousedown', () => { cursor.style.transform = 'scale(.72)'; }, true);
     addEventListener('mouseup', () => { cursor.style.transform = ''; }, true);
   });
@@ -238,7 +240,7 @@ try {
     await click(page, page.locator('#download-vouch'), 0);
     raw = await readFile((await (await download).path())!, 'utf8');
     await cue.end();
-  }, { overlay: true });
+  }, { overlay: LOCAL });
   if (signatureRequests !== 1) throw new Error('Expected exactly one signature request');
   await settle();
 
@@ -268,18 +270,21 @@ try {
     await cue.end();
   });
 
-  // 05. Placeholder for real GitHub Action footage.
+  // 05. The real Action on masusanou's fork PR, shown from public GitHub pages (no login).
+  const REPO = 'https://github.com/geeknees/devouch';
   await recordClip(browser, '05-action-slot', async (page, start) => {
-    await page.setContent(card(`<p class="eyebrow" data-step="0">Insert footage here</p><h1 data-step="0">GitHub Action on a <em>real fork PR</em></h1>
-      <p data-step="1">Replace this slot with the PR's Devouch check summary: author ID, base / head SHA, evidence valid, policy accepted.</p>
-      <p data-step="2">Two files for maintainers. No checkout, no secrets.</p>`), { waitUntil: 'networkidle' });
-    await page.evaluate(() => document.fonts.ready);
+    await page.emulateMedia({ colorScheme: 'dark' });
+    const open = (path: string) => page.goto(REPO + path, { waitUntil: 'domcontentloaded' });
+    await open('/blob/main/.devouch/policy.json');
+    await page.waitForLoadState('networkidle');
     const cue = start();
-    await reveal(page, 0);
-    await cue.at('On every pull request'); await reveal(page, 1);
-    await cue.at('It never checks out'); await reveal(page, 2);
+    await cue.at('and a workflow', -0.8); await open('/blob/main/.github/workflows/devouch.yml');
+    await cue.at('On every pull request', -0.8); await open('/pull/2');
+    await cue.at('reports the result', -1.0); await open('/actions/runs/36172488074');
+    await cue.at('It never checks out', -0.8); await open('/blob/main/.github/workflows/devouch.yml');
+    await page.mouse.wheel(0, 260);
     await cue.end();
-  });
+  }, { overlay: { zoom: 1.15, label: 'Real GitHub Action run on a fork PR · geeknees/devouch#2' } });
 
   // 06. Withdraw from the workspace.
   await recordClip(browser, '06-revoke', async (page, start) => {
@@ -298,7 +303,7 @@ try {
     await page.locator('#status').filter({ hasText: 'Withdrawn' }).waitFor();
     await glide(page, page.locator('#status'));
     await cue.end();
-  }, { overlay: true });
+  }, { overlay: LOCAL });
   await settle();
 
   // 07. Both repositories now see the withdrawal.
@@ -395,7 +400,7 @@ ${rows.join('\n')}
 
 - \`devouch-demo-base.mp4\`: all clips joined, 1920×1080, 30 fps, silent audio track.
 - \`devouch-demo-base.en.srt\`: one subtitle per script sentence, timed from \`audio/timings.json\` when present.
-- \`clips/05-action-slot.mp4\` is a placeholder. Replace it with real footage of the Action on a fork PR.
+- clips/05-action-slot.mp4 shows the real Action run on PR #2 from public GitHub pages. A green check means the report ran; the result itself is in the PR description and submission evidence.
 - Every app and terminal clip was recorded on a local EVM with the official ENSv2 bytecode and says so on screen.
   Re-record against Sepolia before claiming a public-chain demo.
 `);
