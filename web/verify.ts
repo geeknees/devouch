@@ -113,6 +113,7 @@ export function initializeVerification(getRpc: () => string) {
       text('verify-block-hash', proof.snapshot.block_hash);
       text('verify-checked-at', proof.snapshot.checked_at);
       text('verify-resolver', m.resolver);
+      text('verify-hierarchy', proof.hierarchy.map(hop => `${hop.name} — registry ${hop.registry}; owner ${hop.owner}`).join('\n'));
       text('verify-name-status', 'Looking up the issuer’s primary ENS name…');
       element<HTMLTextAreaElement>('verify-policy-a-issuers').value = m.issuer;
       element<HTMLTextAreaElement>('verify-policy-b-issuers').value = '';

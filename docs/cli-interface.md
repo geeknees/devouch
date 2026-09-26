@@ -2,6 +2,8 @@
 
 更新：2026-09-26。推薦版の5コマンドを実装し、ローカルEVMを使う実CLIで確認した。`check` はPR作成前に公開GitHub repoの方針を取得する。起動は [README](../README.md)、署名型・履歴上限・未対応範囲は [v1検証契約](protocol.md)、外部の検証状況は [実装状況](implementation-status.md)を参照する。以下の設計説明を実装済み契約で補った。
 
+Roadmap版では`--name`に完全な階層名（例:`287365775.vouches.issuer.eth`）も渡せる。署名形式とコマンドは共通で、各祖先・subregistry・関連権限の履歴を検証する。`verify`/`check`のJSONには公開時に照合した`hierarchy`が加わり、人向け出力とAction summaryにも経路を表示する。namespace作成とagentプロフィール権限の変更は[静的wallet画面](namespaces.md)から行い、CLIは引き続き取引を送らない。
+
 CLI は人間と AI エージェントが直接使うインターフェースである。GitHub Actions は、PR 情報を取得して同じ検証を実行する入口の一つとする。GitHub の画面を開かず、手元のファイルと RPC 接続で推薦を取得・検証できる構成を目指す。
 
 企画の合意事項は [企画・準備状況](hackathon-planning.md)、署名する推薦と保存先は [データ構造と保存場所](hackathon-data-model.md)、実装範囲は [ハンドオフ](hackathon-handoff.md)を参照する。本書で CLI の詳細案を管理する。
@@ -54,7 +56,7 @@ devouch revoke --credential PATH --output PATH [--rpc-url URL] [--json]
 
 引数なしの `devouch` は help を表示する。help と version は RPC 接続を必要としない。未知のコマンド・オプションは利用エラーにする。
 
-このリポジトリの [CLI 実装](../lib/devouch/cli.rb)は、上記の5コマンドを持つ推薦版 `0.1.0` である。`./exe/devouch --help` で確認できる。設計時に参照した委任・Git来歴の旧版は別実装であり、その `credential`、`ledger`、`delegate`、`commit` コマンドや入力形式は今回の配布物に含めない。
+このリポジトリの [CLI 実装](../lib/devouch/cli.rb)は、上記の5コマンドを持つ推薦版 `0.2.0` である。`./exe/devouch --version` で確認できる。v0.1からの判定の変更と戻し方は[更新ガイド](upgrading-0.2.md)を参照する。署名形式と`report_version`は1のままで、配布物を示す`verifier_version`を0.2.0へ更新している。設計時に参照した委任・Git来歴の旧版は別実装であり、その `credential`、`ledger`、`delegate`、`commit` コマンドや入力形式は今回の配布物に含めない。
 
 ## 3. 共通の入出力
 

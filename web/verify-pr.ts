@@ -57,6 +57,7 @@ export function initializePullRequestVerification(getRpc: () => string) {
       text('block', proof.snapshot?.block_number ?? 'not checked');
       text('block-hash', proof.snapshot?.block_hash ?? 'not checked');
       text('checked-at', proof.snapshot?.checked_at ?? 'not checked');
+      text('hierarchy', proof.hierarchy?.map(hop => `${hop.name} — registry ${hop.registry}; owner ${hop.owner}`).join('\n') ?? 'not checked');
       if (message) {
         text('vouched-by', 'Vouched by ' + message.issuer); element('vouched-by').hidden = false;
         text('issuer', message.issuer); text('record-name', message.recordName); text('subject', message.subject);

@@ -84,8 +84,11 @@ class ActionTest < Minitest::Test
   end
 
   def test_summary_does_not_render_input_as_html_or_inject_table_rows
-    summary = Devouch::Action.summary({"issuer" => "<script>|\n\"unsafe\""})
+    summary = Devouch::Action.summary({"issuer" => "<script>|\n\"unsafe\"",
+      "hierarchy" => [{"name" => "eth"}, {"name" => "<img>|\nparent.eth"}]})
     refute_includes summary, "<script>"
     assert_includes summary, "&lt;script&gt;&#124; &quot;unsafe&quot;"
+    refute_includes summary, "<img>"
+    assert_includes summary, "ENS hierarchy | eth -&gt; &lt;img&gt;&#124; parent.eth"
   end
 end

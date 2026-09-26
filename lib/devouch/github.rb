@@ -48,7 +48,7 @@ module Devouch
       request = Net::HTTP::Get.new(uri)
       request["Accept"] = "application/vnd.github+json"
       request["X-GitHub-Api-Version"] = "2022-11-28"
-      request["User-Agent"] = "devouch/0.1.0"
+      request["User-Agent"] = "devouch/0.2.0"
       request["Authorization"] = "Bearer #{@token}" unless @token.to_s.empty?
       response_code = nil
       body = +""

@@ -7,6 +7,7 @@ import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts';
 import { DEPLOYMENTS, DEPLOYMENT_BLOCK, ETH_REGISTRY, FACTORY, OWNER_ROLES, RESOLVER_IMPL, ROOT_REGISTRY,
   factoryAbi, resolverAbi, setTextData } from '../../src/ens';
 import labelStore from '../../vendor/ens-v2/LabelStore.json';
+import userRegistry from '../../vendor/ens-v2/UserRegistryImpl.json';
 
 export const testRpc = process.env.DEVOUCH_TEST_RPC!;
 if (!testRpc || !testRpc.startsWith('http://127.0.0.1:')) throw new Error('Run node scripts/test-integration.ts');
@@ -32,15 +33,17 @@ async function deploy(artifact: { abi: unknown[]; bytecode: string }, args: unkn
   return { address: receipt.contractAddress, hash };
 }
 
-async function install(artifact: typeof DEPLOYMENTS.resolver | typeof DEPLOYMENTS.factory | typeof DEPLOYMENTS.root, args: unknown[]) {
+async function install(artifact: typeof DEPLOYMENTS.resolver | typeof DEPLOYMENTS.factory | typeof DEPLOYMENTS.root | typeof userRegistry, args: unknown[]) {
   const deployed = await deploy(artifact, args);
   const target = getAddress(artifact.address);
   let code = (await publicClient.getCode({ address: deployed.address }))!;
   // UUPS self-address immutables must describe the fixed address used by this fixture.
-  if (target === getAddress(RESOLVER_IMPL)) {
+  if ([getAddress(RESOLVER_IMPL), getAddress(userRegistry.address)].includes(target)) {
     for (const offsets of Object.values(artifact.immutableReferences)) for (const offset of offsets) {
       const from = 2 + offset.start * 2;
-      code = (code.slice(0, from) + target.slice(2).padStart(offset.length * 2, '0') + code.slice(from + offset.length * 2)) as Hex;
+      if (code.slice(from, from + offset.length * 2).toLowerCase() === deployed.address.slice(2).toLowerCase().padStart(offset.length * 2, '0')) {
+        code = (code.slice(0, from) + target.slice(2).padStart(offset.length * 2, '0') + code.slice(from + offset.length * 2)) as Hex;
+      }
     }
   }
   await rpc('hardhat_setCode', [target, code]);
@@ -66,6 +69,7 @@ export async function setupEvm() {
     await install(DEPLOYMENTS.eth, [labels.address, issuer.address, allRoles]);
     await install(DEPLOYMENTS.factory, []);
     await install(DEPLOYMENTS.resolver, [issuer.address]);
+    await install(userRegistry, [labels.address, issuer.address]);
     const expiry = (await publicClient.getBlock()).timestamp + 86400n * 365n;
     const hash = await wallet.writeContract({ address: ROOT_REGISTRY, abi: DEPLOYMENTS.root.abi as Abi, functionName: 'register',
       args: ['eth', issuer.address, ETH_REGISTRY, zeroAddress, allRoles, expiry] });

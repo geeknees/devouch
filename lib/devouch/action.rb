@@ -71,6 +71,7 @@ module Devouch
       rows = [
         ["Evidence", report["evidence_status"]], ["Repository policy", report["policy_status"]],
         ["Subject", report["subject"]], ["Issuer", report["issuer"]], ["Scope", report["scope"]],
+        ["ENS hierarchy", Array(report["hierarchy"]).map { |hop| hop["name"] }.join(" -> ")],
         ["Reasons", Array(report["reason_codes"]).join(", ")],
         ["Repository / PR", "#{report.dig("github", "repository")} ##{report.dig("github", "pull_request")}"],
         ["Base SHA", report.dig("github", "base_sha")], ["Head SHA", report.dig("github", "head_sha")],

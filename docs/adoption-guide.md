@@ -1,8 +1,12 @@
 # Devouch 導入マニュアル
 
-更新：2026-09-26。推薦版の [Action](../action.yml)・[CLI](../exe/devouch)・静的画面を新規実装し、ローカル通しテストを実施しました。**下記の固定commitの匿名取得とPages公開、masusanouの実fork PRでvalid / acceptedを確認済みです。** [公開の検証記録](release-evidence.md)、[実PRの検証記録](demo-evidence.md#masusanouの実fork-pr)、最新の確認範囲は [実装状況](implementation-status.md)、起動方法は [README](../README.md)を参照してください。
+更新：2026-09-26。0.2.0の階層ENSに対応した [Action](../action.yml)・[CLI](../exe/devouch)・静的画面を対象にします。[v0.1との互換性と更新手順](upgrading-0.2.md)を確認してください。ローカルテスト、固定commitの公開確認、[自repoのPR #17](https://github.com/geeknees/devouch/pull/17)での試用は[Roadmap記録](roadmap-plan.md)に分けて記載しています。Pagesの確認範囲は[公開記録](release-evidence.md)、masusanouの実fork PRは[実PRの検証記録](demo-evidence.md#masusanouの実fork-pr)、起動方法は[README](../README.md)を参照してください。
 
 公開 OSS リポジトリのメンテナー向けに、まず PR 作者の推薦を Actions の結果に表示するところまでを扱います。メンテナーは設定と workflow の2ファイルを追加し、推薦を持つ貢献者は初回だけ推薦 JSON を追加します。推薦結果を読み、レビューへ進めるかはメンテナーが決めます。
+
+静的画面の **[Maintainers](https://geeknees.github.io/devouch/#maintainers)** から設定を作れる。ローカル起動の場合は`http://127.0.0.1:4173/#maintainers`を開く。受け入れ先の`owner/repo`とレビューした公開Action commit SHAを指定する。最大8件の公開ENS名を検証し、表示されたissuer・scope・resolverを自分の判断で選ぶ。既定では誰も選択されず、invalid・revoked・expired・missing・unavailableの結果からは選べない。最終同意の後、`.devouch/policy.json`と`.github/workflows/devouch.yml`をダウンロードして通常のPRでレビューする。画面はwalletもGitHub loginも必要とせず、GitHubへ書き込まない。
+
+検証結果は表示されたblock時点のもの。採用方針は「選択したissuer・scope・resolverに一致する有効な推薦」を受け入れ、画面で見たsubjectだけへ制限するものではない。新しいサブネームに別resolverを使うなら、そのresolverを許可するレビューも必要。[名前空間の作成手順](namespaces.md)を参照。`v0.1`のActionは階層名に対応しないため、下記ではRoadmap実装のSHAを指定する。公開確認の結果は[記録](roadmap-plan.md)を参照する。
 
 PR を送る側の手順は [AI エージェント管理者向けマニュアル](agent-operator-guide.md)を参照してください。推薦の依頼、エージェントへの指示、送信後の確認をまとめています。
 
@@ -70,11 +74,11 @@ PR が作成・更新されると、Devouch が PR 作者に対する推薦を�
 
 resolver の公開アドレスは導入者が確認します。画面の公開・取得後に、Receiving repository setup からこの形式の policy 例をダウンロードできます。出力できたことはメンテナーの採用判断を代替しません。
 
-最初は一人の推薦者・必要数1に限定します。このファイルは受け入れ方針であり、推薦者や貢献者の全世界共通の登録簿ではありません。
+信頼する推薦者・resolverは複数列挙できます。各PRで検証する推薦は一件で、必要数は1に限定します。このファイルは受け入れ方針であり、推薦者や貢献者の全世界共通の登録簿ではありません。
 
 ## 2. GitHub Actions の workflow を追加する
 
-`.github/workflows/devouch.yml` を作ります。配布先は公開済みの `geeknees/devouch` です。ローカル検証済みの40桁SHAで固定した [workflow](../.github/workflows/devouch.yml)を用意し、repoと固定commitの匿名取得を確認しました。
+`.github/workflows/devouch.yml` を作ります。配布先は公開repoの `geeknees/devouch` です。階層対応をローカル検証した40桁SHAで [workflow](../.github/workflows/devouch.yml)を固定しています。導入前に、[Roadmap記録](roadmap-plan.md)で固定commitの公開確認と試用結果を確認してください。
 
 ```yaml
 # ABOUTME: Reports the pull request author's portable endorsement.
@@ -95,16 +99,19 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - uses: geeknees/devouch@9ce4525f269f590d4d8fd0e123ff35d33dce8efa
+      - uses: geeknees/devouch@4aa03f7f6bea64701a6bbab0ff6420df1457b2fb
         with:
           policy-path: .devouch/policy.json
           mode: report
+          rpc-url: https://rpc.sepolia.ethpandaops.io
           github-token: ${{ github.token }}
 ```
 
 `policy-path`、`mode`、`github-token` は [action.yml](../action.yml) の入力です。`github.token` は GitHub が提供する実行用トークンを使い、PATやrepository secretの手動登録を求めません。権限は読み取りだけです。[GitHub の権限設定](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#permissions)
 
 既定 RPC は認証不要の `https://sepolia.gateway.tenderly.co` です。実際のデモ名の履歴とCLI requestまで確認しました。代替の `https://rpc.sepolia.ethpandaops.io` も配備時の状態照会まで確認済みで、`rpc-url` 入力で変更できます。PublicNodeは時間経過後に実名の準備確認が失敗したため、デモの代替には使いません。公開RPCの可用性・履歴保持・制限は保証せず、未完了の照会は unavailable にします。masusanouの実fork PRでは、手動登録のSecretを追加せず、GitHub提供tokenと既定RPCでvalid / acceptedを確認しました。初回forkの実行承認は必要でした。
+
+Roadmap版の試用では、GitHub runnerからTenderlyへの取得が2回とも`rpc_unavailable`になったため、上の例とMaintainersの出力はethPandaOpsを明示します。同じ推薦は両RPCからローカルでvalid / accepted、ethPandaOpsでは[実Actionもvalid / accepted](https://github.com/geeknees/devouch/actions/runs/36218361289)を確認済みです。初回失敗を含む詳細は[Roadmap記録](roadmap-plan.md)に残しました。自動的なRPC切替は行わず、履歴を確認できなければ判定を止めます。
 
 この workflow には `checkout`、PR のビルド、テスト実行を追加しません。Action 自身のコードだけで GitHub 上の JSON と chain を読みます。配布版はタグではなく commit SHA で固定します。[GitHub の Action 固定に関する説明](https://docs.github.com/en/actions/reference/security/secure-use#using-third-party-actions)
 
@@ -196,6 +203,6 @@ GitHub 側の fork 実行承認や組織の Action 制限は残ります。競�
 
 メンテナーの初回作業は2ファイルですが、推薦者の公開情報を確認する作業、貢献者が初回に JSON を渡す作業は必要です。「設定を貼るだけで、全世界の推薦が自動で見つかる」設計にはなっていません。
 
-特に、現在の ENS 案は **一つの記録・キーに同時に一つの推薦だけ**です。同じキーへ別の人の推薦を書くと前の推薦が失効します。このままでは複数人を推薦する実運用に足りず、Git にファイルを増やしても解決しません。8時間版は、一度に一人への推薦を二つの repo 方針で再利用するデモです。実PRではmasusanou名義の有効な推薦を確認済みで、人間名義の実PR検証はユーザー指定により対象外です。複数推薦の同時保持は一般運用に向けた設計課題です。
+**一つの記録・キーに同時に一つの推薦**という境界は維持します。Roadmap版では推薦先ごとのサブネームと独立したresolverで同時に複数の推薦を保持し、個別に失効できます。同じ記録へ別人の推薦を書けば前の推薦は失効し、Gitへファイルを増やしても公開先の分離にはなりません。既存v0.1のmasusanou PRデモはそのまま維持し、新しい導入試験はユーザー指定の`geeknees/devouch`で行います。これは自repoでの試験であり、独立した第三者による導入実績ではありません。
 
 推薦JSONと方針例のダウンロード、CLI・Action境界、ブラウザからの操作はローカルで確認済みです。masusanouの公開fork PRでGitHub上のランタイム準備とvalid / acceptedも確認しました。デモではユーザー指定により失効のPR検証を行いません。第三者がこの手順だけで導入する確認と所要時間の測定は残っています。

@@ -32,4 +32,14 @@ test('recovery imports require an exact supported operation and an identified se
   expect(() => validatePending({ ...recovery, kind: 'transfer' })).toThrow();
   expect(() => validatePending({ ...recovery, account: undefined })).toThrow();
   expect(() => validatePending({ ...recovery, data: '0x123' })).toThrow();
+  expect(() => validatePending({ ...recovery, key: 'url' })).toThrow('invalid_recovery');
+});
+
+test('agent recovery accepts only explicitly permitted profile keys', () => {
+  const recovery = { ...draft, name: 'agent.demo.eth', kind: 'grant-profile', account: '0x' + '22'.repeat(20),
+    helper: '0x' + '33'.repeat(20), key: 'url' };
+  expect(validatePending(recovery).key).toBe('url');
+  expect(() => validatePending({ ...recovery, key: 'devouch.vouch' })).toThrow('unsupported_agent_permission');
+  expect(() => validatePending({ ...recovery, helper: undefined })).toThrow();
+  expect(() => validatePending({ ...recovery, key: undefined })).toThrow();
 });

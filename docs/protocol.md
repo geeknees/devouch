@@ -32,7 +32,7 @@ EIP-712 domain は `name: Devouch`、`version: 1`、`chainId: 11155111`、
 署名は65 bytesの EOA署名。viem の EIP-712 復元結果を issuer と照合する。
 アドレスは小文字または正しい checksum。scope は `[a-z][a-z0-9-]{0,63}`。
 時刻は `expiresAt > issuedAt`。発行時刻が公開 block より後なら不正。
-公開時の名前の有効期限を推薦の期限が超えてはならない。
+公開時の全祖先と対象名のうち、最も短い有効期限を推薦の期限が超えてはならない。
 snapshot 時刻が expiresAt 以上なら expired。期限より先に失効したものは revoked を維持する。
 
 repo ID や PR head は署名対象に含めない。同一原本を複数 repo 方針で評価できる。
@@ -51,9 +51,11 @@ Sepolia の公式 [contracts-v2 の固定版](https://github.com/ensdomains/cont
 | VerifiableFactory | `0x9e726eb570beb6bceb495ab8cda7df517d4e841c` |
 | RootRegistry | `0x9703dbd26dab89504490994138cf2c575251a9ce` |
 | ETHRegistry | `0x657ea849311d3d5823348dded7c2aaafb3ede09e` |
+| UserRegistryImpl | `0xa80338aaa8d23831cea25e858d1774534abb0263` |
 
 各 runtime は既知の immutable 部分だけを除いて比較する。root の eth の接続先も照合する。
-対象は直接の `name.eth`。未知の namespace、subname、wildcard、CCIP Read は使わない。
+対象は直接の `name.eth` と、固定した公式UserRegistryを通る正規化済みのsubname。`eth`を含め最大10ラベルで、完全一致の名前だけを解決する。未知のnamespace、wildcard、CCIP Readは使わない。
+root→ETHRegistry→各UserRegistryをたどり、循環がないこと、全ラベルの登録が有効であること、各child registryの`getParent()`が親registryとlabelへ一致することを確認する。最終resolverだけでなく、全child registryの公式Factory配備と固定実装・初期Upgradedを検査する。
 名前の公開時・現在の owner は署名者であることを要求する。
 名前・registry の実装が変わった場合は、このリリースで確認できたとは扱わない。
 
@@ -73,14 +75,15 @@ snapshot の時刻がローカル時計より300秒以上古い、または120�
 
 1. 署名と対象 ID を検査する。
 2. 固定したプロトコル、初期配備、proxy、履歴範囲を確認する。
-3. resolver・ETH registry・root registry の履歴を取得する。
+3. resolver・ETH registry・root registry の履歴と、公開時の経路に含まれる全UserRegistryの配備からsnapshotまでの履歴を取得する。
 4. 対象 record / key に原本と完全一致する最初の `TextUpdated` を見つけ、成功 receipt と canonical block を照合する。
 5. その後の異なる値の書き込みがあれば永久に revoked。同じ JSON の再掲載でも戻らない。同一 block 内は transaction index / log index で並べる。
-6. 公開後の対象名の `Linked`、resolver変更、登録・解除・所有権移転、root.eth の subregistry変更を検出する。変更と復元の往復でも invalid。
+6. 公開後の対象名の`Linked`・resolver変更、経路上の登録・解除・所有権移転・TokenRegenerated、親のsubregistry・parent pointer、関連EAC権限の変更を検出する。変更と復元の往復でもinvalid。同じラベルが別registryにあっても混同せず、兄弟名だけの変更は対象に影響しない。
 7. 有効候補について現在の owner・resolver・recordId・原本・時刻を照合する。
 8. 有効な証拠にだけ repo 方針を適用する。
 
 同じ値の重複書き込みは失効ではない。
+registryのrootまたは経路上のlabel resourceで、登録・parent・解除・更新・subregistry・resolver・transfer admin・upgradeに関わるrole/adminの変更を追う。resolverのroot TEXT/LINK/UPGRADE権限の変更も検出する。階層名では`devouch.vouch`キーの権限変更も古い推薦をinvalidにする。直接名の既存helper操作は、キー権限の撤回後もissuerが元の推薦を撤回できる従来動作を維持する。通常の期限延長は権限変更とは扱わない。
 `publication.json` は chainId / transactionHash / blockNumber / blockHash だけの探索補助で、署名済み開始 block を変更しない。
 原本の一致する別の公開位置を示しても、失効判定は最初の公開から継続する。
 保存した位置があれば、resolver の接続を外した後も対応する過去原本を取得できる。ただし未知実装や取得不能な履歴は成功にしない。
@@ -88,6 +91,7 @@ snapshot の時刻がローカル時計より300秒以上古い、または120�
 照会の予算は最大250,000 block、20,000 logs、1200 RPC、90秒。
 1000 blockずつ照会し、範囲エラーは分割する。必要な履歴が予算内で完了しなければ unavailable。
 Ruby subprocess 全体は210秒で止める。古い結果を現在の証拠としてキャッシュしない。
+`hierarchy`出力は公開時に照合した経路のname・registry・owner・token_id・resource・expires_at・subregistryを含む。CLI JSON、Action summary、Webの詳細から確認できる。
 長期間使った resolver では予算に達する場合がある。履歴の開始点を後ろにずらさず、新しい専用 resolver へ明示的に移行する。
 
 ## 方針と出力
@@ -102,7 +106,7 @@ allowedResolvers の各要素は proxy address と implementation address。requ
 採否は accepted / rejected / not_evaluated。
 完全に照合できなければ snapshot は null。人間性は常に `human_verification: not_included`。
 代表的な reason は invalid_signature、subject_mismatch、publication_missing、publication_mismatch、
-revoked、expired、unsupported_implementation、resolver_upgraded、rpc_unavailable、history_budget_exceeded。
+revoked、expired、unsupported_implementation、resolver_upgraded、registry_upgraded、registry_parent_mismatch、rpc_unavailable、history_budget_exceeded。
 エラー code は理由の識別子であり、RPCの生のエラーや URL 内の秘密情報を返さない。
 
 ## 権限・送信・復旧
@@ -111,6 +115,12 @@ issuer は名前と専用 resolver を所有し、text / link / upgrade の管�
 補助 wallet への grant は `devouch.vouch` の text setter に限定する。
 権限は resolver が扱う全 record の同じキーへ及ぶため、専用 resolver を使う。
 補助 grant を取り消しても issuer の root text 権限は残る。
+
+Namespacesは公式FactoryからUserRegistryを初期化し、parent link、親への接続、子ラベル登録をそれぞれ別取引で行う。既存child registryの上書きは行わない。子名の所有者は接続したissuerで、有効期限は全祖先の期限内に制限する。推薦ごとに新しいresolverを用意し、元の親名のresolverは置き換えない。
+
+エージェントのidentityは専用resolverの`devouch.agent`に `{version:1,chainId:11155111,name,subject,wallet,controller}` を置き、ETH address recordとwalletを照合する。controllerは現在の名前ownerでありroot TEXT権限を持つ。これはcontrollerによる宣言で、GitHub accountの所有権証明やGitHubでの操作委任ではない。生成時にidentity・address・空の推薦recordを同じresolver初期化取引へ含める。
+
+UIのagent grantは`url`・`avatar`・`description`の一キー単位に限定し、identity・address・推薦キー・LINK・親registryの権限は渡さない。エージェント自身は許可されたプロフィールだけを更新でき、撤回後は更新できない。text-key権限はresolver内の全recordに及ぶため、agent読取りでは配備以降のLinkedも確認し、別の名前やrecordを扱ったresolverを`agent_resolver_shared`で拒否する。
 
 Web は署名直前と送信直前に最新の owner / resolver / record / 値を読み直す。
 最終的な送信との間に別取引が入る競合を完全に排除する CAS は ENS にない。

@@ -49,6 +49,8 @@ class CliTest < Minitest::Test
     assert_equal "accepted", report["policy_status"]
     assert_equal "not_included", report["human_verification"]
     assert_equal "argument", report["subject_source"]
+    assert_equal "0.2.0", report["verifier_version"]
+    assert_equal 1, report["report_version"]
     @policy[:trustedIssuers] = []
     write_policy
     status, report = run_cli(verify_arguments)

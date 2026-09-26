@@ -29,7 +29,7 @@ async function credential(subject = 'github:12345') {
 }
 const proof = (status: ChainEvidence['evidence_status'] = 'valid'): ChainEvidence => ({
   evidence_status: status, reason_codes: status === 'valid' ? [] : [status], implementation,
-  publication: null, current_value: '', snapshot: { chain_id: 11155111, block_number: '101',
+  publication: null, current_value: '', hierarchy: [], snapshot: { chain_id: 11155111, block_number: '101',
     block_hash: `0x${'55'.repeat(32)}`, block_timestamp: '1000', checked_at: new Date().toISOString(), confirmations: 2 } });
 function api(raw: string | null, policyRaw: string | null = JSON.stringify(policy), meta = metadata()) {
   const requests: { url: string; options: RequestInit }[] = [];
