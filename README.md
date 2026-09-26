@@ -213,6 +213,12 @@ This is a reference for contribution review. It does not prove humanity, account
 `human_verification` is always `not_included`.
 [World sandbox](https://sandbox.auth.world.org/) was inspected; World authentication is not implemented or claimed.
 
+Why World ID is not integrated yet: it is a trade-off with the "no central server" choice ([Design choices](#design-choices)), not a judgment on proof of personhood.
+The integration paths checked for this event need a secret held by the app operator: World's agent sign-in (OIDC) assumes a confidential client, and IDKit requires the relying party to sign each request.
+In Devouch that operator would be the Devouch project, so every issuer and repository would depend on its key and server.
+Proof of personhood answers a different question ("is this a human?") from Devouch ("who vouches for you?"), and the two could work well together.
+It will be added once it can be verified without a mandatory central party; the research is in the [prize plan](docs/ethglobal-tokyo-2026-prize-plan.md) (Japanese).
+
 The first release supports one active endorsement per resolver record/key, EOA signatures, and direct normalized Sepolia `name.eth` names.
 ENSv1, subname traversal, wildcard resolution, ERC-1271, resolver upgrades, and multiple simultaneous endorsements on one record are unsupported.
 Changing a record and restoring its old JSON never reactivates that endorsement.
