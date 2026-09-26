@@ -13,7 +13,7 @@
 | もの | 状態 |
 | --- | --- |
 | 字幕付きの動画 | `tools/video/out/devouch-demo-cut-captions.mp4`（2分10秒、音声なし）。全画面ですぐ再生できるようにしておく |
-| QR | スライドの「Try it on your phone」か、印刷した QR。検証ページ（https://geeknees.github.io/devouch/?name=masusanou-dev.eth#verify）を開く |
+| QR | スライドの「Try it on your phone」か、印刷した QR。検証ページ（https://geeknees.github.io/devouch/?name=masusanou.vouches.geeknees.eth#verify）を開く |
 | 予備 | 同じ検証ページを自分の PC でも開いておく（審査員がスマホを出さないとき用） |
 
 審査の直前に、検証ページで推薦が `valid` のままかを一度確かめる。
@@ -62,6 +62,7 @@ Then let the captions speak. If the judge looks at you, read the caption aloud o
 > Please scan this. / **Try it yourself.**
 > No wallet. / This one is **live on Sepolia.**
 > It says / "Vouched by **geeknees.eth**" / — that's me.
+> It lives / on its own **subname.**
 > Add me to repo B, / and it changes / to **accepted.**
 
 ### 4. Close (10s)
@@ -81,12 +82,17 @@ Then let the captions speak. If the judge looks at you, read the caption aloud o
 
 `[DEMO]` If asked, open [`vendor/ens-v2/README.md`](../../vendor/ens-v2/README.md) and show where the pinned official Sepolia contracts come from. No new contract was written.
 
-### What's next with ENS?
+### New in 0.2: subnames and agent namespaces (ENS judges)
 
-> Next, / one **subname** / per endorsement.
-> And AI agents / as **namespaces,** / each with its own permissions.
+`[DEMO]` Open the agent page without a wallet: https://geeknees.github.io/devouch/?agent=287365775.vouches.geeknees.eth#namespaces
 
-（詳しくは [README の Roadmap](../../README.md#roadmap)）
+> Version 0.2 / gives each vouch / its **own subname.**
+> So I can vouch / for many people, / and take back / just one.
+> An AI agent / can have / its **own ENS name,** / too.
+> I give it / only the permissions / it needs.
+> This agent / is **live on Sepolia.**
+
+Be exact about what is live: the namespace, the agent identity and the subname endorsement `masusanou.vouches.geeknees.eth` are on Sepolia, created with a real wallet. Withdrawing a single subname endorsement is tested locally with the official ENS contracts ([record](../sepolia-namespace-check.md)).
 
 ### How does verification work?
 
@@ -139,7 +145,7 @@ Then let the captions speak. If the judge looks at you, read the caption aloud o
 
 > これを読み取って、ご自身で試してみてください。
 > ウォレットは要りません。こちらは Sepolia の本物のデータです。
-> 「Vouched by geeknees.eth」と出ます。推薦したのは私です。
+> 「Vouched by geeknees.eth」と出ます。推薦したのは私です。この推薦は、専用のサブネームに置いてあります。
 > repo B に私を追加すると、accepted に変わります。
 
 ### 4. まとめ（10秒）
@@ -149,7 +155,7 @@ Then let the captions speak. If the judge looks at you, read the caption aloud o
 ### 深掘り（聞かれたら）
 
 - **なぜ ENSv2？:** 推薦はサーバーではなく ENS にあります。resolver は私のもので、Devouch 運営者の承認なしに公開も取り消しもできます。補助のウォレットに、一つの text key だけの権限を渡せます。記録の履歴を読むので、古い推薦は戻りません。聞かれたら `vendor/ens-v2/README.md` で、固定した公式コントラクトの出どころを見せる。新しいコントラクトは書いていない。
-- **ENS での次の一手:** 推薦ごとにサブネームを作ること、AI エージェントを名前空間として扱い、それぞれに権限を持たせること（README の Roadmap）。
+- **v0.2 の新機能（ENS の審査員向け）:** 推薦ごとに自分のサブネームを持てるので、何人でも推薦でき、1件だけ取り消せます。AI エージェントも自分の ENS の名前を持ち、私が渡した権限だけを使えます。このエージェントは Sepolia 上に実在します（ウォレットなしで開けるページを見せる）。本物のウォレットで Sepolia に作ったのは、名前空間、エージェントの ID、サブネームの推薦（`masusanou.vouches.geeknees.eth`）。サブネームの推薦を1件だけ取り消す動きは、ローカルのテストで確認済み。
 - **検証の仕組み:** 署名・期限・ENS の記録を確認します。最新から2ブロック前の状態を読みます。そのあと、リポジトリの方針が判断します。
 - **サイトがなくなったら？:** Web は静的なので、自分のパソコンで、好きな RPC で動かせます。CLI は ENS を直接読みます。
 - **含まないもの:** コードレビューの代わりにはなりません。示すのは、誰があなたを推薦しているかです。

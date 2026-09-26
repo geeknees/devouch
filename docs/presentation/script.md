@@ -22,7 +22,7 @@ ETHGlobal Tokyo 2026 finalist judging: **7 minutes = 4 min demo + 3 min Q&A.**
 
 1. スライド（表紙から順に。「Live demo」のスライドで動画に切り替える）。
 2. 動画 `devouch-demo-cut-captions.mp4` を全画面で再生できる状態にしておく（音声はない。字幕が会場の後ろからも読めるか確認）。予備に声入りの `devouch-demo-cut.mp4` も置いておく。
-3. 念のため、完成版 `devouch-demo-voiced.mp4` と、検証ページ（https://geeknees.github.io/devouch/?name=masusanou-dev.eth#verify）もすぐ開けるようにしておく。
+3. 念のため、完成版 `devouch-demo-voiced.mp4` と、検証ページ（https://geeknees.github.io/devouch/?name=masusanou.vouches.geeknees.eth#verify）もすぐ開けるようにしておく。
 
 ### 9/27 の流れ（リハーサルは提出後）
 
@@ -349,8 +349,8 @@ Web は `github-<数値ID>.json` という名前で保存する。同名のフ�
 
 ### What about AI agents opening PRs? / AI エージェントの PR は？
 
-- **EN:** An agent with its own GitHub account / can get a vouch, / **just like a person.**
-- **JA:** 自分の GitHub アカウントを持つエージェントも、人と同じように推薦を受けられます。
+- **EN:** An agent with its own GitHub account / can get a vouch, / **just like a person.** / In version 0.2, / an agent can also have / its own **ENS subname,** / with only the permissions / I give it.
+- **JA:** 自分の GitHub アカウントを持つエージェントも、人と同じように推薦を受けられます。v0.2 では、エージェントが自分の ENS のサブネームを持ち、私が渡した権限だけを使えます。
 
 ### Costs and privacy? / コストとプライバシーは？
 
@@ -359,5 +359,5 @@ Web は `github-<数値ID>.json` という名前で保存する。同名のフ�
 
 ### What's next? / 今後は？
 
-- **EN:** More than one vouch per person, / easier setup for maintainers, / and a test with a **real** open-source project.
-- **JA:** 一人が複数人を推薦できるようにすること、メンテナーの設定を簡単にすること、実際の OSS で試すことです。
+- **EN:** Version 0.2 already adds / **one subname per vouch** / and agents as namespaces. / Next: / finish the real-wallet checks / for those, / and try it / with a **real** open-source project.
+- **JA:** 推薦ごとのサブネームと、エージェントの名前空間は v0.2 で入りました。次は、それらを本物のウォレットで確かめきることと、実際の OSS で試すことです。
