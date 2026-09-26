@@ -127,6 +127,26 @@ PR の説明には、解決する問題・変更内容・実行したテスト�
 
 その後の commit・push・PR 作成は、管理者が許可した通常の開発手順で行います。Devouch 専用の commit コマンドや、PR ごとの推薦再発行は求めません。
 
+### PRを作る前の送信前チェック
+
+CLIを利用するエージェントは、PR作成の直前に次を実行します。投稿先と、実際に投稿するアカウントの数値IDを指定します。
+
+```bash
+./exe/devouch check --repo OWNER/REPOSITORY \
+  --credential .devouch/vouches/github-12345.json \
+  --subject github:12345 --json
+```
+
+既定では投稿先のdefault branchを使います。別ブランチへのPRなら `--base release/v1` などを加えます。
+投稿先commitの `.devouch/policy.json` を自動取得するため、手元の方針を編集して判定を通すことはできません。
+終了コード **0** の場合だけ、許可された通常のPR作成手順へ進みます。それ以外は送信を止め、結果JSONを管理者へ報告します。
+`1` は有効な推薦の不採用、`2` は失効・期限切れ・不正・欠如、`3` はGitHub/RPCなどの検証不能、`4` は方針未設定や利用・設定エラーです。
+ファイルエラー `5` や内部エラー `70` も送信せず停止します。
+
+`check` はPRを送信せず、ウォレットやGitHub tokenを使いません。JSONには照合したbranch・commit SHA・policy digest・ENS snapshotが含まれます。
+`subject_source: argument` は指定されたIDとの照合を意味し、本人の認証や投稿権限の確認ではありません。
+方針やENS状態が変わった場合は再実行し、実際のPRではActionの結果も確認します。人間性・コード品質・マージ許可はこの結果に含まれません。
+
 ## 4. PR 作者と検証結果を確認する
 
 PR を開いたら、投稿先のチェックから `Devouch endorsement report` の実行と Summary を開きます。以下はエージェント自身のアカウントが PR 作者になる場合の表示例です。管理者名義の例なら対象は `github:12345` になります。

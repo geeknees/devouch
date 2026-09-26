@@ -34,4 +34,76 @@ class GitHubTest < Minitest::Test
       assert_raises(Devouch::Error) { read(value) }
     end
   end
+
+  def with_response(code, chunks)
+    response = Struct.new(:code, :chunks) do
+      def read_body(&block)
+        chunks.each(&block)
+      end
+    end.new(code.to_s, chunks)
+    @requests = []
+    http = Object.new
+    requests = @requests
+    http.define_singleton_method(:request) do |request, &receive|
+      requests << request
+      receive.call(response)
+    end
+    assertions = self
+    start = ->(host, port, **options, &block) do
+      assertions.assert_equal "api.github.com", host
+      assertions.assert_equal 443, port
+      assertions.assert_equal true, options[:use_ssl]
+      block.call(http)
+    end
+    original = Net::HTTP.method(:start)
+    Net::HTTP.singleton_class.remove_method(:start)
+    Net::HTTP.define_singleton_method(:start, start)
+    yield Devouch::GitHub.new(token: nil)
+  ensure
+    if original
+      Net::HTTP.singleton_class.remove_method(:start)
+      Net::HTTP.define_singleton_method(:start, original)
+    end
+  end
+
+  def test_anonymous_repository_and_slash_branch_reads_use_fixed_origin_gets
+    with_response(200, ['{"ok":true}']) do |api|
+      assert_equal({"ok" => true}, api.repository("owner/repo"))
+      assert_equal({"ok" => true}, api.branch("owner/repo", "release/v1"))
+    end
+    assert_equal ["/repos/owner/repo", "/repos/owner/repo/branches/release%2Fv1"], @requests.map(&:path)
+    @requests.each do |request|
+      assert_equal "GET", request.method
+      assert_nil request["Authorization"]
+    end
+  end
+
+  def test_policy_get_preserves_the_immutable_ref
+    with_response(200, [JSON.generate(record("{}"))]) do |api|
+      assert_equal "{}", api.file("owner/repo", ".devouch/policy.json", "a" * 40, limit: 4096)
+    end
+    assert_equal "/repos/owner/repo/contents/.devouch/policy.json?ref=#{"a" * 40}", @requests.fetch(0).path
+  end
+
+  def test_redirect_rate_limit_missing_metadata_and_bad_json_are_unavailable
+    [[301, "redirect"], [403, "limited"], [404, "absent"], [500, "failed"], [200, "not json"]].each do |code, body|
+      with_response(code, [body]) do |api|
+        error = assert_raises(Devouch::Error) { api.repository("owner/repo") }
+        assert_equal 3, error.exit_status
+        assert_equal "github_unavailable", error.code
+      end
+      assert_equal 1, @requests.length
+    end
+    with_response(404, ["absent"]) do |api|
+      assert_nil api.file("owner/repo", ".devouch/policy.json", "a" * 40, limit: 4096)
+    end
+  end
+
+  def test_oversized_metadata_is_bounded_before_parsing
+    with_response(200, [" " * 1_048_576, " "]) do |api|
+      error = assert_raises(Devouch::Error) { api.branch("owner/repo", "main") }
+      assert_equal 3, error.exit_status
+      assert_equal "github_response_too_large", error.code
+    end
+  end
 end

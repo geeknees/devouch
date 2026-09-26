@@ -4,6 +4,7 @@ require "optparse"
 require "time"
 require_relative "bridge"
 require_relative "policy"
+require_relative "github"
 
 module Devouch
   VERSION = "0.1.0"
@@ -14,16 +15,19 @@ module Devouch
       "request" => %w[subject issuer name expires-at output],
       "fetch" => %w[name output],
       "verify" => %w[credential policy subject],
+      "check" => %w[repo credential subject],
       "revoke" => %w[credential output]
     }.freeze
-    OPTIONAL = {"request" => [], "fetch" => %w[publication publication-output], "verify" => %w[publication], "revoke" => []}.freeze
+    OPTIONAL = {"request" => [], "fetch" => %w[publication publication-output], "verify" => %w[publication],
+      "check" => %w[base publication], "revoke" => []}.freeze
     EVIDENCE = %w[valid invalid missing expired revoked unavailable].freeze
 
-    def initialize(out: $stdout, err: $stderr, bridge: Bridge.new)
-      @out, @err, @bridge = out, err, bridge
+    def initialize(out: $stdout, err: $stderr, bridge: Bridge.new, github: GitHub.new(token: nil))
+      @out, @err, @bridge, @github = out, err, bridge, github
     end
 
     def run(argv)
+      @policy = @github_context = nil
       @json = argv.include?("--json")
       @command = argv.first
       if argv.empty? || %w[--help -h help].include?(@command)
@@ -41,16 +45,20 @@ module Devouch
         raise Error.new("invalid_subject", "Use github:<numeric user ID>.")
       end
       options["rpc-url"] ||= ENV["DEVOUCH_RPC_URL"] || DEFAULT_RPC
-      @command == "verify" ? verify(options) : operate(options)
+      case @command
+      when "verify" then verify(options)
+      when "check" then check(options)
+      else operate(options)
+      end
     rescue OptionParser::ParseError
       failure(Error.new("usage_error", "Invalid options. Run devouch #{@command} --help."))
     rescue Error => error
-      if @command == "verify" && error.exit_status == 2
+      if %w[verify check].include?(@command) && error.exit_status == 2
         report = base_report.merge("evidence_status" => error.code == "credential_missing" ? "missing" : "invalid",
           "reason_codes" => [error.code], "subject" => options&.fetch("subject", nil), "policy" => @policy&.description)
         emit(report)
         2
-      elsif @command == "verify" && error.exit_status == 3
+      elsif %w[verify check].include?(@command) && error.exit_status == 3
         emit(base_report.merge("evidence_status" => "unavailable", "reason_codes" => [error.code],
           "subject" => options&.fetch("subject", nil), "policy" => @policy&.description))
         3
@@ -84,6 +92,48 @@ module Devouch
 
     def verify(options)
       @policy = Policy.new(Files.read(options.fetch("policy"), limit: 16_384, kind: "policy"))
+      evaluate(options)
+    end
+
+    def check(options)
+      repo, branch = options.values_at("repo", "base")
+      unless repository?(repo) && (branch.nil? || branch?(branch))
+        raise Error.new("usage_error", "Use --repo owner/name and a valid --base branch name.")
+      end
+      metadata = @github.repository(repo)
+      unless metadata.is_a?(Hash) && repository?(metadata["full_name"]) && metadata["full_name"].casecmp?(repo) &&
+          metadata["private"] == false && (branch || branch?(metadata["default_branch"]))
+        raise Error.new("github_repository_invalid", "The GitHub repository metadata did not match a public destination.", 3)
+      end
+      repo, branch = metadata.fetch("full_name"), branch || metadata.fetch("default_branch")
+      revision = @github.branch(repo, branch)
+      unless revision.is_a?(Hash) && revision["name"] == branch && revision["commit"].is_a?(Hash) &&
+          revision["commit"]["sha"].is_a?(String) && revision["commit"]["sha"].match?(/\A[0-9a-f]{40}\z/)
+        raise Error.new("github_branch_invalid", "The GitHub branch did not identify the requested immutable commit.", 3)
+      end
+      @github_context = {"repository" => repo, "base_branch" => branch, "base_sha" => revision["commit"]["sha"],
+        "policy_path" => ".devouch/policy.json"}
+      raw = @github.file(repo, @github_context["policy_path"], @github_context["base_sha"], limit: 16_384)
+      raise Error.new("policy_missing", "The destination has no .devouch/policy.json at the checked commit.") unless raw
+      @policy = Policy.new(raw)
+      unless @policy.data["repositoryId"] == repo
+        raise Error.new("policy_repository_mismatch", "The destination policy belongs to a different repository.")
+      end
+      evaluate(options)
+    end
+
+    def repository?(value)
+      value.is_a?(String) && value.match?(/\A[a-zA-Z0-9][a-zA-Z0-9-]{0,38}\/[a-zA-Z0-9_.-]{1,100}\z/) &&
+        !%w[. ..].include?(value.split("/").last)
+    end
+
+    def branch?(value)
+      value.is_a?(String) && !value.empty? && value.bytesize <= 1024 && value != "@" &&
+        !value.match?(/[\x00-\x20\x7f~^:?*\[\\]/) && !value.include?("..") && !value.include?("@{") &&
+        !value.end_with?(".") && value.split("/", -1).all? { |part| !part.empty? && !part.start_with?(".") && !part.end_with?(".lock") }
+    end
+
+    def evaluate(options)
       raw = Files.read(options.fetch("credential"))
       input = {"command" => "verify", "raw" => raw, "subject" => options.fetch("subject"), "rpc_url" => options.fetch("rpc-url")}
       input["publication"] = publication(options["publication"]) if options["publication"]
@@ -164,11 +214,13 @@ module Devouch
     end
 
     def base_report
-      {"report_version" => 1, "command" => "verify", "evidence_status" => nil,
+      report = {"report_version" => 1, "command" => @command, "evidence_status" => nil,
        "policy_status" => "not_evaluated", "reason_codes" => [], "subject" => nil,
        "subject_source" => "argument", "issuer" => nil, "scope" => nil,
        "human_verification" => "not_included", "policy" => nil, "verifier_version" => VERSION,
        "snapshot" => nil, "error" => nil}
+      report.merge!("submitted" => false, "github" => @github_context) if @command == "check"
+      report
     end
 
     def failure(error)
@@ -186,6 +238,11 @@ module Devouch
         @out.puts("Issuer: #{report["issuer"]}") if report["issuer"]
         @out.puts("Reasons: #{report["reason_codes"].join(", ")}") unless report["reason_codes"].empty?
         @out.puts("Policy: #{report.dig("policy", "repository_id")} / #{report.dig("policy", "digest")}")
+        if report["command"] == "check"
+          context = report["github"]
+          @out.puts("Destination: #{context.values_at("repository", "base_branch", "base_sha").join(" / ")}") if context
+          @out.puts("No pull request submitted. Recheck before submitting if the destination policy or ENS state changes.")
+        end
         @out.puts("Snapshot: #{JSON.generate(report["snapshot"])}")
         @out.puts("Human verification: not included. Code review is still required.")
       elsif report["error"]
@@ -200,9 +257,10 @@ module Devouch
       commands = command ? [command] : REQUIRED.keys
       "Devouch #{VERSION} — portable contributor endorsements on ENSv2\n\n" +
         commands.map { |name| "devouch #{name} " + REQUIRED.fetch(name).map { |key| "--#{key} VALUE" }.join(" ") +
-          OPTIONAL.fetch(name).map { |key| " [--#{key} PATH]" }.join + " [--rpc-url URL] [--json]" }.join("\n") +
+          OPTIONAL.fetch(name).map { |key| " [--#{key} #{key == "base" ? "BRANCH" : "PATH"}]" }.join + " [--rpc-url URL] [--json]" }.join("\n") +
         "\n\nrequest / revoke prepare UNSENT files for the static wallet app.\n" +
         "fetch retrieves bytes; verify checks evidence and the selected repository policy.\n" +
+        "check reads a public GitHub destination policy at its base commit and verifies locally; it never submits a PR.\n" +
         "Exit: 0 accepted/prepared, 1 rejected, 2 invalid/missing/revoked/expired, 3 unavailable, 4 usage/config, 5 file, 70 internal.\n"
     end
   end

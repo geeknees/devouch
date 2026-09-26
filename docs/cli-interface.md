@@ -1,6 +1,6 @@
 # Devouch：CLI インターフェース設計
 
-更新：2026-09-26。推薦版の4コマンドを実装し、ローカルEVMを使う実CLIで確認した。起動は [README](../README.md)、署名型・履歴上限・未対応範囲は [v1検証契約](protocol.md)、外部の未検証事項は [実装状況](implementation-status.md)を参照する。以下の設計説明を実装済み契約で補った。
+更新：2026-09-26。推薦版の5コマンドを実装し、ローカルEVMを使う実CLIで確認した。`check` はPR作成前に公開GitHub repoの方針を取得する。起動は [README](../README.md)、署名型・履歴上限・未対応範囲は [v1検証契約](protocol.md)、外部の検証状況は [実装状況](implementation-status.md)を参照する。以下の設計説明を実装済み契約で補った。
 
 CLI は人間と AI エージェントが直接使うインターフェースである。GitHub Actions は、PR 情報を取得して同じ検証を実行する入口の一つとする。GitHub の画面を開かず、手元のファイルと RPC 接続で推薦を取得・検証できる構成を目指す。
 
@@ -15,7 +15,7 @@ CLI は人間と AI エージェントが直接使うインターフェースで
 | OSS メンテナー | 任意の推薦を、自分の repo 方針で検証 | 証拠の有効性と repo の採否を分けた結果 |
 | GitHub Action・他の自動化 | 引数を指定して検証し、JSON と終了コードを処理 | 表示文の解析を必要としない結果 |
 
-CLI の4コマンドはチェーンへ取引を送信しない。**署名・公開・失効の送信は、ローカル起動もできる静的 Web と推薦者自身のウォレットで行う。** `revoke` の成功は失効案の作成完了を意味し、チェーン上の失効完了とは表示しない。
+CLI の5コマンドはチェーンへ取引を送信しない。**署名・公開・失効の送信は、ローカル起動もできる静的 Web と推薦者自身のウォレットで行う。** `revoke` の成功は失効案の作成完了を意味し、チェーン上の失効完了とは表示しない。`check` もPRを送信せず、検証結果だけを返す。
 
 検証する利用者にはウォレットやガスを求めない。推薦者は ENS 名・専用 resolver を用意し、公開・失効のガスを負担する。全工程に Devouch 運営者の登録 API や共有秘密鍵を置かない。
 
@@ -38,6 +38,9 @@ devouch fetch --name NAME --output PATH
 devouch verify --credential PATH --policy PATH --subject SUBJECT
                [--publication PATH] [--rpc-url URL] [--json]
 
+devouch check --repo OWNER/REPOSITORY --credential PATH --subject SUBJECT
+              [--base BRANCH] [--publication PATH] [--rpc-url URL] [--json]
+
 devouch revoke --credential PATH --output PATH [--rpc-url URL] [--json]
 ```
 
@@ -46,11 +49,12 @@ devouch revoke --credential PATH --output PATH [--rpc-url URL] [--json]
 | `request` | 未署名・未公開の推薦案をファイルへ保存 | 推薦者 |
 | `fetch` | ENS の推薦本文をファイルへ保存 | 推薦者、貢献者、検証者 |
 | `verify` | 署名・対象・公開と失効・期限・repo 方針の評価 | 貢献者、メンテナー、自動化 |
+| `check` | 公開投稿先の方針をcommitに固定して取得し、同じ検証で送信前の採否を返す | 貢献者、AIエージェント |
 | `revoke` | 公開済み推薦を対象にした失効案をファイルへ保存 | 推薦者 |
 
 引数なしの `devouch` は help を表示する。help と version は RPC 接続を必要としない。未知のコマンド・オプションは利用エラーにする。
 
-このリポジトリの [CLI 実装](../lib/devouch/cli.rb)は、上記の4コマンドを持つ推薦版 `0.1.0` である。`./exe/devouch --help` で確認できる。設計時に参照した委任・Git来歴の旧版は別実装であり、その `credential`、`ledger`、`delegate`、`commit` コマンドや入力形式は今回の配布物に含めない。
+このリポジトリの [CLI 実装](../lib/devouch/cli.rb)は、上記の5コマンドを持つ推薦版 `0.1.0` である。`./exe/devouch --help` で確認できる。設計時に参照した委任・Git来歴の旧版は別実装であり、その `credential`、`ledger`、`delegate`、`commit` コマンドや入力形式は今回の配布物に含めない。
 
 ## 3. 共通の入出力
 
@@ -77,7 +81,7 @@ Ruby 3.4以上のCLIとNode.js 24で実行するviem bundleを組み合わせる
 | 上書き | 既存ファイルへは書かず終了コード `5`。別の出力名を指定して再実行する |
 | 出力途中の失敗 | すべての保存先を事前確認し、一時ファイルを使って不完全な本文を完成ファイルとして残さない。失敗したら成功表示を出さない |
 | 推薦 JSON | ENS から取得した本文の bytes をそのまま保存する。公開済み本文を整形し直さない |
-| 設定 | 検証対象 repo の方針は `--policy` で指定する。推薦ファイルが指定する方針へ切り替えない |
+| 設定 | `verify` の方針は `--policy` で指定する。`check` は投稿先commitの `.devouch/policy.json` を読み、ローカル方針の指定を受け付けない。推薦ファイルが指定する方針へ切り替えない |
 
 入力をシェルやコードとして実行しない。出力先の `-`、stdin からの入力、対話的な質問、`--force` は初版に含めず、ファイル引数と明示的な再実行で扱う。
 
@@ -235,6 +239,36 @@ devouch fetch \
 
 入力は一つの推薦、一人の issuer を対象にする。初版の `requiredIssuers` は `1` だけに対応し、それ以外の方針を黙って緩和せず設定エラーにする。複数推薦の同時検証は別途設計する。
 
+### check
+
+| 引数 | 必須 | 意味・条件 |
+|---|---|---|
+| `--repo` | 必須 | 公開GitHub repoの `owner/name`。URLやローカルパスは受け付けない |
+| `--credential` | 必須 | 手元の署名付き推薦JSON。本文を変更せず読み取る |
+| `--subject` | 必須 | これからPRを送るアカウントの `github:<数値ID>`。呼び出し側が明示する |
+| `--base` | 任意 | 投稿先ブランチ。未指定ならGitHubの `default_branch`。`release/v1` などのブランチも指定できる |
+| `--publication` | 任意 | `verify` と同じ、chainと照合する公開位置の手がかり |
+
+```bash
+./exe/devouch check --repo geeknees/devouch --credential vouch.json \
+  --subject github:287365775 --json
+```
+
+GitHubのrepo metadataで公開先を確認し、投稿先ブランチの40桁commit SHAを取得して、そのcommitの
+`.devouch/policy.json` を読む。`repositoryId` が投稿先と一致しない方針は設定エラーにする。
+方針を取得した後は `verify` と同じ署名・subject・ENS履歴・snapshot・方針評価を実行する。
+`--policy` でのローカル上書きや、推薦側の指定による方針変更は受け付けない。
+
+GitHubへは認証なしの読み取りだけを行い、token環境変数やGitHub CLIの認証を利用しない。
+GitHub APIのrate limit・通信障害・不正metadata・redirectは `unavailable / not_evaluated`、終了コード3になる。
+方針が存在しなければ `policy_missing`、不正なら `invalid_policy`、repo不一致なら `policy_repository_mismatch` とコード4を返す。
+匿名取得の対象とAPI形式は [repo](https://docs.github.com/en/rest/repos/repos#get-a-repository)、
+[branch](https://docs.github.com/en/rest/branches/branches#get-a-branch)、
+[contents](https://docs.github.com/en/rest/repos/contents#get-repository-content) の公式仕様に従う。
+
+成功は検証時点の推薦の採用だけを表す。PR作者の認証、GitHubの投稿権限、コード品質、人間性を証明しない。
+ファイル・repo・chainは変更せず、PRも作成しない。ブランチやENS状態が変われば再確認が必要で、実際のPRではActionが作者とbase/headを取り直して検証する。
+
 ### revoke
 
 | 引数 | 必須 | 意味・条件 |
@@ -283,6 +317,18 @@ devouch fetch \
 
 `snapshot` は全 chain 照会の整合を確認できた場合に設定する。署名不正で照会前に止めた場合や、RPC 障害でその整合を確認できない場合は `null` とする。解析できなかった issuer なども `null` にし、入力から推測して埋めない。block 番号などの大きな整数は10進文字列で表す。
 
+`check` の検証結果は同じ形式で `command: check`、`submitted: false` と以下の `github` を追加する。
+repoとbranchの検証を完了できなかった場合、`github` は `null`。`subject_source` は `argument` のままにする。
+
+```json
+{
+  "repository": "OWNER/REPOSITORY",
+  "base_branch": "main",
+  "base_sha": "<確認した40桁commit SHA>",
+  "policy_path": ".devouch/policy.json"
+}
+```
+
 | `reason_codes` の案 | 意味 |
 |---|---|
 | `issuer_not_trusted` / `scope_not_allowed` | 証拠は有効だが、この repo の方針では不採用 |
@@ -291,6 +337,8 @@ devouch fetch \
 | `publication_mismatch` | 指定された公開位置や公開先と証拠が一致しない |
 | `revoked` / `expired` | 失効または期限切れ |
 | `rpc_unavailable` / `history_unavailable` | 必要な照会を完了できない |
+| `github_unavailable` / `github_response_too_large` | `check` が投稿先を取得できない、または応答上限を超えた |
+| `github_repository_invalid` / `github_branch_invalid` | `check` の投稿先や固定commitをAPI応答から確認できない |
 
 署名・形式・対象が不正なら `invalid`。確認できた失効は期限切れより優先して `revoked` とする。失効の有無を含む評価に必要な履歴が足りない場合は `unavailable` とし、`valid` や `missing` を推定しない。方針を評価するのは証拠が `valid` のときだけとする。
 
@@ -316,7 +364,7 @@ devouch fetch \
 
 ### 終了コード
 
-| コード | `verify` | 案の作成・取得 |
+| コード | `verify` / `check` | 案の作成・取得 |
 |---:|---|---|
 | `0` | `valid / accepted` | 案の保存・取得が完了。公開・失効の送信や推薦の採用を意味しない |
 | `1` | `valid / rejected` | 使用しない |
@@ -326,7 +374,7 @@ devouch fetch \
 | `5` | ファイルの読み取り権限などのエラー | 出力先の存在、保存失敗など |
 | `70` | 予期しない内部エラー | 同左 |
 
-`--credential` の対象ファイルがない場合は `credential_missing` とコード `2`、`--policy` がない・壊れている場合は設定エラーの `4` とする。利用者が明示した `--publication` を読めない場合も、黙って無視せず原因を返す。`verify` のコード `0`〜`3` は検証結果の形式、`4`・`5`・`70` は操作エラーの形式を使う。
+`--credential` の対象ファイルがない場合は `credential_missing` とコード `2`、`--policy` がない・壊れている場合は設定エラーの `4` とする。利用者が明示した `--publication` を読めない場合も、黙って無視せず原因を返す。`verify` / `check` のコード `0`〜`3` は検証結果の形式、`4`・`5`・`70` は操作エラーの形式を使う。
 
 help / version は `0`。JSON 表示にしても終了コードの意味は変えない。採否は検証時点の推薦に関するもので、コード品質・マージ許可を意味しない。
 
@@ -350,7 +398,8 @@ GitHub token は情報を取得する Action 側で扱う。ローカルの推�
 | 確認したいこと | 完了の目印 |
 |---|---|
 | CLI 単体で使えるか | GitHub Actions を起動せず、手元のファイルから取得・検証できる |
-| 初回操作が分かるか | help から4コマンドの役割と必須引数が分かり、成功表示から次の操作に進める |
+| 初回操作が分かるか | help から5コマンドの役割と必須引数が分かり、成功表示から次の操作に進める |
+| PR前に停止できるか | `check` は投稿先の固定commit方針を読み、採用以外は非0終了。PRの送信や本人認証を行わない |
 | エージェントが処理できるか | 成功・拒否・失効・RPC 障害・利用エラーを JSON と終了コードで区別し、入力待ちにならない |
 | 対象を取り違えないか | 別アカウントの推薦を指定すると `subject_mismatch`。ローカル指定を PR 作者の確認済み表示にしない |
 | 最新状態を確認するか | 公開位置を省略しても検証でき、失効後は同じ JSON が通らず、履歴不足は `unavailable` |
@@ -358,7 +407,7 @@ GitHub token は情報を取得する Action 側で扱う。ローカルの推�
 | ローカルファイルを守るか | 既存の出力先を上書きせず、破損入力・出力失敗でも成功表示しない |
 | 操作を再開できるか | 公開位置を指定して過去の本文を取得でき、失効案の作成後に公開値が変わったら Web の送信前確認で止まる |
 
-配布方式・runtime・RPC・履歴上限・初期化・署名とWeb受け渡し形式を実装した。具体値は [v1検証契約](protocol.md)を参照する。実ウォレット・Sepolia取引・実fork PRの確認は残る。
+配布方式・runtime・RPC・履歴上限・初期化・署名とWeb受け渡し形式を実装した。具体値は [v1検証契約](protocol.md)を参照する。実ウォレット・Sepolia取引・実fork PRの確認済み範囲は [実装状況](implementation-status.md)に記録する。
 
 ### 未確定の検証契約
 
