@@ -363,5 +363,5 @@ Web は `github-<数値ID>.json` という名前で保存する。同名のフ�
 
 ### What's next? / 今後は？
 
-- **EN:** Version 0.2 already adds / **one subname per vouch** / and agents as namespaces. / Next: / finish the real-wallet checks / for those, / and try it / with a **real** open-source project.
-- **JA:** 推薦ごとのサブネームと、エージェントの名前空間は v0.2 で入りました。次は、それらを本物のウォレットで確かめきることと、実際の OSS で試すことです。
+- **EN:** Version 0.2 already adds / **one subname per vouch** / and agents as namespaces. / Taking back one vouch / already works / on Sepolia. / Next: / try it / with a **real** open-source project.
+- **JA:** 推薦ごとのサブネームと、エージェントの名前空間は v0.2 で入りました。1件だけの取り消しも、Sepolia で動いています。次は、実際の OSS で試すことです。
