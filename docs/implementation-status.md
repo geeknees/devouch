@@ -64,7 +64,25 @@ Universal Resolverの正引き一致確認を使い、推薦の公開先recordNa
 - 初回のpush CIは既存wallet UIテストでタイムアウトし、同じcommitのPR CIは成功した。browser/themeの2ファイルのみでも後のブラウザが停止する現象を再現。[Bunのpipe寿命に関する既知報告](https://github.com/microsoft/playwright/issues/42692)と症状が一致するため、結合テストの実行をファイル単位のBunプロセス・EVMに分けた。依存バージョンやworkflowは変更せず、全23ケースと各assertionを維持する。
 - 分離後の全8ファイル・23 tests / 195 Bun assertionsが成功。配布物の再build一致も成功した。
 
-Pagesでの公開確認は再公開後に追記する。物理スマートフォンは未確認で、390pxブラウザ検証とは区別する。
+### 公開Pagesでの確認
+
+[PR #8](https://github.com/geeknees/devouch/pull/8) の最終head `0c1ef8bc998bae5ed2ca6c86b60e27fec0e939ff` は
+[push CI](https://github.com/geeknees/devouch/actions/runs/36208046809)・[PR CI](https://github.com/geeknees/devouch/actions/runs/36208049662)とも成功。
+取り込み後の `3b3f82bbe47850b0513c97fa77ccb6fa438edd2e` も [main CI](https://github.com/geeknees/devouch/actions/runs/36208177699) が成功した。
+同commitを [Pages run](https://github.com/geeknees/devouch/actions/runs/36208263191) で再公開した。
+
+- 共有URL: https://geeknees.github.io/devouch/?name=masusanou-dev.eth#verify
+- 確認日時: 2026-09-26 10:24 JST。画面のchecked_atは `2026-09-26T01:24:36.917Z`。
+- snapshot: Sepolia block `11782978`、hash `0xce9ede1d772061b2943724e67d9008c10eebf51a12c78d6b9cc74ab0fa78671b`。
+- 公開URLを新しいChromeの390×844px・タッチ端末エミュレーションで開き、walletなしでsignature/evidenceともvalid、`Vouched by masusanou-dev.eth` を確認した。
+- 同じsnapshotでA accepted、B rejected (`issuer_not_trusted`)。BのTrusted issuersへ `0x894108DC5640e36c478523228addA22b58Eeb79c` を入力してacceptedになり、この編集に伴うRPCは0回。
+- `human verification: not included` を表示。検証中のRPCは読み取り6種類・46回で、通信先はPagesとTenderly RPCのみ。JavaScriptエラー0件。
+- dark/light × 320 / 390 / 600 / 768 / 1024 / 1440pxの12レイアウトに横溢れなし。公開した全5タブの表示切替を確認した。
+- 公開11ファイル（HTML・CSS・app/theme JS・ロゴ・ライセンス・5フォント）はHTTP 200で、ローカル配布物のSHA-256とすべて一致。
+- 配信 `app.js` SHA-256: `fc6f711924c4d0bf2dfdbb62252004a2088c3cee0ce80e6e77becdb30fa8e277`。
+
+実スマートフォンでの確認を依頼し、2026-09-26 JSTにユーザーから「大丈夫そうです」と回答を得た。
+機種・ブラウザの種類と操作ごとの詳細は未記録。上記の日時・ブロック・詳細結果は、こちらのChromeでの検証証拠として区別する。
 スライドのQR、提出文、提出画像の撮り直しはClaude側の担当。
 Future欄への引き継ぎ案: "Support multiple active endorsements through per-contributor subnames, such as
 `github-287365775.issuer.eth`, with independent publication and withdrawal histories. This requires extending
