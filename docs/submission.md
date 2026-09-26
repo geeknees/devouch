@@ -46,7 +46,9 @@ Withdrawing the ENS record invalidates the endorsement on the next check.
 Restoring an old JSON cannot resurrect it.
 The static wallet workspace handles setup, publication, key permissions, withdrawal, and transaction recovery.
 
-Anyone can try it without a wallet: the [verification page](https://geeknees.github.io/devouch/?name=masusanou-dev.eth#verify) reads a live endorsement from ENS on Sepolia, shows who vouched by their primary ENS name, and compares two example repository policies side by side. Add the issuer to repository B's trusted list and its decision changes from rejected to accepted, while the evidence stays the same.
+Anyone can try it without a wallet: the [verification page](https://geeknees.github.io/devouch/?name=masusanou.vouches.geeknees.eth#verify) reads a live endorsement from ENS on Sepolia, shows who vouched by their primary ENS name, and compares two example repository policies side by side. Add the issuer to repository B's trusted list and its decision changes from rejected to accepted, while the evidence stays the same.
+
+Version 0.2.0 lets an issuer keep many endorsements under their own ENS namespace. Each endorsement gets its own subname, such as `287365775.vouches.geeknees.eth`, with its own resolver record and withdrawal history, so publishing a second endorsement never overwrites the first. An AI agent can also be a subname with its own declared GitHub identity and wallet, and the issuer grants or revokes access to individual profile fields through ENSv2 Enhanced Access Control. On Sepolia, the issuer created the namespace and an agent identity with a real wallet ([inspect the agent without a wallet](https://geeknees.github.io/devouch/?agent=287365775.vouches.geeknees.eth#namespaces)) and published an endorsement on its own subname, [`masusanou.vouches.geeknees.eth`](https://geeknees.github.io/devouch/?name=masusanou.vouches.geeknees.eth#verify), which verifies through the full ENS hierarchy. Withdrawing a single subname endorsement is covered by local tests against the official ENS contracts.
 
 No Devouch-operated API, database, signing service, publisher key, or unique storage service is required.
 The project still depends on Ethereum/ENS, name maintenance, a wallet, GitHub for PR identity, and a reliable historical RPC provider.
@@ -61,6 +63,7 @@ The complete signed JSON is stored in devouch.vouch, so another verifier can ret
 
 Verification checks a pinned chain snapshot, the resolver's deployment origin, exact publication bytes, subsequent text updates, and transient binding or upgrade changes.
 The wallet-free verification page reuses the same TypeScript verifier, resolves the issuer's primary name with viem's `getEnsName` (the ENSv2 Universal Resolver confirms it resolves back to the same address), and evaluates repository policies in the browser; shared test cases check that the browser and the Ruby CLI reach the same decisions and reason codes.
+Subname registries use the pinned official ENSv2 UserRegistry implementation. For a subname, the verifier walks the whole hierarchy up to ten labels and checks each parent registry, link and implementation history, so a change higher in the tree cannot silently restore or forge an endorsement.
 A composite GitHub Action uses the PR author's numeric ID, the base commit's policy, and the head commit's endorsement without checking out PR code.
 Tests combine Minitest, Bun, Playwright, and a disposable Hardhat EVM running pinned official ENS bytecode.
 No new smart contract, backend service, database, or shared signing key was added.
@@ -89,7 +92,10 @@ ENSv2 is where the endorsement lives, not a display name.
 - Verification reads the resolver's history (text, link and implementation changes) alongside the current value, so a withdrawn or temporarily replaced record never silently restores trust.
 - The same endorsement works with different repository policies: the evidence is shared, and each repository decides.
 
-I use pinned official Sepolia artifacts and unmodified contract code, and add no custom endorsement registry.
+- **One subname per endorsement (0.2.0).** Under an issuer-owned namespace such as `vouches.geeknees.eth`, each endorsement has its own subname and record, so many can be active at once and each is withdrawn on its own.
+- **Agents as namespaces (0.2.0).** An agent's subname carries its declared GitHub identity and wallet; the issuer grants or revokes individual profile fields through Enhanced Access Control and keeps endorsement authority.
+
+I use pinned official Sepolia artifacts (Permissioned Resolver and UserRegistry) and unmodified contract code, and add no custom endorsement registry.
 Tests run the real official bytecode on a disposable local EVM. One publication on Sepolia has been read back and verified against two policies (see "Sepolia evidence" below); withdrawal on Sepolia is still to be recorded.
 
 ### ENS prize form fields
@@ -98,7 +104,7 @@ ENS を選ぶと出てくる欄。画面は [project-submit-form/](project-submi
 
 **How are you using this Protocol / API?**
 
-> Each recommender publishes the complete signed endorsement JSON as the `devouch.vouch` text record on their own ENSv2 Permissioned Resolver, and withdraws it by clearing that record. Devouch's CLI, GitHub Action and wallet-free verification page read the record and its resolver history straight from ENS on Sepolia, so anyone can verify an endorsement without a Devouch server.
+> Each recommender publishes the complete signed endorsement JSON as the `devouch.vouch` text record on their own ENSv2 Permissioned Resolver, and withdraws it by clearing that record. Devouch's CLI, GitHub Action and wallet-free verification page read the record and its resolver history straight from ENS on Sepolia, so anyone can verify an endorsement without a Devouch server. Version 0.2.0 adds one subname per endorsement and agent identities as subnames, with field-level permissions through Enhanced Access Control.
 
 **Link to the line of code where the tech is used**
 
@@ -137,7 +143,10 @@ https://github.com/geeknees/devouch/blob/3214991e616e118d921ea9575d06d5e121b584f
 | Policy B (issuer not trusted) | `valid / rejected`, reason `issuer_not_trusted`, at block 11780653 |
 | Agent fork PR | [masusanou's PR #2](https://github.com/geeknees/devouch/pull/2), subject `github:287365775` |
 | GitHub Action | [Devouch run](https://github.com/geeknees/devouch/actions/runs/36172488074): `valid / accepted` at block `11780996`; [normal CI](https://github.com/geeknees/devouch/actions/runs/36172488028) also passed |
-| Withdrawal | Not yet performed; planned during the live demo |
+| Namespace (0.2.0) | `vouches.geeknees.eth` and `287365775.vouches.geeknees.eth` registered by the issuer with a PC wallet; dedicated resolver connected to the final name (block 11784325). See the [wallet test record](sepolia-namespace-check.md) |
+| Agent identity (0.2.0) | `github:287365775` and its agent wallet read back through the full ENS hierarchy at block 11784326; profile permissions ungranted at that snapshot. [Inspect without a wallet](https://geeknees.github.io/devouch/?agent=287365775.vouches.geeknees.eth#namespaces) |
+| Subname endorsement (0.2.0) | `masusanou.vouches.geeknees.eth` (subject `github:287365775`, expires 2026-10-02 06:44 UTC, resolver `0xd2063D439ca487c114432876886318FBcDC5c010`). CLI: evidence `valid` through `eth → geeknees.eth → vouches.geeknees.eth → masusanou.vouches.geeknees.eth` at block 11784553. Verification page: `valid`, repo A `accepted`, repo B `rejected` (`issuer_not_trusted`) at block 11784578 |
+| Withdrawal | Not performed on Sepolia. The demo shows withdrawal on a local EVM running the official ENS contracts; the public endorsement stays active for the judges' QR check |
 
 RPC: `https://sepolia.gateway.tenderly.co` (the CLI default).
 
