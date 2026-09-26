@@ -160,6 +160,7 @@ While waiting for two blocks (about 24 seconds):
 > I did **not** build / a global score.
 > I did **not** add / token rewards.
 > I did **not** build / a central server.
+> Each choice / has a reason. / It's all / **in the repo.**
 > Devouch shows / **who vouches for you.**
 >
 `[DEMO]` Show the slide "Try it on your phone" (QR).
@@ -252,6 +253,7 @@ While waiting for two blocks (about 24 seconds):
 > 全体共通のスコアは作りませんでした。
 > トークン報酬も入れませんでした。
 > 中央のサーバーも作りませんでした。
+> どれにも理由があります。詳しくは repo をご覧ください。
 > Devouch が示すのは、誰があなたを推薦しているかです。
 >
 `[DEMO]` スライド「Try it on your phone」（QR）を見せる。

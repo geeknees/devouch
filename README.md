@@ -184,6 +184,14 @@ The release-owned `dist/bridge.mjs` avoids dependency installation in receiving 
 After source changes, rebuild and include the updated `dist/` files.
 Third-party license texts are generated into both distributions.
 
+## Design choices
+
+Three things Devouch deliberately leaves out, and why. The reasoning and sources are in the [planning notes](docs/hackathon-planning.md) (Japanese).
+
+- **No global score.** Trust depends on who is asking. Each repository chooses whose endorsements it accepts; the same endorsement can be accepted by one project and rejected by another. A single score would take that judgment away from maintainers.
+- **No token rewards.** Paying for endorsements or activity invites volume over judgment and pushes the cost onto maintainers. [What happened to Tea?](https://nesbitt.io/2026/06/11/what-happened-to-tea.html) describes how count-based incentives were abused in package registries. Devouch rewards nothing; an endorsement is worth only what the recommender's reputation is worth to each project.
+- **No central server.** Publishing, retrieving, verifying and withdrawing need no Devouch-operated service, key or database. The recommender owns the ENS record, and anyone can check it with the static page, the CLI or the Action against any RPC. Devouch can't forge, block or silently change an endorsement.
+
 ## Roadmap
 
 Next, Devouch should use more of the ENSv2 hierarchy:
