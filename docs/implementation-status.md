@@ -266,8 +266,8 @@ GitHubの[PR API](https://docs.github.com/en/rest/pulls/pulls#get-a-pull-request
 - 両テーマ・6幅の12レイアウト、ENS名検証へ戻ってA accepted / B rejected → 追加でaccepted、walletなし、JavaScriptエラー0件を確認。
 - 公開11ファイルのHTTP 200と、ローカル配布物とのbytes一致を確認。`app.js` SHA-256は `bab1b371ce1d2cc4577fa4caa41f91e04a2894ad893240275e7ccdcf185293e7`。
 
-このPR URL機能の確認はChromeの端末エミュレーションであり、実スマートフォンでの確認は未実施。
-提出文・スライドQR・提出画像の更新は引き続きClaude側の担当。
+上記はChromeの端末エミュレーションによる確認。その後、2026-09-26 JSTにユーザーから、PR #2の検証URLを実スマートフォンで開いて`valid / accepted`を確認済みとの回答を得た。機種・ブラウザ・その時点のblockは未記録であり、上記のChromeによるsnapshotとは別の本人確認として扱う。
+提出文・スライドQR・提出画像の更新は引き続きClaude側の担当。同日、ユーザーから台本の実Sepolia実績への更新も依頼済みと報告を受けた。
 
 ## ウォレット不要の検証ページと方針比較（2026-09-26）
 
