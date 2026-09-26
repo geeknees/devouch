@@ -160,7 +160,7 @@ While waiting for two blocks (about 24 seconds):
 > I did **not** build / a global score.
 > I did **not** add / token rewards.
 > I did **not** build / a central server.
-> Devouch does not check / if you are human. / It shows / **who vouches for you.**
+> Devouch shows / **who vouches for you.**
 >
 `[DEMO]` Show the slide "Try it on your phone" (QR).
 
@@ -252,7 +252,7 @@ While waiting for two blocks (about 24 seconds):
 > 全体共通のスコアは作りませんでした。
 > トークン報酬も入れませんでした。
 > 中央のサーバーも作りませんでした。
-> Devouch は、人間かどうかは確かめません。示すのは、誰があなたを推薦しているかです。
+> Devouch が示すのは、誰があなたを推薦しているかです。
 >
 `[DEMO]` スライド「Try it on your phone」（QR）を見せる。
 
@@ -342,8 +342,8 @@ Web は `github-<数値ID>.json` という名前で保存する。同名のフ�
 
 ### Does this prove the contributor is human? / 人間であることを証明する？
 
-- **EN:** No. / Being human / and being trusted / are different. / Every result says / "human verification: not included."
-- **JA:** しません。人間であることと、信頼されていることは別です。結果にも毎回そう書いています。
+- **EN:** No. / That's a different question. / Proof of personhood, / like World ID, / answers **"is this a human?"** / Devouch answers / **"who vouches for you?"**
+- **JA:** しません。別の問いだからです。World ID のような人間性の証明は「人間か？」に答えます。Devouch が答えるのは「誰があなたを推薦しているか？」です。
 
 ### What about AI agents opening PRs? / AI エージェントの PR は？
 

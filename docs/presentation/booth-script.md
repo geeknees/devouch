@@ -102,7 +102,6 @@ Then let the captions speak. If the judge looks at you, read the caption aloud o
 
 ### What's not included?
 
-> It does not prove / someone is human.
 > It does not replace / code review.
 > It shows / **who vouches for you.**
 
@@ -153,7 +152,7 @@ Then let the captions speak. If the judge looks at you, read the caption aloud o
 - **ENS での次の一手:** 推薦ごとにサブネームを作ること、AI エージェントを名前空間として扱い、それぞれに権限を持たせること（README の Roadmap）。
 - **検証の仕組み:** 署名・期限・ENS の記録を確認します。最新から2ブロック前の状態を読みます。そのあと、リポジトリの方針が判断します。
 - **サイトがなくなったら？:** Web は静的なので、自分のパソコンで、好きな RPC で動かせます。CLI は ENS を直接読みます。
-- **含まないもの:** 人間であることは証明しません。コードレビューの代わりにもなりません。示すのは、誰があなたを推薦しているかです。
+- **含まないもの:** コードレビューの代わりにはなりません。示すのは、誰があなたを推薦しているかです。
 
 ---
 

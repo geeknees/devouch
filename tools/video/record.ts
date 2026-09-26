@@ -326,7 +326,7 @@ try {
   await recordClip(browser, '08-closing', async (page, start) => {
     await page.setContent(card(`<p class="eyebrow" data-step="0">What we deliberately did not build</p>
       <ul><li data-step="1">a global reputation score</li><li data-step="2">token rewards for endorsing</li><li data-step="3">a central service you must trust</li></ul>
-      <p data-step="4" style="margin-top:18px">Not proof of humanity. Not a replacement for code review.</p>
+      <p data-step="4" style="margin-top:18px">Not a replacement for code review.</p>
       <h1 data-step="5" style="margin-top:30px">Endorse once.<br><em data-step="6">Let each community decide.</em></h1>`), { waitUntil: 'networkidle' });
     await page.evaluate(() => document.fonts.ready);
     const cue = start();
