@@ -2,7 +2,7 @@
 
 - `logo.png`: 512 × 512。縦線の先が二つに分かれた小文字 d。右の枝だけマゼンタ。元データは [SVG](../../assets/devouch-logo.svg)。
 - `cover.png`: 1280 × 720、16:9。推薦の流れ。元データは [SVG](../../assets/devouch-cover.svg)。
-- `verify.png`、`verify-mobile.png`: 公開中の検証ページ（https://geeknees.github.io/devouch/?name=masusanou-dev.eth#verify）を撮影。Sepolia の実際の推薦を読み、Vouched by masusanou-dev.eth、repo A は accepted、repo B は rejected と表示された状態（2026-09-26、block 11783017）。
+- `verify.png`、`verify-mobile.png`: 公開中の検証ページ（https://geeknees.github.io/devouch/?name=masusanou-dev.eth#verify）を撮影。Sepolia の実際の推薦を読み、Vouched by geeknees.eth（推薦者の primary name）、公開先 masusanou-dev.eth、repo A は accepted、repo B は rejected と表示された状態（2026-09-26 12:40 JST 頃、block 11783599）。
 - `workspace.png`、`ens-setup.png`、`withdraw.png`: 実際の静的アプリをChromeで撮影した操作画面。
 
 workspace・ENS setup・Withdraw の画面はウォレット未接続で撮影したUIの紹介で、Sepoliaで取引が成功した証拠ではない。検証ページの2枚は、公開中の推薦を読んだ実際の結果。

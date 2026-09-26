@@ -61,7 +61,7 @@ Then let the captions speak. If the judge looks at you, read the caption aloud o
 
 > Please scan this. / **Try it yourself.**
 > No wallet. / This one is **live on Sepolia.**
-> It says / "Vouched by masusanou-dev.eth."
+> It says / "Vouched by **geeknees.eth**" / — that's me.
 > Add me to repo B, / and it changes / to **accepted.**
 
 ### 4. Close (10s)
@@ -139,7 +139,7 @@ Then let the captions speak. If the judge looks at you, read the caption aloud o
 
 > これを読み取って、ご自身で試してみてください。
 > ウォレットは要りません。こちらは Sepolia の本物のデータです。
-> 「Vouched by masusanou-dev.eth」と出ます。
+> 「Vouched by geeknees.eth」と出ます。推薦したのは私です。
 > repo B に私を追加すると、accepted に変わります。
 
 ### 4. まとめ（10秒）
