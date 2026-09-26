@@ -1,6 +1,6 @@
 # 提出文とピッチの草案
 
-現状: ローカル実装・GitHub CI、本人walletのSepolia公開・CLI方針比較、repoとPagesの公開、masusanouの実fork PRでvalid / acceptedを検証済み。0.2.0 の個別失効も実 Sepolia で確認済み（2026-09-26 16:19 JST、旧数値サブネームだけを取り消し、他の推薦は valid のまま）。エージェントのプロフィール権限の付与・更新・撤回も実 Sepolia で確認済み（2026-09-26 16:54〜17:06 JST）。古い JSON を書き戻しても復活しないことの確認だけが、ローカル EVM の証拠。失効のPR検証と人間名義の実PR検証は2026-09-26のユーザー指定で対象外。
+現状: ローカル実装・GitHub CI、本人walletのSepolia公開・CLI方針比較、repoとPagesの公開、masusanouの実fork PRでvalid / acceptedを検証済み。サブネームの個別失効も実 Sepolia で確認済み（2026-09-26 16:19 JST、旧数値サブネームだけを取り消し、他の推薦は valid のまま）。エージェントのプロフィール権限の付与・更新・撤回も実 Sepolia で確認済み（2026-09-26 16:54〜17:06 JST）。古い JSON を書き戻しても復活しないことの確認だけが、ローカル EVM の証拠。失効のPR検証と人間名義の実PR検証は2026-09-26のユーザー指定で対象外。
 提出文の正本はこのファイル。提出フォームの画面の原本は [project-submit-form/](project-submit-form/) にある。
 下記は提出用の草案であり、提出済み・受賞要件充足とは扱わない。
 
@@ -48,7 +48,9 @@ The static wallet workspace handles setup, publication, key permissions, withdra
 
 Anyone can try it without a wallet: the [verification page](https://geeknees.github.io/devouch/?name=masusanou.vouches.geeknees.eth#verify) reads a live endorsement from ENS on Sepolia, shows who vouched by their primary ENS name, and compares two example repository policies side by side. Add the issuer to repository B's trusted list and its decision changes from rejected to accepted, while the evidence stays the same.
 
-Version 0.2.0 lets an issuer keep many endorsements under their own ENS namespace. Each endorsement gets its own subname, such as `masusanou.vouches.geeknees.eth`, with its own resolver record and withdrawal history, so publishing a second endorsement never overwrites the first. An AI agent can also be a subname with its own declared GitHub identity and wallet, and the issuer grants or revokes access to individual profile fields through ENSv2 Enhanced Access Control. On Sepolia, the issuer created the namespace and an agent identity with a real wallet ([inspect the agent without a wallet](https://geeknees.github.io/devouch/?agent=masusanou.vouches.geeknees.eth#namespaces)) and published an endorsement on its own subname, [`masusanou.vouches.geeknees.eth`](https://geeknees.github.io/devouch/?name=masusanou.vouches.geeknees.eth#verify), which verifies through the full ENS hierarchy. Withdrawing a single subname endorsement was also done on Sepolia: the issuer withdrew an earlier test subname, and every other endorsement stayed valid.
+Issuers can also keep many endorsements and agent identities under their own ENS name. Each endorsement gets its own subname, such as `masusanou.vouches.geeknees.eth`, with its own record and withdrawal history, so publishing another endorsement never overwrites it. An AI agent can have its own subname that holds a declared GitHub identity and wallet, and the issuer grants or revokes individual profile fields through ENSv2 Enhanced Access Control. Publishing, withdrawing a single endorsement, and granting, using and revoking an agent's permission have all been done with real wallets on Sepolia.
+
+Maintainers can paste a public pull request URL to check its endorsement against the repository's base policy and explore the result as a trust map. Before opening a pull request, an agent can run `devouch check` against the destination repository, also packaged as a portable SKILL, and continue only when that repository's policy accepts its endorsement.
 
 No Devouch-operated API, database, signing service, publisher key, or unique storage service is required.
 The project still depends on Ethereum/ENS, name maintenance, a wallet, GitHub for PR identity, and a reliable historical RPC provider.
@@ -64,6 +66,7 @@ The complete signed JSON is stored in devouch.vouch, so another verifier can ret
 Verification checks a pinned chain snapshot, the resolver's deployment origin, exact publication bytes, subsequent text updates, and transient binding or upgrade changes.
 The wallet-free verification page reuses the same TypeScript verifier, resolves the issuer's primary name with viem's `getEnsName` (the ENSv2 Universal Resolver confirms it resolves back to the same address), and evaluates repository policies in the browser; shared test cases check that the browser and the Ruby CLI reach the same decisions and reason codes.
 Subname registries use the pinned official ENSv2 UserRegistry implementation. For a subname, the verifier walks the whole hierarchy up to ten labels and checks each parent registry, link and implementation history, so a change higher in the tree cannot silently restore or forge an endorsement.
+The pull-request verification page and the `check` command reuse the same verifier: they read the destination repository's policy from GitHub and the endorsement from ENS, send no transaction, and need no wallet or GitHub token for public repositories.
 A composite GitHub Action uses the PR author's numeric ID, the base commit's policy, and the head commit's endorsement without checking out PR code.
 Tests combine Minitest, Bun, Playwright, and a disposable Hardhat EVM running pinned official ENS bytecode.
 No new smart contract, backend service, database, or shared signing key was added.
@@ -91,12 +94,11 @@ ENSv2 is where the endorsement lives, not a display name.
 - An optional helper wallet can be granted permission for only the endorsement text key, while the issuer keeps direct withdrawal.
 - Verification reads the resolver's history (text, link and implementation changes) alongside the current value, so a withdrawn or temporarily replaced record never silently restores trust.
 - The same endorsement works with different repository policies: the evidence is shared, and each repository decides.
-
-- **One subname per endorsement (0.2.0).** Under an issuer-owned namespace such as `vouches.geeknees.eth`, each endorsement has its own subname and record, so many can be active at once and each is withdrawn on its own.
-- **Agents as namespaces (0.2.0).** An agent's subname carries its declared GitHub identity and wallet; the issuer grants or revokes individual profile fields through Enhanced Access Control and keeps endorsement authority.
+- **One subname per endorsement.** Under an issuer-owned namespace such as `vouches.geeknees.eth`, each endorsement has its own subname and record, so many can be active at once and each is withdrawn on its own.
+- **Agents as namespaces.** An agent's subname carries its declared GitHub identity and wallet; the issuer grants or revokes individual profile fields through Enhanced Access Control and keeps endorsement authority.
 
 I use pinned official Sepolia artifacts (Permissioned Resolver and UserRegistry) and unmodified contract code, and add no custom endorsement registry.
-Tests run the real official bytecode on a disposable local EVM. One publication on Sepolia has been read back and verified against two policies (see "Sepolia evidence" below); withdrawal on Sepolia is still to be recorded.
+Tests run the real official bytecode on a disposable local EVM. On Sepolia, publication, verification against two policies, single withdrawal and agent permission changes have been done with real wallets (see "Sepolia evidence" below). Only "restoring an old record never revives it" is local-EVM evidence.
 
 ### ENS prize form fields
 
@@ -104,7 +106,7 @@ ENS を選ぶと出てくる欄。画面は [project-submit-form/](project-submi
 
 **How are you using this Protocol / API?**
 
-> Each recommender publishes the complete signed endorsement JSON as the `devouch.vouch` text record on their own ENSv2 Permissioned Resolver, and withdraws it by clearing that record. Devouch's CLI, GitHub Action and wallet-free verification page read the record and its resolver history straight from ENS on Sepolia, so anyone can verify an endorsement without a Devouch server. Version 0.2.0 adds one subname per endorsement and agent identities as subnames, with field-level permissions through Enhanced Access Control.
+> Each recommender publishes the complete signed endorsement JSON as the `devouch.vouch` text record on their own ENSv2 Permissioned Resolver, and withdraws it by clearing that record. Devouch's CLI, GitHub Action and wallet-free verification page read the record and its resolver history straight from ENS on Sepolia, so anyone can verify an endorsement without a Devouch server. Issuers can also give each endorsement, and each AI agent, its own subname, with field-level permissions through Enhanced Access Control.
 
 **Link to the line of code where the tech is used**
 
@@ -143,11 +145,11 @@ https://github.com/geeknees/devouch/blob/3214991e616e118d921ea9575d06d5e121b584f
 | Policy B (issuer not trusted) | `valid / rejected`, reason `issuer_not_trusted`, at block 11780653 |
 | Agent fork PR | [masusanou's PR #2](https://github.com/geeknees/devouch/pull/2), subject `github:287365775` |
 | GitHub Action | [Devouch run](https://github.com/geeknees/devouch/actions/runs/36172488074): `valid / accepted` at block `11780996`; [normal CI](https://github.com/geeknees/devouch/actions/runs/36172488028) also passed |
-| Namespace (0.2.0) | `vouches.geeknees.eth`, the test subname `287365775.vouches.geeknees.eth` and the shared `masusanou.vouches.geeknees.eth`, registered by the issuer with a PC wallet, each with its own dedicated resolver. See the [wallet test record](sepolia-namespace-check.md) |
-| Agent identity (0.2.0) | `github:287365775` and its agent wallet read back through the full ENS hierarchy under both subnames (first at block 11784326); profile permissions ungranted. [Inspect without a wallet](https://geeknees.github.io/devouch/?agent=masusanou.vouches.geeknees.eth#namespaces). The profile permission lifecycle is also done on Sepolia (next row) |
-| Agent permissions (0.2.0) | On `287365775.vouches.geeknees.eth` the issuer granted the agent wallet the `description` field (tx `0xd95549e4…`, block 11784878), the agent updated it (tx `0x786bcd06…`, block 11784901), and the issuer revoked the permission (tx `0x12a7456b…`, block 11784939). Afterwards the agent's edit is rejected (`EACUnauthorizedAccountRoles` in a read-only call); the saved description and identity remain. [Inspect without a wallet](https://geeknees.github.io/devouch/?agent=287365775.vouches.geeknees.eth#namespaces) |
-| Subname endorsement (0.2.0) | `masusanou.vouches.geeknees.eth` (subject `github:287365775`, expires 2026-10-02 06:44 UTC, resolver `0xd2063D439ca487c114432876886318FBcDC5c010`). CLI: evidence `valid` through `eth → geeknees.eth → vouches.geeknees.eth → masusanou.vouches.geeknees.eth` at block 11784553. Verification page: `valid`, repo A `accepted`, repo B `rejected` (`issuer_not_trusted`) at block 11784578 |
-| Individual withdrawal (0.2.0) | The issuer withdrew only the test subname `287365775.vouches.geeknees.eth` (its first signature had the wrong subject `github:287365775287365775`): tx `0xc34d78b82250d301d8bc0c7cdf01b5981e32405c4464f8f3fd67c3000cb0ea9f` (block 11784702). At block 11784708 it verifies as `revoked` while `masusanou.vouches.geeknees.eth` stays `valid`; at block 11784711 `masusanou-dev.eth` and `geeknees.eth` are still `valid` |
+| Namespace | `vouches.geeknees.eth`, the test subname `287365775.vouches.geeknees.eth` and the shared `masusanou.vouches.geeknees.eth`, registered by the issuer with a PC wallet, each with its own dedicated resolver. See the [wallet test record](sepolia-namespace-check.md) |
+| Agent identity | `github:287365775` and its agent wallet read back through the full ENS hierarchy under both subnames (first at block 11784326); profile permissions ungranted. [Inspect without a wallet](https://geeknees.github.io/devouch/?agent=masusanou.vouches.geeknees.eth#namespaces). The profile permission lifecycle is also done on Sepolia (next row) |
+| Agent permissions | On `287365775.vouches.geeknees.eth` the issuer granted the agent wallet the `description` field (tx `0xd95549e4…`, block 11784878), the agent updated it (tx `0x786bcd06…`, block 11784901), and the issuer revoked the permission (tx `0x12a7456b…`, block 11784939). Afterwards the agent's edit is rejected (`EACUnauthorizedAccountRoles` in a read-only call); the saved description and identity remain. [Inspect without a wallet](https://geeknees.github.io/devouch/?agent=287365775.vouches.geeknees.eth#namespaces) |
+| Subname endorsement | `masusanou.vouches.geeknees.eth` (subject `github:287365775`, expires 2026-10-02 06:44 UTC, resolver `0xd2063D439ca487c114432876886318FBcDC5c010`). CLI: evidence `valid` through `eth → geeknees.eth → vouches.geeknees.eth → masusanou.vouches.geeknees.eth` at block 11784553. Verification page: `valid`, repo A `accepted`, repo B `rejected` (`issuer_not_trusted`) at block 11784578 |
+| Individual withdrawal | The issuer withdrew only the test subname `287365775.vouches.geeknees.eth` (its first signature had the wrong subject `github:287365775287365775`): tx `0xc34d78b82250d301d8bc0c7cdf01b5981e32405c4464f8f3fd67c3000cb0ea9f` (block 11784702). At block 11784708 it verifies as `revoked` while `masusanou.vouches.geeknees.eth` stays `valid`; at block 11784711 `masusanou-dev.eth` and `geeknees.eth` are still `valid` |
 | Restoring an old record | Restoring a withdrawn JSON never reactivates it: covered by local-EVM tests with the official ENS contracts, not repeated on Sepolia |
 | Demo video | Shows publication and withdrawal on a local EVM running the official ENS contracts, labelled on screen; `masusanou.vouches.geeknees.eth` stays active for the judges' QR check |
 
@@ -180,7 +182,7 @@ Devouch carries a reference; it does not turn that reference into automatic appr
 | 公開コード / license / 配布SHA | MITあり、固定Actionの匿名取得を確認済み。[公開の検証記録](release-evidence.md) |
 | ライブデモURL | 公開済み：https://geeknees.github.io/devouch/ 。2026-09-26 09:12 JSTに操作改善版の配信10ファイルの一致、全24レイアウト、ウォレットなしの実ENS取得を確認。[公開記録](release-evidence.md) |
 | 動画（直接アップロード） | 完成済み（ユーザー確認、2026-09-26）。提出サイトに直接アップロード。別の公開URLは不要 |
-| ENSv2の実txと失効後のreadback | 公開txと2方針の検証、0.2.0 の個別失効と失効後の readback を取得（上記）。復元拒否はローカル EVM の証拠 |
+| ENSv2の実txと失効後のreadback | 公開txと2方針の検証、サブネームの個別失効と失効後の readback を取得（上記）。復元拒否はローカル EVM の証拠 |
 | agent名義の実PRとAction run | masusanouのPR #2とvalid / acceptedのActionは確認済み。人間名義の実PRと失効のPR検証は対象外 |
 | 別RPC・別ホストからの実操作 | ローカルUI経由の本人公開、2社RPCの検証を確認。別ホストの実操作は未実施 |
 | ENS の欄（使い方・コード行・評価・フィードバック） | 下書き済み（「ENS prize form fields」）。評価の1〜10とフィードバックの最終確認は提出者 |
