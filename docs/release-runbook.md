@@ -13,14 +13,15 @@ merge commit `3214991e616e118d921ea9575d06d5e121b584f4` のCIとPages配信も�
 
 | 用途 | 固定するもの |
 |---|---|
-| PRの推薦検証 | Devouch commit `9ce4525f269f590d4d8fd0e123ff35d33dce8efa` |
+| v0.1で確認済みのPR推薦検証 | Devouch commit `9ce4525f269f590d4d8fd0e123ff35d33dce8efa` |
+| Roadmap版のPR推薦検証 | Devouch commit `99e6466ce96e50a22a11a0205bb1d38dfbacfc81`。公開と試用の結果は[Roadmap記録](roadmap-plan.md) |
 | 導入先の方針 | [`.devouch/policy.json`](../.devouch/policy.json) |
 | 導入workflow | [`.github/workflows/devouch.yml`](../.github/workflows/devouch.yml) |
 | 静的画面 | `dist/web/` 内のHTML・CSS・JS・ロゴ・ライセンスと `fonts/` の同梱WOFF2。ソースやローカル設定は含めない |
 | 公開workflow | [`.github/workflows/pages.yml`](../.github/workflows/pages.yml) |
 | 公開URL | https://geeknees.github.io/devouch/ 。認証なしの取得とブラウザ操作を確認済み |
 
-固定したAction commitはローカルで検証済み。認証なしで公開ファイルを取得し、検証済み内容との一致も確認した。
+v0.1の固定Action commitはローカルで検証し、認証なしの公開ファイル取得と内容一致も確認した。Roadmap版の固定先はローカル検証済みで、公開後の同じ照合を待っている。
 その後の文書や公開workflowのcommitと、検証Actionの固定commitは別でよい。
 Actionを更新するときは、ソース・配布物の一致とテストを確認し、固定先を更新する。
 

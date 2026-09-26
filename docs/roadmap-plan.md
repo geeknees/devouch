@@ -31,7 +31,7 @@
 | エージェントidentityと権限 | 実walletの許可操作成功、未許可キー・兄弟・親・推薦操作失敗、権限撤回後失敗 | wallet serviceとブラウザで確認。共用resolverも拒否 |
 | 階層履歴の検証 | 親の移転・復元、registry変更・復元、権限撤回・再付与、再登録、期限、同一block内変更、未知実装と欠損履歴の負例 | 14件の実EVM階層テストで確認 |
 | CLI・Web・Actionの共通判定 | 公開原本の取得・検証、PR作者照合、方針のRuby/TypeScript一致、既存direct名の回帰確認 | ローカルの全統合・共有方針fixtureが成功。新しいActionの実PR試用は下記で追跡 |
-| メンテナー導入 | 信頼する推薦者の選択、設定出力、SHA固定workflow、説明と失敗時の案内、操作テスト | 実装・390pxブラウザ確認済み。階層版の公開SHAへの差し替え待ち |
+| メンテナー導入 | 信頼する推薦者の選択、設定出力、SHA固定workflow、説明と失敗時の案内、操作テスト | 実装・390pxブラウザ確認済み。階層版の固定SHAを設定し、公開後の照合待ち |
 | 指定repoでの試用 | `geeknees/devouch` の具体的なcommit・PR・Action判定と原本・policyの照合記録 | 未実施 |
 | 中央サービス不要の人間性証明 | 公式仕様の調査結果、条件を満たす場合は任意の証明と正負の検証テスト | 再調査済み。ユーザー指定により引き続き対象外 |
 | 配布・文書の一致 | build、unit、integration、Ruby、型・構文検査、dist再build一致、privacy検査、要求別の最終監査 | ローカル検査は完了。公開後の照合待ち |
@@ -61,4 +61,5 @@
 - コミット対象のprivacy検査は問題なし。全追跡ファイルと履歴の18件は既存の著作権表記、公開済み発表者名、テスト用URL、公式ドキュメントURLへの一致であり、新しい秘密情報・私的な実行パスは含まれない。staged差分の空白検査も成功。
 - `check-name.ts masusanou-dev.eth` は `2026-09-26T04:21:19.430Z`、Sepolia block `11783823` / `0x05422888bbd20aac7407b605b857c5e33679f0d1d6d8d71d124e795661b74193` でowner・親経路・既存resolverを取得し、ready true / record 1 / 原本785 bytesを確認した。チェーンへの書込みなし。
 - World sandbox discoveryを再読取りし、`token_endpoint_auth_methods_supported`は`client_secret_basic` / `client_secret_post` / `private_key_jwt`だった。READMEの説明を共通運用した場合の依存として限定し、オンチェーン検証の存在を否定しない表現にした。
-- 未完了: 新ブランチの公開、階層対応Actionの公開SHA固定と実repo試用、外部結果のreadback。既存Pages・PR #2・v0.1タグは変更していない。実Sepoliaで新サブネームを作成したという主張はしない。
+- `main`のBoundaries追記 `dd4ffeb592bf78f08d1a6aac2d33293c7011d176` を取り込み、レビュー済みの表現に調整した。実装commitは `99e6466ce96e50a22a11a0205bb1d38dfbacfc81`。workflowとMaintainersの既定値をこのSHAへ固定した。現段階ではローカルcommitであり、公開済みとは扱わない。
+- 未完了: 新ブランチの公開、固定Actionの匿名取得と実repo試用、外部結果のreadback。この作業では既存Pages・PR #2・v0.1タグを変更していない。実Sepoliaで新サブネームを作成したという主張はしない。

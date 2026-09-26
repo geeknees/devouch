@@ -1,12 +1,12 @@
 # Devouch 導入マニュアル
 
-更新：2026-09-26。推薦版の [Action](../action.yml)・[CLI](../exe/devouch)・静的画面を新規実装し、ローカル通しテストを実施しました。**下記の固定commitの匿名取得とPages公開、masusanouの実fork PRでvalid / acceptedを確認済みです。** [公開の検証記録](release-evidence.md)、[実PRの検証記録](demo-evidence.md#masusanouの実fork-pr)、最新の確認範囲は [実装状況](implementation-status.md)、起動方法は [README](../README.md)を参照してください。
+更新：2026-09-26。このブランチでは階層ENSに対応した [Action](../action.yml)・[CLI](../exe/devouch)・静的画面のローカル通しテストを完了し、下記の固定commitで試用する準備をしました。新しい固定先の公開と実PRでの確認は [Roadmap記録](roadmap-plan.md) に追跡します。公開済みv0.1の匿名取得・Pages公開とmasusanouの実fork PRでのvalid / acceptedは、[公開記録](release-evidence.md)と[実PRの検証記録](demo-evidence.md#masusanouの実fork-pr)を参照してください。起動方法は [README](../README.md)にあります。
 
 公開 OSS リポジトリのメンテナー向けに、まず PR 作者の推薦を Actions の結果に表示するところまでを扱います。メンテナーは設定と workflow の2ファイルを追加し、推薦を持つ貢献者は初回だけ推薦 JSON を追加します。推薦結果を読み、レビューへ進めるかはメンテナーが決めます。
 
 Roadmap版では静的画面の **Maintainers** から設定を作れる。ローカル起動後 `http://127.0.0.1:4173/#maintainers` を開き、受け入れ先の`owner/repo`とレビューした公開Action commit SHAを指定する。最大8件の公開ENS名を検証し、表示されたissuer・scope・resolverを自分の判断で選ぶ。既定では誰も選択されず、invalid・revoked・expired・missing・unavailableの結果からは選べない。最終同意の後、`.devouch/policy.json`と`.github/workflows/devouch.yml`をダウンロードして通常のPRでレビューする。画面はwalletもGitHub loginも必要とせず、GitHubへ書き込まない。
 
-検証結果は表示されたblock時点のもの。採用方針は「選択したissuer・scope・resolverに一致する有効な推薦」を受け入れ、画面で見たsubjectだけへ制限するものではない。新しいサブネームに別resolverを使うなら、そのresolverを許可するレビューも必要。[名前空間の作成手順](namespaces.md)を参照。`v0.1`のActionは階層名に対応しないため、階層名を受け入れる前にRoadmap版の公開SHAへ更新する。公開状況は[記録](roadmap-plan.md)に残す。
+検証結果は表示されたblock時点のもの。採用方針は「選択したissuer・scope・resolverに一致する有効な推薦」を受け入れ、画面で見たsubjectだけへ制限するものではない。新しいサブネームに別resolverを使うなら、そのresolverを許可するレビューも必要。[名前空間の作成手順](namespaces.md)を参照。`v0.1`のActionは階層名に対応しないため、下記ではRoadmap実装のSHAを指定する。公開確認の結果は[記録](roadmap-plan.md)を参照する。
 
 PR を送る側の手順は [AI エージェント管理者向けマニュアル](agent-operator-guide.md)を参照してください。推薦の依頼、エージェントへの指示、送信後の確認をまとめています。
 
@@ -78,7 +78,7 @@ resolver の公開アドレスは導入者が確認します。画面の公開�
 
 ## 2. GitHub Actions の workflow を追加する
 
-`.github/workflows/devouch.yml` を作ります。配布先は公開済みの `geeknees/devouch` です。ローカル検証済みの40桁SHAで固定した [workflow](../.github/workflows/devouch.yml)を用意し、repoと固定commitの匿名取得を確認しました。
+`.github/workflows/devouch.yml` を作ります。配布先は公開repoの `geeknees/devouch` です。階層対応をローカル検証した40桁SHAで [workflow](../.github/workflows/devouch.yml)を固定しています。導入前に、[Roadmap記録](roadmap-plan.md)で固定commitの公開確認と試用結果を確認してください。
 
 ```yaml
 # ABOUTME: Reports the pull request author's portable endorsement.
@@ -99,7 +99,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - uses: geeknees/devouch@9ce4525f269f590d4d8fd0e123ff35d33dce8efa
+      - uses: geeknees/devouch@99e6466ce96e50a22a11a0205bb1d38dfbacfc81
         with:
           policy-path: .devouch/policy.json
           mode: report
