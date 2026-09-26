@@ -1,10 +1,10 @@
 # Devouch 導入マニュアル
 
-更新：2026-09-26。このブランチでは階層ENSに対応した [Action](../action.yml)・[CLI](../exe/devouch)・静的画面のローカル通しテストを完了しました。下記の固定commitを認証なしで取得・照合し、[自repoのPR #17](https://github.com/geeknees/devouch/pull/17)で既存のgeeknees推薦がvalid / acceptedになることを確認済みです。[Roadmap記録](roadmap-plan.md)に詳細を残しました。公開済みv0.1のPagesとmasusanouの実fork PRは、[公開記録](release-evidence.md)と[実PRの検証記録](demo-evidence.md#masusanouの実fork-pr)を参照してください。起動方法は [README](../README.md)にあります。
+更新：2026-09-26。0.2.0の階層ENSに対応した [Action](../action.yml)・[CLI](../exe/devouch)・静的画面を対象にします。[v0.1との互換性と更新手順](upgrading-0.2.md)を確認してください。ローカルテスト、固定commitの公開確認、[自repoのPR #17](https://github.com/geeknees/devouch/pull/17)での試用は[Roadmap記録](roadmap-plan.md)に分けて記載しています。Pagesの確認範囲は[公開記録](release-evidence.md)、masusanouの実fork PRは[実PRの検証記録](demo-evidence.md#masusanouの実fork-pr)、起動方法は[README](../README.md)を参照してください。
 
 公開 OSS リポジトリのメンテナー向けに、まず PR 作者の推薦を Actions の結果に表示するところまでを扱います。メンテナーは設定と workflow の2ファイルを追加し、推薦を持つ貢献者は初回だけ推薦 JSON を追加します。推薦結果を読み、レビューへ進めるかはメンテナーが決めます。
 
-Roadmap版では静的画面の **Maintainers** から設定を作れる。ローカル起動後 `http://127.0.0.1:4173/#maintainers` を開き、受け入れ先の`owner/repo`とレビューした公開Action commit SHAを指定する。最大8件の公開ENS名を検証し、表示されたissuer・scope・resolverを自分の判断で選ぶ。既定では誰も選択されず、invalid・revoked・expired・missing・unavailableの結果からは選べない。最終同意の後、`.devouch/policy.json`と`.github/workflows/devouch.yml`をダウンロードして通常のPRでレビューする。画面はwalletもGitHub loginも必要とせず、GitHubへ書き込まない。
+静的画面の **[Maintainers](https://geeknees.github.io/devouch/#maintainers)** から設定を作れる。ローカル起動の場合は`http://127.0.0.1:4173/#maintainers`を開く。受け入れ先の`owner/repo`とレビューした公開Action commit SHAを指定する。最大8件の公開ENS名を検証し、表示されたissuer・scope・resolverを自分の判断で選ぶ。既定では誰も選択されず、invalid・revoked・expired・missing・unavailableの結果からは選べない。最終同意の後、`.devouch/policy.json`と`.github/workflows/devouch.yml`をダウンロードして通常のPRでレビューする。画面はwalletもGitHub loginも必要とせず、GitHubへ書き込まない。
 
 検証結果は表示されたblock時点のもの。採用方針は「選択したissuer・scope・resolverに一致する有効な推薦」を受け入れ、画面で見たsubjectだけへ制限するものではない。新しいサブネームに別resolverを使うなら、そのresolverを許可するレビューも必要。[名前空間の作成手順](namespaces.md)を参照。`v0.1`のActionは階層名に対応しないため、下記ではRoadmap実装のSHAを指定する。公開確認の結果は[記録](roadmap-plan.md)を参照する。
 
@@ -99,7 +99,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - uses: geeknees/devouch@99e6466ce96e50a22a11a0205bb1d38dfbacfc81
+      - uses: geeknees/devouch@4aa03f7f6bea64701a6bbab0ff6420df1457b2fb
         with:
           policy-path: .devouch/policy.json
           mode: report

@@ -2,7 +2,7 @@
 
 この手順は0.2.0に対応する。`v0.1`タグは直接の`name.eth`の保存点として維持する。[更新時の互換性](upgrading-0.2.md)、[PCでのSepolia確認手順](sepolia-namespace-check.md)、公開先・実チェーンの[確認範囲](roadmap-plan.md)を参照。
 
-`node scripts/serve.ts` で起動し、`http://127.0.0.1:4173/#namespaces` を開く。読み取りのInspectはwallet不要。作成・接続・登録・権限変更は本人のSepolia walletが各取引を確認する。秘密鍵をDevouchへ入力しない。
+[Namespaces](https://geeknees.github.io/devouch/#namespaces)を開く。ローカルの場合は`node scripts/serve.ts`で起動し、`http://127.0.0.1:4173/#namespaces`を開く。読み取りのInspectはwallet不要。作成・接続・登録・権限変更は本人のSepolia walletが各取引を確認する。秘密鍵をDevouchへ入力しない。
 
 ## 複数の推薦を同時に持つ
 

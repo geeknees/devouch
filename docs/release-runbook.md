@@ -14,14 +14,14 @@ merge commit `3214991e616e118d921ea9575d06d5e121b584f4` のCIとPages配信も�
 | 用途 | 固定するもの |
 |---|---|
 | v0.1で確認済みのPR推薦検証 | Devouch commit `9ce4525f269f590d4d8fd0e123ff35d33dce8efa` |
-| Roadmap版のPR推薦検証 | Devouch commit `99e6466ce96e50a22a11a0205bb1d38dfbacfc81`。公開と試用の結果は[Roadmap記録](roadmap-plan.md) |
+| 0.2.0のPR推薦検証 | Devouch commit `4aa03f7f6bea64701a6bbab0ff6420df1457b2fb`。互換性は[更新手順](upgrading-0.2.md)、公開と試用の結果は[Roadmap記録](roadmap-plan.md) |
 | 導入先の方針 | [`.devouch/policy.json`](../.devouch/policy.json) |
 | 導入workflow | [`.github/workflows/devouch.yml`](../.github/workflows/devouch.yml) |
 | 静的画面 | `dist/web/` 内のHTML・CSS・JS・ロゴ・ライセンスと `fonts/` の同梱WOFF2。ソースやローカル設定は含めない |
 | 公開workflow | [`.github/workflows/pages.yml`](../.github/workflows/pages.yml) |
 | 公開URL | https://geeknees.github.io/devouch/ 。認証なしの取得とブラウザ操作を確認済み |
 
-v0.1とRoadmap版の固定Action commitは、それぞれローカルで検証し、認証なしの公開ファイル取得と内容一致も確認した。Roadmap版は[PR #17の実Action](https://github.com/geeknees/devouch/actions/runs/36218361289)でもvalid / acceptedを確認した。PagesのRoadmap版への更新は別の公開操作になる。
+v0.1と初回Roadmap実装の固定Actionは、認証なしの公開ファイル取得と内容一致を確認した。初回Roadmap版は[PR #17の実Action](https://github.com/geeknees/devouch/actions/runs/36218361289)でもvalid / acceptedを確認した。上表の0.2.0では配布versionと比較テストを追加しているため、同じ公開取得・実PR確認を改めて行い、結果を記録する。Pages配信は固定Actionの公開とは別の操作として確認する。
 その後の文書や公開workflowのcommitと、検証Actionの固定commitは別でよい。
 Actionを更新するときは、ソース・配布物の一致とテストを確認し、固定先を更新する。
 

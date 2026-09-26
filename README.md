@@ -102,7 +102,7 @@ the CLI or Action evaluates it against a repository's policy.
 4. Download the original endorsement JSON and publication position. The receiving maintainer can download a policy example.
 5. In **Withdraw**, load the endorsement, review it, and clear the exact public record. Run verification again after two more blocks.
 
-For multiple endorsements, use **Namespaces** in this branch's workspace (`http://127.0.0.1:4173/#namespaces`).
+For multiple endorsements, open **[Namespaces](https://geeknees.github.io/devouch/#namespaces)** (or `http://127.0.0.1:4173/#namespaces` locally).
 Create `vouches.your-name.eth`, use it as the next parent, then register a contributor ID such as
 `287365775.vouches.your-name.eth` and connect its own resolver. Repeat for another contributor;
 publishing or withdrawing one record leaves its siblings independent. **Include an agent identity** adds
@@ -176,7 +176,7 @@ The workspace has a separate **Connection settings** field.
 Add a maintainer-approved `.devouch/policy.json` and a workflow pinned to a published Devouch commit.
 Each contributor adds `.devouch/vouches/github-ID.json` with their original endorsement.
 See the [maintainer guide](docs/adoption-guide.md) and [agent operator guide](docs/agent-operator-guide.md).
-In this branch, **Maintainers** (`http://127.0.0.1:4173/#maintainers`) checks publication names without a wallet.
+**[Maintainers](https://geeknees.github.io/devouch/#maintainers)** checks publication names without a wallet (also available locally at `http://127.0.0.1:4173/#maintainers`).
 Explicitly select the issuers, scopes, and resolvers your repository will accept, review the published Action SHA,
 and download the policy and workflow. Nothing is written to GitHub by this screen.
 The Action reads policy from the event's base SHA and endorsement from its head SHA via GitHub's API.
