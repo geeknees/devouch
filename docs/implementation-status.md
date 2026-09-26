@@ -66,6 +66,24 @@ GitHubの[PR API](https://docs.github.com/en/rest/pulls/pulls#get-a-pull-request
 - 再build後の `git diff --exit-code -- dist/` が成功。既存91個のidを維持し、追加後の133個にも重複がない。
 - stagedのprivacy-checkはuserinfo付きURLの拒否テスト2行をメール形式と誤検知。実際の個人メールや秘密情報ではないと確認した。公開前の全体・履歴検査も、この2行と既知14件だけだった。
 
+### 公開Pagesでの確認
+
+[PR #11](https://github.com/geeknees/devouch/pull/11) のhead `34d630af826847b97c5faa576279f9d903b5da8f` は
+[push CI](https://github.com/geeknees/devouch/actions/runs/36210332127)・[PR CI](https://github.com/geeknees/devouch/actions/runs/36210342674)とも成功。
+取り込み後の `011c084de8d4d09a5a4f663451a49c835866c326` も [main CI](https://github.com/geeknees/devouch/actions/runs/36210444507) が成功し、
+同commitを [Pages run](https://github.com/geeknees/devouch/actions/runs/36210518263) で公開した。
+
+- 共有URL: https://geeknees.github.io/devouch/?pr=https%3A%2F%2Fgithub.com%2Fgeeknees%2Fdevouch%2Fpull%2F2#verify
+- 確認日時: 2026-09-26 11:05 JST（画面のchecked_at: `2026-09-26T02:04:57.163Z`）。
+- Sepolia block `11783169`、hash `0x1bd7481f39762665710caf8ecaecad48108b09d204e3c487a835b6be9d56771d`。
+- Chromeの390px・タッチ端末エミュレーションでURLを開き、作者 `@masusanou`、subject一致、signature/evidence valid、policy accepted、`Vouched by masusanou-dev.eth` を確認。
+- base/head SHA・policy digestは上記ローカル確認と一致。GitHub GETは3回、PR検証のRPCは32回で、読み取り6種類のみ。
+- 両テーマ・6幅の12レイアウト、ENS名検証へ戻ってA accepted / B rejected → 追加でaccepted、walletなし、JavaScriptエラー0件を確認。
+- 公開11ファイルのHTTP 200と、ローカル配布物とのbytes一致を確認。`app.js` SHA-256は `bab1b371ce1d2cc4577fa4caa41f91e04a2894ad893240275e7ccdcf185293e7`。
+
+このPR URL機能の確認はChromeの端末エミュレーションであり、実スマートフォンでの確認は未実施。
+提出文・スライドQR・提出画像の更新は引き続きClaude側の担当。
+
 ## ウォレット不要の検証ページと方針比較（2026-09-26）
 
 共有URL: https://geeknees.github.io/devouch/?name=masusanou-dev.eth#verify
