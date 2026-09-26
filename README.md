@@ -57,7 +57,13 @@ The [release runbook](docs/release-runbook.md) covers the prepared manual GitHub
 Use the sun/moon button in the header to switch between dark and light mode.
 The workspace starts in dark mode and remembers your choice in this browser.
 
-Open the [wallet-free verification page](https://geeknees.github.io/devouch/?name=masusanou-dev.eth#verify) to check the demo endorsement's signature and ENS history at a fresh Sepolia block. It displays the issuer's reverse-resolved ENS name (or address), subject, scope, expiry, and evidence status. The same evidence starts as **accepted** by example repository A and **rejected** by B (`issuer_not_trusted`); add the issuer to B's **Trusted issuers** field to make it accepted. These editable examples do not change any real repository policy. A saved `publication.json` can retrieve an older endorsement for verification, and **Copy link** includes that position when provided. No wallet is needed; `human verification: not included` applies throughout.
+Open the [wallet-free verification page](https://geeknees.github.io/devouch/?name=masusanou-dev.eth#verify)
+to check the demo endorsement's signature and ENS history at a fresh Sepolia block.
+It displays the issuer's reverse-resolved ENS name (or address), subject, scope, expiry, and evidence status.
+The same evidence starts as **accepted** by example repository A and **rejected** by B (`issuer_not_trusted`);
+add the issuer to B's **Trusted issuers** field to make it accepted. These editable examples do not change any real repository policy.
+A saved `publication.json` can retrieve an older endorsement for verification, and **Copy link** includes that position when provided.
+No wallet is needed; `human verification: not included` applies throughout.
 
 To explore without a wallet, choose **Try without a wallet**, then **Retrieve from ENS**.
 The demo name is prefilled. The workspace displays the signed contributor, issuer, purpose, expiry,
