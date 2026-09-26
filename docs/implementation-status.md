@@ -24,6 +24,35 @@ Building from Scratch の適格性を運営が確認したとは扱わない。
 | README、導入手順、ライセンス、提出・デモ資料 | コマンド再実行とリンク検査 | 作成・更新済み。提出画像草案5点。動画は完成済みとユーザー確認（2026-09-26）。提出サイトへ直接アップロードするため、別の公開URLは不要 |
 | 公開コード・配布 SHA・静的 live URL | 公開先の readback | repoとPagesを公開。操作改善版の配信10ファイルと固定Actionの匿名取得・一致、全タブ、ウォレットなしでの実ENS原本取得を確認。[公開記録](release-evidence.md) |
 
+## geeknees向け推薦の追加（2026-09-26 12:27〜12:30 JST）
+
+ユーザーから提供された公開位置をreceipt・canonical block・ENS履歴で照合し、既に署名・公開済みの推薦を取得した。
+こちらから署名・取引送信・推薦の再公開は行っていない。
+
+- 公開名: [geeknees.eth](https://geeknees.github.io/devouch/?name=geeknees.eth#verify)。subject: `github:701242`（geeknees）。scope: `oss-contribution`。
+- issuer: `0x894108DC5640e36c478523228addA22b58Eeb79c`。本人のGitHubアカウントへの自己推薦として扱い、独立した第三者の推薦とは説明しない。
+- resolver: `0x1C62ac64F60aDc036d184596e87c98fdFcFdb160`、recordId `2`、implementation `0x14f09fd05d4585759e54844dc9b00147131cf243`、anchor block `11780025`。
+- 公開取引: `0xde31b2f96ae507bc7da07cebc0f65b143701a4801e178a5855d75b799812a7f2`、block `11783560`、hash `0x15a29ef4ec6ae259694d41da0d2c5d7285965f4d05725213895fbfebb882000b`。receipt成功、`devouch.vouch` のTextUpdatedがrecord 2に一致した。
+- 期限: `2026-10-31T03:05:00Z`（10月31日12:05 JST）。原本 [github-701242.json](../.devouch/vouches/github-701242.json) は777 bytes、SHA-256 `cf93358054495ef9a50de1919456266be718dee9632be4f7b3e834a0db27e9a5`。ENSの原本とbytesを保って保存した。
+- 実GitHubのmain `8a8d658b6877de8d1a43ba7dcc82a15e7bf74b04` の方針で `check --repo geeknees/devouch` が `valid / accepted`、理由なし、終了0、submitted false。checked_at `2026-09-26T03:28:39.338Z`、block `11783568`、hash `0xf2af8a85291f8d4d654da0840597e88fe1e9af2a13fa3ad3e3fed8072a2889d2`。
+- 既存のmasusanou向け原本も `verify` で `valid / accepted`、終了0。checked_at `2026-09-26T03:28:06.013Z`、block `11783566`、hash `0xd3afab80dfced4bc3a5fbe18ae7c7981044540ad8ba8fb417dda37791a450ba6`。
+- 同じ許可済みresolver上の別recordなので `.devouch/policy.json` の変更は不要。policy digestは `sha256:ce77f04b8a1679ab784528a7feec24e0d3779c0d3b045b25950cea939ee9f653` のまま。既存デモのrecord 1・原本・期限を維持した。
+
+公開PagesをウォレットなしのChrome・390pxタッチ端末エミュレーションで確認した。新しい実スマートフォンでの確認ではない。
+両方の名前で署名valid・evidence valid、例示repo A accepted / B rejected（issuer_not_trusted）、Bへの追加後accepted、横はみ出しなし、JS error 0。
+`human verification: not included` を表示し、RPCは読み取り6メソッドだけだった。
+
+| 公開先 | ブラウザの確認日時 / block / hash |
+|---|---|
+| geeknees.eth / github:701242 | `2026-09-26T03:29:41.317Z` / `11783573` / `0x7f8e13bcb370a5f8736945ea80ca41cb3b30ba3776f0d9ea25fba13101d40f48` |
+| masusanou-dev.eth / github:287365775 | `2026-09-26T03:29:52.058Z` / `11783574` / `0xd2ebf4d6b1ff56054bbcf178083e240b35f779e52692b1f58b72568503d71463` |
+
+Primary ENS Nameは現在 `geeknees.eth` と逆引きされ、両画面が `Vouched by geeknees.eth` と表示した。
+masusanouの画面では公開先 `masusanou-dev.eth` を別に表示し、名前が異なる説明も確認した。
+デモ手順の期待表示を更新した。Claude担当のブース台本・最新画像説明はこの表示変更を反映する対象で、
+以前の `Vouched by masusanou-dev.eth` を示す録画や検証記録は撮影・確認時点の証拠として残す。
+この追加ではgeeknees名義の実PRの作成・Action実行は行っていない。
+
 ## 提出前の読み取り総点検（2026-09-26 12:12〜12:14 JST）
 
 対象mainは `5d82d245d09266816be7ab23e24d84c9c93af3a0`。[main CI](https://github.com/geeknees/devouch/actions/runs/36213784659) の全step成功を確認した。

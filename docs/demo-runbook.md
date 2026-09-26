@@ -8,7 +8,8 @@ QRではSepoliaに公開済みの `masusanou-dev.eth` を検証する。現在�
 ## 提出前・審査直前の読み取り確認
 
 1. [ENS名の検証URL](https://geeknees.github.io/devouch/?name=masusanou-dev.eth#verify)を開く。
-   `valid`、`Vouched by masusanou-dev.eth`、repo A `accepted`、repo B `rejected`（`issuer_not_trusted`）を確認する。
+   `valid`、`Vouched by geeknees.eth`、公開先 `masusanou-dev.eth`、repo A `accepted`、repo B `rejected`（`issuer_not_trusted`）を確認する。
+   推薦者のPrimary ENS Nameは2026-09-26 12:29 JSTに `geeknees.eth` と確認した。推薦の公開先・subjectは変更されていない。
 2. Bの **Add this issuer** で `accepted` に変わること、Trust mapの点をタップして詳細を開けることを確認する。
    例示方針の編集はブラウザ内で完結する。ページを開き直すと初期のA/B比較に戻る。
 3. [実PR #2の検証URL](https://geeknees.github.io/devouch/?pr=https%3A%2F%2Fgithub.com%2Fgeeknees%2Fdevouch%2Fpull%2F2#verify)を開く。

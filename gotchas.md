@@ -4,6 +4,7 @@
 - registryのtoken IDには下位32bitの更新世代がある。イベントをlabelへ結び付けるとき、単純なlabelhash全体との等値比較では所有権変更を見逃す。
 - 現在のtextだけでは失効を判定できない。proxy配備からの履歴、リンク・実装・名前の接続変更を確認する。初期配備より後のanchorを受け入れない。
 - devouch.vouchの補助grantはresolver内の同じキー全体に作用する。一つの名前だけに限定する権限とは表示しない。専用resolverを使う。
+- 1件の制限は同じresolver / recordId / keyに対するもの。同じ所有者は別の直接ENS名と別recordIdで推薦を併存できる。実Sepoliaでmasusanou-dev.eth（record 1）とgeeknees.eth（record 2）が同じresolver上で両方valid / acceptedと確認済み。新しい名前だけを理由にresolverの追加配備やrepo方針の変更を必須にしない。独立した推薦者間では補助grantの作用範囲を共有しない。
 - 過去原本を取得するpublication hintは現在の名前の接続先に依存させない。receiptの原本・署名・公開先を照合し、通常の履歴検証へ戻す。
 - Rubyの長さ指定IO.readは空ファイルでnilを返す。空入力をinternal errorへ落とさず、credentialとpolicyの入力エラーとして扱う。
 - ローカルEVMのpass、公開RPCのread、Sepolia取引、実GitHub Actionは別の証拠。公開値を未確認のまま実機デモ完了にしない。

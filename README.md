@@ -98,6 +98,9 @@ The repository and workspace were made public on 2026-09-26 with the owner's app
 Public distribution and the endorsed agent fork PR are verified in the records linked above.
 The chosen ENS name is `masusanou-dev.eth`; the published endorsement expires at `2026-10-02T16:45:00Z`.
 The [demo examples](examples/demo/README.md) retrieve its original JSON using the recorded public transaction.
+The same wallet also publishes a [self-endorsement for geeknees](https://geeknees.github.io/devouch/?name=geeknees.eth#verify),
+GitHub ID `701242`, in a separate record under `geeknees.eth`; its original JSON is [.devouch/vouches/github-701242.json](.devouch/vouches/github-701242.json).
+The wallet's current primary ENS name is `geeknees.eth`, so both pages display that issuer name separately from their publication names.
 The adoption workflow pins the locally tested Action commit;
 its public availability is verified in the [release record](docs/release-evidence.md).
 
