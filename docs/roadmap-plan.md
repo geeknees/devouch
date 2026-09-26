@@ -106,3 +106,9 @@
 PR #17をmergeし、`046417f906852ae9432767a4f1872494c98047ee`を[Pages](https://github.com/geeknees/devouch/actions/runs/36220008983)へ公開した。merge後mainのCIも成功した。配信全11ファイルを照合し、新規Chromeで二つの既存推薦、方針比較、Namespacesの親検査、Maintainersの出力、390 / 1280pxの全7タブを確認した。日時・block・URL・保持したdemo / tag / PRの記録は[公開記録](release-evidence.md#020の公開2026-09-26)にまとめた。
 
 新しいSepoliaサブネームのwallet操作は次の確認段階。PCのウォレット拡張入りブラウザを使い、`geeknees.eth`の下だけに検証用名前空間を作る。本人の取引確認と、その後のreadbackが済むまで、実機確認完了とは扱わない。
+
+### Sepoliaの実ウォレット操作（2026-09-26 15:04 JST）
+
+本人が`geeknees.eth`→`vouches.geeknees.eth`→`287365775.vouches.geeknees.eth`の子registryと名前を作り、専用resolverを接続した。`readAgent`はblock `11784326`で階層・resolverの独立性・controller宣言のGitHub IDとwalletを照合して成功した。現在のプロフィール権限は未付与。本人からOpen in Publishへの移動も確認を受けた。
+
+日時・snapshot・共有URLと次の操作は[実機確認記録](sepolia-namespace-check.md)へまとめた。新しい推薦の公開・独立失効・agent権限の付与と撤回はまだ確認中であり、ローカルEVMの実績と区別する。実装済みの機能はREADMEの「What’s new in 0.2.0」に記載し、独立した第三者導入とWorld IDの条件をRoadmapに残した。

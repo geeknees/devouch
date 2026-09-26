@@ -40,7 +40,7 @@
 
 保存済みデモ・方針6ファイルと公開済み原本を維持した。remoteのv0.1 tag objectは`9fce3da74ea7e738ae7b5ce4265663a9d97ff407`、参照先は`4fc4407a3778aad9d0b71db2e1f3e8e58051570a`のまま。PR #2もOPEN、head `7ac246f17c441833cb3ece244cdf1377fe35e003`で不変。全ファイル・履歴のprivacy検査22件は、既知の帰属表記・公開承認済み発表者名・合成URL・公式docs URLと、保存した旧配布物に伴う同じ帰属表記であり、新しい秘密情報は含まれない。
 
-ここまでで公開と読み取り確認が完了した。新しいサブネーム作成・公開・個別失効とagent権限操作の実Sepolia確認は未実施。[PCでの実機確認手順](sepolia-namespace-check.md)を用意し、本人walletでの操作後に公開値を照合する。ローカルEVMでの成功を実walletの成功には数えない。
+14:13 JST時点で公開と読み取り確認が完了した。この時点では新しいサブネーム作成・公開・個別失効とagent権限操作の実Sepolia確認は未実施。その後、本人walletで新しい名前とresolver・agent identityを作成し、公開値を照合した。[PCでの実機確認記録](sepolia-namespace-check.md)に現在の進捗を記載する。ローカルEVMでの成功を実walletの成功には数えない。
 
 ## 操作改善の公開（2026-09-26 09:12 JST）
 

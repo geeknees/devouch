@@ -219,20 +219,31 @@ Three things Devouch deliberately leaves out, and why. The reasoning and sources
 - **No token rewards.** Paying for endorsements or activity invites volume over judgment and pushes the cost onto maintainers. [What happened to Tea?](https://nesbitt.io/2026/06/11/what-happened-to-tea.html) describes how count-based incentives were abused in package registries. Devouch rewards nothing; an endorsement is worth only what the recommender's reputation is worth to each project.
 - **No central server.** Publishing, retrieving, verifying and withdrawing need no Devouch-operated service, key or database. The recommender owns the ENS record, and anyone can check it with the static page, the CLI or the Action against any RPC. Devouch can't forge, block or silently change an endorsement.
 
-## Roadmap
+## What’s new in 0.2.0
 
-Implemented in 0.2.0 and exercised against the pinned official ENS contracts:
+Issuers can now manage multiple endorsements and agent identities beneath their own ENS namespace:
 
-- **One subname per endorsement.** Issuers create names such as `287365775.vouches.masusanou-dev.eth`, each with its own resolver record and independent withdrawal history.
-- **Agents as namespaces.** An agent has its own name, controller-declared identity, and individual profile-field grants under ENSv2 Enhanced Access Control. Its permissions can be revoked without handing it endorsement or namespace authority.
+- **One subname per endorsement.** Names such as `287365775.vouches.geeknees.eth` have their own resolver record and independent withdrawal history. Publishing a second endorsement does not overwrite the first.
+- **Agents as namespaces.** An agent has its own name and controller-declared GitHub identity and wallet. Controllers can grant and revoke access to individual profile fields through ENSv2 Enhanced Access Control, keeping endorsement and namespace authority with the issuer.
 - **Verification through the hierarchy.** The verifier follows each parent, registry, ownership, and relevant role change. Restoring changed authority does not reactivate an old endorsement.
 - **Maintainer onboarding.** Maintainers select verified recommendations and review explicit trust policy plus a SHA-pinned, read-only Action workflow.
 
+**Live on Sepolia:** the issuer created `vouches.geeknees.eth` and `287365775.vouches.geeknees.eth`
+using a PC wallet, then connected a dedicated resolver to the final name. Its controller-declared identity (`github:287365775` and its agent wallet)
+was read back through the full ENS hierarchy at block `11784326` on September 26, 2026.
+[Inspect the agent without a wallet](https://geeknees.github.io/devouch/?agent=287365775.vouches.geeknees.eth#namespaces).
+At that snapshot its profile permissions were ungranted. Identity publication does not prove account ownership or humanity.
+See the [live wallet-test record](docs/sepolia-namespace-check.md).
+
 The adoption trial in `geeknees/devouch` [passed on PR #17](https://github.com/geeknees/devouch/actions/runs/36219802283).
-This is a trial in the project's own repository; independent third-party adoption has not been demonstrated.
-The new hierarchy and agent operations were exercised on a local EVM running the pinned official contracts;
-new Sepolia subnames have not been deployed. See the [completion and trial record](docs/roadmap-plan.md).
-World ID remains deferred under the conditions below.
+The local EVM tests use the pinned official ENS contracts and cover simultaneous endorsements, individual withdrawal,
+agent field updates and permission revocation. See the [implementation and trial record](docs/roadmap-plan.md).
+
+## Roadmap
+
+Complete the real-wallet checks for endorsement publication and individual withdrawal under the new subnames,
+and agent profile permission changes. Independent third-party adoption is the next adoption milestone;
+the current Action trial is in the project's own repository. World ID remains deferred under the conditions below.
 
 ## Boundaries
 
