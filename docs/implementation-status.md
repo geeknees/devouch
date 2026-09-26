@@ -7,11 +7,14 @@
 過去の Devouch のコードは取り込まない。事前の設計資料を使用した事実を残し、
 Building from Scratch の適格性を運営が確認したとは扱わない。
 
+core・CLI・Web・文書の最初の実装コミットは、2026-09-26 00:30〜00:37 JSTに機能単位でまとめて作成した。
+そのため初期のGit履歴は個々の作業より粗く、途中の確認は本記録に残している。その後は小さな単位でコミットしている。
+
 ## Roadmap版の作業状況（2026-09-26）
 
 配布versionを0.2.0へ揃えた。署名形式とreport_versionは1のまま。保存したv0.1配布物と現行検証器を同じ原本・同じ公式ENSのEVM状態へ通す7件の比較を追加し、通常の互換性と権限履歴・期限切れの判定差を確認した。[更新・切り戻し手順](upgrading-0.2.md)と[PCウォレットでの実Sepolia確認手順](sepolia-namespace-check.md)を追加した。全統合52 tests、TypeScript99 tests / 304 assertions、Ruby70 tests / 380 assertions、型・Ruby構文検査が成功。全13配布ファイルの再build一致と、保存済みデモ・方針6ファイルの不変も確認した。0.2.0の[実PR Action](https://github.com/geeknees/devouch/actions/runs/36219802283)もvalid / acceptedで、全CI成功後にPR #17をmergeし、Pagesを更新した。公開先の確認は[0.2.0公開記録](release-evidence.md#020の公開2026-09-26)を参照。
 
-15:04 JSTには本人のPCウォレットで作った数値ラベル名の専用resolverとagent identityを確認した。その後、読みやすい`masusanou.vouches.geeknees.eth`を登録し、15:46〜15:48 JSTに推薦公開まで確認した。既存検証器がblock `11784538`で署名・ENS階層をvalid、対象を正しい`github:287365775`と判定した。公開画面も390px幅、Tenderlyのblock `11784543`でvalidと方針比較を確認。新しい名前のagent identityもblock `11784544`で読め、プロフィール権限は未付与だった。日時・公開位置・URLは[実機確認記録](sepolia-namespace-check.md)を参照。READMEの「What’s new in 0.2.0」に実装とこの実績を記載している。
+15:04 JSTには本人のPCウォレットで作った数値ラベル名の専用resolverとagent identityを確認した。その後、読みやすい`masusanou.vouches.geeknees.eth`を登録し、15:46〜15:48 JSTに推薦公開まで確認した。既存検証器がblock `11784538`で署名・ENS階層をvalid、対象を正しい`github:287365775`と判定した。公開画面も390px幅、Tenderlyのblock `11784543`でvalidと方針比較を確認。新しい名前のagent identityもblock `11784544`で読め、プロフィール権限は未付与だった。日時・公開位置・URLは[実機確認記録](sepolia-namespace-check.md)を参照。[READMEのENSv2 namespaces](../README.md#ensv2-namespaces)に実装とこの実績を記載している。
 
 16:19 JST、本人が旧数値名`287365775.vouches.geeknees.eth`だけをWithdrawした。取引`0xc34d78b82250d301d8bc0c7cdf01b5981e32405c4464f8f3fd67c3000cb0ea9f`のreceipt・calldata・空レコードを照合し、16:20 JSTのblock `11784708`で旧推薦revoked、新しい共有先validを確認した。16:21 JSTのblock `11784711`では既存の二つのdirect名もvalidで、原本のSHA-256は保存済みの値と一致した。個別失効は実Sepoliaで確認済み。旧原本を復元しても再有効化しない検査は、引き続きローカルEVMの証拠に限る。
 
@@ -19,7 +22,7 @@ Building from Scratch の適格性を運営が確認したとは扱わない。
 
 16:54〜17:06 JST、本人が旧数値名で`description`の権限付与、agent walletによる更新、controllerによる撤回を行った。3取引はそれぞれblock `11784878`・`11784901`・`11784939`でsuccess。17:09 JSTの既存検証器のsnapshot `11784948`では全プロフィール権限がfalse、紹介文とidentity・controllerは維持されていた。読み取り専用`eth_call`は撤回前の更新を許可し、撤回後は`EACUnauthorizedAccountRoles`で拒否した。本人もPC画面で再編集時の権限不足エラーを確認した。実取引・シミュレーション・本人の画面確認を分けて[記録](sepolia-namespace-check.md)した。17:08〜17:11 JSTには旧推薦のrevoked、共有中3件のvalidと原本digest、共有用名のagent identity・未付与権限・空のプロフィールを再確認した。
 
-2026-09-26 21:00 JSTで機能を固める。それ以降は現在のSepoliaデモ推薦・PR #2・検証ページを維持する修正だけにする。READMEの試用URLは0.2.0のサブネーム版へ揃えた。
+2026-09-26 21:00 JSTで機能を固める。それ以降は現在のSepoliaデモ推薦・PR #2・検証ページを維持する修正だけにする。READMEの試用URLはENSv2のサブネーム版へ揃えた。
 
 `v0.1`タグを既存デモの保存点としてremote照合後、`codex/roadmap-20260926`で階層registry・複数推薦・agent identityと限定権限・メンテナー導入を実装し、[PR #17](https://github.com/geeknees/devouch/pull/17)を公開した。[固定SHAのAction](https://github.com/geeknees/devouch/actions/runs/36218361289)は既存のgeeknees推薦をvalid / acceptedと判定した。新しい階層のwallet操作は公式コントラクトのローカルEVMと390pxブラウザで検証している。[要求別の記録](roadmap-plan.md)と[操作手順](namespaces.md)を参照。以下の既存公開記録はv0.1までの証拠として保持する。
 
