@@ -81,7 +81,8 @@ Universal Resolverの正引き一致確認を使い、推薦の公開先recordNa
 - 公開11ファイル（HTML・CSS・app/theme JS・ロゴ・ライセンス・5フォント）はHTTP 200で、ローカル配布物のSHA-256とすべて一致。
 - 配信 `app.js` SHA-256: `fc6f711924c4d0bf2dfdbb62252004a2088c3cee0ce80e6e77becdb30fa8e277`。
 
-物理スマートフォンは未確認で、390pxブラウザ検証とは区別する。ユーザーへ実機確認を依頼中。
+実スマートフォンでの確認を依頼し、2026-09-26 JSTにユーザーから「大丈夫そうです」と回答を得た。
+機種・ブラウザの種類と操作ごとの詳細は未記録。上記の日時・ブロック・詳細結果は、こちらのChromeでの検証証拠として区別する。
 スライドのQR、提出文、提出画像の撮り直しはClaude側の担当。
 Future欄への引き継ぎ案: "Support multiple active endorsements through per-contributor subnames, such as
 `github-287365775.issuer.eth`, with independent publication and withdrawal histories. This requires extending
