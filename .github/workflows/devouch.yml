@@ -16,9 +16,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - uses: geeknees/devouch@4aa03f7f6bea64701a6bbab0ff6420df1457b2fb
+      - uses: geeknees/devouch@0749383ec4b728b5d5490397b6baf7008b48e79a
         with:
-          policy-path: .devouch/policy.json
+          policy-path: .devouch/erc8004-policy.json
           mode: report
           rpc-url: https://rpc.sepolia.ethpandaops.io
           github-token: ${{ github.token }}

@@ -1,11 +1,11 @@
-# ABOUTME: Reports the PR author's portable ENSv2 endorsement with read-only GitHub access.
+# ABOUTME: Reports the PR author's portable ERC-8004 endorsement with read-only GitHub access.
 # ABOUTME: Runs only this release's bundled code and reads base/head JSON without a PR checkout.
 name: Devouch
-description: Verify portable contributor endorsements on ENSv2 and report repository acceptance.
+description: Verify portable contributor endorsements on ERC-8004 and report repository acceptance.
 inputs:
   policy-path:
     description: Repository-relative JSON policy path, read from the PR base SHA.
-    default: .devouch/policy.json
+    default: .devouch/erc8004-policy.json
   mode:
     description: Report-only mode; completed evidence decisions do not force merge approval.
     default: report
@@ -14,7 +14,7 @@ inputs:
     default: ${{ github.token }}
   rpc-url:
     description: Sepolia RPC endpoint with historical state and log access.
-    default: https://sepolia.gateway.tenderly.co
+    default: https://rpc.sepolia.ethpandaops.io
 outputs:
   evidence-status:
     description: Independent evidence status.

@@ -1,32 +1,18 @@
 # 実装時の注意
 
-- CLIを使えるエージェントの送信前確認は、既存CLIと配布用SKILLで完結する。ユーザーが2026-09-26にこの構成を選択した。ホスト側の接続要件がないままMCPを追加しない。
-- Factoryのproxy検査で通信失敗を一律にunsupported_registry / unsupported_resolverへ置き換えると、正しい名前を作り直す誤操作につながる。実コントラクトのrevertとRPC失敗を分け、後者はunavailableのまま表示する。-32005だけではレート制限と検索範囲制限を区別できない。
-- 保存する推薦一覧には名前と公開位置だけを入れる。再読込やRPC変更後に前回validを現在の証拠として復元しない。現在値が空なら保存位置から元の推薦を検証し、単なる欠如と失効を分ける。一覧から削除してもENSの推薦は消さない。
+- 送信前確認は既存CLIと同梱のdevouch-checkで完結する。ホスト側の接続要件がないままMCPや中央サービスを追加しない。
+- ERC-8004のagent IDはGitHub IDと別物で、0も有効。GitHub IDは `github:正の数値`。管理者の宣言と評価者の推薦はGitHubアカウント所有の認証ではない。
+- 所有者と承認済みoperatorの自己feedbackは公式実装が拒否する。ENS版の自己推薦や信頼リストを自動変換しない。移行ひな型の評価者リストは空から始める。
+- アドレスや実装が現在値に戻っていても、移転・権限・対応付け・upgradeの履歴があれば古いfeedbackを復活させない。取得失敗はinvalidに言い換えずunavailableに保つ。
+- 公開RPCでのコード読み取り、ローカルEVM、公開ウォレット取引、実GitHub Action、Pages配信は別の証拠。mainへのマージだけではPagesを更新しない。
+- PRの方針はbase SHA、参照はhead SHA、対象はPR作者IDに固定する。検証器と同じPRで方針形式を置き換えると旧baseとの不整合になる。先行PRで `.devouch/erc8004-policy.json` を追加し、そのマージ後にCLI・Web・Actionを同じパスへ切り替える。legacy_ens_policyを想定内としてマージせず、PR headの方針へ代替もしない。古い実行の再試行は古いbaseを使うため、新しいPRイベントで検証する。
+- pendingはウォレット送信前に保存する。応答不明なら重複送信せず、保存したplanとtxのsender / destination / value / calldata、receiptとstateを照合する。hex文字列は大小文字でなくbytesの一致を比較する。
+- JSONを読むTextDecoderは `ignoreBOM: true` と `fatal: true` を使い、BOMと不正UTF-8を厳密な検証へ渡す。Rubyでは `object_class` だけに頼らず `allow_duplicate_key: false` も使い、両言語の共通fixtureを検証する。
+- Rubyの長さ指定IO.readは空ファイルでnilを返す。入力エラーとして扱う。Time.iso8601は存在しない日付や不正な時差を補正するため、入力と正規化結果を照合する。
+- native fetchをclass fieldへ直接代入してthis経由で呼ぶとChromeでIllegal invocationになる。既定fetcherは関数で包み、ブラウザでも通信を検査する。
+- ブラウザテストはファイルごとにBunプロセスとEVMを分離する。旧Chromiumのpipe descriptorが後のブラウザに影響した問題を再発させない。
+- 保存したテーマは同梱theme.jsをheadから同期読込みする。CSPがselfのみのためインライン初期化は動かない。モバイル幅、両テーマ、初期描画を確認する。
+- 入力に架空のidentityを自動補完しない。ボタンの余白とrequired入力を維持する。検証結果を現在の証拠としてlocalStorageへ復元しない。
+- source、ロゴ、noticeを変えたらdistも再生成し、rebuild後の一致を確認する。Bundler lockの空CHECKSUMSをfrozen解除で隠さない。
 
-- ENSv2のtext setterはDNS wire-formatの名前を受け取る。ENSv1のnode setterとはABIが異なる。公式artifactとの照合テストを維持する。
-- registryのtoken IDには下位32bitの更新世代がある。イベントをlabelへ結び付けるとき、単純なlabelhash全体との等値比較では所有権変更を見逃す。
-- 階層の履歴はregistryとlabelの組で照合する。子のラベルが `287365775` でも、別registryの `287365775.eth` の更新とは無関係。direct名前専用のイベント判定を残したまま階層判定を追加すると、無関係な名前の更新で誤ってinvalidになる。
-- 互換性は旧sourceの読み取りだけで推定しない。固定したv0.1配布物との同一状態の比較では、registryのlabel権限変更・復元は旧版でもinvalidだった。新たに厳しくなったroot権限の履歴と区別する。比較fixtureの配布bytesとライセンスは再生成せず保持する。
-- 現在のtextだけでは失効を判定できない。proxy配備からの履歴、リンク・実装・名前の接続変更を確認する。初期配備より後のanchorを受け入れない。
-- devouch.vouchの補助grantはresolver内の同じキー全体に作用する。一つの名前だけに限定する権限とは表示しない。専用resolverを使う。
-- agentのプロフィール権限も同じキーの全recordへ作用する。独立したresolverの初期化だけでなく、読取り時にもLinkedの全履歴を確認し、後から別名・別recordを追加した共用状態を限定権限として表示しない。
-- wallet取引のcalldataをreceiptから照合するときはhex文字列の大小文字ではなくbytesの一致を比較する。bytes引数へchecksum付きアドレスを渡すと、符号化済み文字列に大文字が残ってもRPCは小文字で返す場合がある。
-- identity入力の数値例をplaceholderだけで示すと、入力済みの値と誤認される。例は欄外に置き、入力欄には入力を促す文言を使う。未入力を架空のidentityで自動補完せず、必要な項目名を示す。原本用の汎用`invalid_format`へ落とさず、取引を送らないこともブラウザテストで確認する。
-- 入力欄の直後に単独ボタンを置く場合も既存の`form-actions`で囲む。裸のbuttonはtextareaとの間隔が0になり、PCとスマホの両方で操作が詰まって見える。入力から操作への余白は両テーマ・画面幅で確認する。
-- 公開RPCがローカルで成功してもGitHub runnerでの到達性・制限は同じとは限らない。PR #17ではTenderlyが2回とも`rpc_unavailable`、同じ固定ActionをethPandaOpsへ明示変更するとvalid / acceptedだった。導入手順と出力workflowの接続先を実行結果へ揃え、取得失敗を受入れ判定へ変えたり、黙って別RPCへ切り替えたりしない。
-- 1件の制限は同じresolver / recordId / keyに対するもの。同じ所有者は別の直接ENS名と別recordIdで推薦を併存できる。実Sepoliaでmasusanou-dev.eth（record 1）とgeeknees.eth（record 2）が同じresolver上で両方valid / acceptedと確認済み。新しい名前だけを理由にresolverの追加配備やrepo方針の変更を必須にしない。独立した推薦者間では補助grantの作用範囲を共有しない。
-- 過去原本を取得するpublication hintは現在の名前の接続先に依存させない。receiptの原本・署名・公開先を照合し、通常の履歴検証へ戻す。
-- Rubyの長さ指定IO.readは空ファイルでnilを返す。空入力をinternal errorへ落とさず、credentialとpolicyの入力エラーとして扱う。
-- ローカルEVMのpass、公開RPCのread、Sepolia取引、実GitHub Actionは別の証拠。公開値を未確認のまま実機デモ完了にしない。
-- 現在のbytecodeや直近logsが読めても、古いstateが読めるRPCとは限らない。実際のnameでprepareまで確認する。proxyの配備探索は現在から遡り、無関係に古いfactory時点との中間stateを最初に要求しない。
-- 新しいresolverのprepare成功は、時間経過後のstate保持を保証しない。デモ前は配備前・配備時の読み取りまで再確認する。PublicNodeは実名でも後に履歴取得不能となり、TenderlyとethPandaOpsで再確認した。
-- ローカルgemだけで作ったBundler 4のlockfileはCHECKSUMSが空のままになることがある。既存gemでテストが通ってもCIのfrozen installは失敗する。`bundle lock --add-checksums` で補完し、空のBUNDLE_PATHとfrozenモードで再確認する。frozenを解除してCIを通す修正にはしない。
-- `assets/devouch-logo.svg` も配布物の入力。ロゴを変えたら `bun run build` で `dist/web/devouch-logo.svg` を更新して一緒に保存する。機能テストが通っても、配布物が古ければCIの再build一致検査は失敗する。
-- Rubyの `Time.iso8601` は存在しない日付や `+09:99` の時差を自動補正する。推薦の期限は入力とparse後の表記を照合し、別の日時へ変わった入力を拒否する。UTCの `Z` / `+00:00` / `-00:00`、正しい時差とうるう日は区別して受け入れる。
-- ローカル配信のCSPは `script-src 'self'` のため、HTML内のインライン初期化は実行されない。保存した配色は同梱の `theme.js` をheadから同期読み込みして描画前に適用する。初期配色の検証ではメインの `app.js` を遅延させ、再読み込みでも配色が戻らないことを確認する。
-- 推薦者のPrimary Nameはviemの `getEnsName({ address, blockNumber })` で取得でき、Universal Resolverが正引き一致を検査する。公開先の `recordName` とは別の値として扱い、名前未設定・取得失敗で証拠や方針の判定を変えない。
-- ブラウザのnative `fetch` をclassのfieldへ直接代入して `this.fetcher(...)` と呼ぶと、Chromeではreceiverが変わり `Illegal invocation` になる。注入用の既定値は `(url, options) => fetch(url, options)` で包み、ブラウザ結合テストでも通信を検査する。Node/Bunだけのテストでは再現しない。
-- GitHubから読む推薦・方針はUTF-8原本のbytesを保つ。`TextDecoder` は既定で先頭BOMを落とすため、`ignoreBOM: true` と `fatal: true` で厳密なJSON検証へ渡す。PRの方針はbase SHA、推薦はhead SHA、対象はPR作者の数値IDに固定する。
-- Ruby JSONのバージョンによっては `object_class` の `[]=` を重複キー検出に使えない。`allow_duplicate_key: false` を併用し、Ruby CLIとWebで同じ重複キーの方針fixtureを拒否することを確認する。
-- Bun内で複数のChromiumを順に起動・終了すると、後のブラウザ操作が無応答になることがある。旧ブラウザのpipe descriptorをGC時に再度閉じる[既知の報告](https://github.com/microsoft/playwright/issues/42692)と一致する症状を、既存browser/themeの2ファイルだけでも再現した。結合テストはファイルごとにBunプロセスとEVMを分け、同じ23ケースを実行する。
+ENS固有の旧実装メモは[移行前の固定版](https://github.com/geeknees/devouch/blob/32b9eeb7990724696dbb5fb2ee50afd2a6f5822c/gotchas.md)を参照。現行操作と旧プロトコルの制約を混同しない。

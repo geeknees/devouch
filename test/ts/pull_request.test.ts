@@ -1,36 +1,28 @@
 // ABOUTME: Checks public PR identity, immutable file selection, and bounded anonymous GitHub reads.
-// ABOUTME: Proves that only a signature bound to the PR author reaches the existing chain verifier.
+// ABOUTME: Proves that only on-chain feedback bound to the PR author reaches repository acceptance.
 import { expect, test } from 'bun:test';
-import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts';
-import { domain, typedData, validateMessage } from '../../src/credential';
 import { EvidenceError } from '../../src/errors';
 import { GitHubReader, parsePullRequestUrl } from '../../src/github';
 import { verifyPullRequest } from '../../src/pull-request';
-import type { ChainEvidence, ChainReader } from '../../src/chain';
-
+import type { FeedbackEvidence, Erc8004Reader } from '../../src/erc8004';
+import { DEFAULT_DEPLOYMENT } from '../../src/erc8004-deployment';
 const url = 'https://github.com/maintainer/repo/pull/7';
 const base = 'a'.repeat(40), head = 'b'.repeat(40);
-const account = privateKeyToAccount(generatePrivateKey());
-const resolver = `0x${'22'.repeat(20)}` as const, implementation = `0x${'33'.repeat(20)}` as const;
-const policy = { repositoryId: 'maintainer/repo', chainId: 11155111, trustedIssuers: [account.address],
-  allowedScopes: ['oss-contribution'], allowedResolvers: [{ address: resolver, implementation }], requiredIssuers: 1 };
+const issuer = '0x' + '11'.repeat(20), registry = DEFAULT_DEPLOYMENT.registry;
+const policy = { format: 'devouch-erc8004-policy-v1', repositoryId: 'maintainer/repo', chainId: 11155111,
+  trustedIssuers: [issuer], allowedScopes: ['oss-contribution'], allowedRegistries: [registry], requiredIssuers: 1 };
 const metadata = () => ({ number: 7, user: { login: 'contributor', id: 12345 },
-  base: { sha: base, repo: { full_name: 'maintainer/repo' } },
-  head: { sha: head, repo: { full_name: 'contributor/fork' } } });
+  base: { sha: base, repo: { full_name: 'maintainer/repo' } }, head: { sha: head, repo: { full_name: 'contributor/fork' } } });
 const encoded = (raw: string) => ({ type: 'file', encoding: 'base64', size: new TextEncoder().encode(raw).length,
   content: Buffer.from(raw).toString('base64') });
-async function credential(subject = 'github:12345') {
-  const now = BigInt(Math.floor(Date.now() / 1000));
-  const message = validateMessage({ version: '1', id: `0x${'11'.repeat(32)}`, requestNonce: `0x${'44'.repeat(32)}`,
-    issuer: account.address, subject, scope: 'oss-contribution', issuedAt: now.toString(), expiresAt: (now + 3600n).toString(),
-    recordName: 'issuer.eth', resolver, recordId: '1', anchorStartBlock: '100' });
-  return JSON.stringify({ formatVersion: 1, domain: domain(message), endorsement: { message,
-    signature: await account.signTypedData(typedData(message)) } });
+async function credential() {
+  return JSON.stringify({ format: 'devouch-erc8004-v1', chainId: 11155111,
+    identityRegistry: registry.identityRegistry, reputationRegistry: registry.reputationRegistry,
+    agentId: '0', clientAddress: issuer, feedbackIndex: '1', feedbackBlock: '100' });
 }
-const proof = (status: ChainEvidence['evidence_status'] = 'valid'): ChainEvidence => ({
-  evidence_status: status, reason_codes: status === 'valid' ? [] : [status], implementation,
-  publication: null, current_value: '', hierarchy: [], snapshot: { chain_id: 11155111, block_number: '101',
-    block_hash: `0x${'55'.repeat(32)}`, block_timestamp: '1000', checked_at: new Date().toISOString(), confirmations: 2 } });
+const proof = (status: FeedbackEvidence['evidence_status'] = 'valid'): FeedbackEvidence => ({
+  evidence_status: status, reason_codes: status === 'valid' ? [] : [status], chainId: 11155111,
+  issuer, subject: 'github:12345', scope: 'oss-contribution', registry });
 function api(raw: string | null, policyRaw: string | null = JSON.stringify(policy), meta = metadata()) {
   const requests: { url: string; options: RequestInit }[] = [];
   const github = new GitHubReader(async (request, options) => {
@@ -57,7 +49,7 @@ test.each(['http://github.com/o/r/pull/1', 'https://example.com/o/r/pull/1', 'ht
 test('reads the base policy and fork-head endorsement at immutable SHAs without credentials', async () => {
   const raw = await credential(), { github, requests } = api(raw);
   let inspected = '';
-  const report = await verifyPullRequest(url, { inspect: async parsed => { inspected = parsed.raw; return proof(); } }, github);
+  const report = await verifyPullRequest(url, { inspect: async parsed => { inspected = JSON.stringify(parsed); return proof(); } }, github);
   expect(inspected).toBe(raw);
   expect(report.pullRequest).toMatchObject({ repository: 'maintainer/repo', number: 7, authorId: '12345',
     authorLogin: 'contributor', baseSha: base, headSha: head, headRepository: 'contributor/fork' });
@@ -66,8 +58,8 @@ test('reads the base policy and fork-head endorsement at immutable SHAs without 
   expect(report.policyDigest).toBe('sha256:' + new Bun.CryptoHasher('sha256').update(JSON.stringify(policy)).digest('hex'));
   expect(requests.map(request => request.url)).toEqual([
     'https://api.github.com/repos/maintainer/repo/pulls/7',
-    `https://api.github.com/repos/maintainer/repo/contents/.devouch/policy.json?ref=${base}`,
-    `https://api.github.com/repos/contributor/fork/contents/.devouch/vouches/github-12345.json?ref=${head}`,
+    `https://api.github.com/repos/maintainer/repo/contents/.devouch/erc8004-policy.json?ref=${base}`,
+    `https://api.github.com/repos/contributor/fork/contents/.devouch/feedback/github-12345.json?ref=${head}`,
   ]);
   for (const { options } of requests) {
     expect(options).toMatchObject({ method: 'GET', credentials: 'omit', redirect: 'error', referrerPolicy: 'no-referrer' });
@@ -75,33 +67,29 @@ test('reads the base policy and fork-head endorsement at immutable SHAs without 
   }
 });
 
-test('a different signed subject or invalid signature never reaches ENS verification', async () => {
-  const altered = JSON.parse(await credential()); altered.endorsement.message.subject = 'github:999';
-  for (const [raw, reason, signature] of [[await credential('github:999'), 'subject_mismatch', 'valid'],
-    [JSON.stringify(altered), 'invalid_signature', 'invalid']] as const) {
-    let calls = 0;
-    const report = await verifyPullRequest(url, { inspect: async () => { calls++; return proof(); } }, api(raw).github);
-    expect(calls).toBe(0);
-    expect(report.evidence).toMatchObject({ evidence_status: 'invalid', reason_codes: [reason], snapshot: null });
-    expect(report.signatureStatus).toBe(signature);
-    expect(report.decision).toEqual({ policy_status: 'not_evaluated', reason_codes: [reason] });
-  }
+test('legacy credentials never reach the chain reader and another GitHub subject cannot be accepted', async () => {
+  let calls = 0;
+  const legacy = await verifyPullRequest(url, { inspect: async () => { calls++; return proof(); } },
+    api(JSON.stringify({ formatVersion: 1 })).github);
+  expect(calls).toBe(0);
+  expect(legacy.evidence.reason_codes).toEqual(['legacy_ens_credential']);
+  const mismatched = await verifyPullRequest(url, { inspect: async () => ({ ...proof(), subject: 'github:999' }) }, api(await credential()).github);
+  expect(mismatched.evidence.reason_codes).toEqual(['subject_mismatch']);
+  expect(mismatched.decision.policy_status).toBe('not_evaluated');
 });
 test('a missing endorsement is missing rather than accepted or rejected', async () => {
   const report = await verifyPullRequest(url, { inspect: async () => { throw new Error('must not inspect'); } }, api(null).github);
   expect(report.evidence).toMatchObject({ evidence_status: 'missing', reason_codes: ['credential_missing'] });
   expect(report.decision.policy_status).toBe('not_evaluated');
-  expect(report.signatureStatus).toBe('not_verified');
 });
 test.each(['revoked', 'expired', 'invalid', 'missing'] as const)('preserves the existing verifier’s %s result', async status => {
   const report = await verifyPullRequest(url, { inspect: async () => proof(status) }, api(await credential()).github);
   expect(report.evidence.evidence_status).toBe(status);
-  expect(report.signatureStatus).toBe('valid');
   expect(report.decision).toEqual({ policy_status: 'not_evaluated', reason_codes: [status] });
 });
 test('RPC failure remains unavailable, and valid evidence can be rejected by the real policy', async () => {
   const raw = await credential();
-  const failing: Pick<ChainReader, 'inspect'> = { inspect: async () => { throw new EvidenceError('rpc_unavailable', 'unavailable'); } };
+  const failing: Pick<Erc8004Reader, 'inspect'> = { inspect: async () => { throw new EvidenceError('rpc_unavailable', 'unavailable'); } };
   const unavailable = await verifyPullRequest(url, failing, api(raw).github);
   expect(unavailable.evidence.evidence_status).toBe('unavailable');
   expect(unavailable.decision.policy_status).toBe('not_evaluated');
@@ -144,14 +132,14 @@ test('content decoding rejects unsupported types, oversized files, and corrupt b
     { ...encoded('{}'), size: 1 }, { ...encoded('{}'), content: '??' },
     { type: 'file', encoding: 'base64', size: 1, content: '/w==' }]) {
     const github = new GitHubReader(async () => Response.json(data));
-    await expect(github.file('maintainer/repo', '.devouch/vouches/github-12345.json', head, 4096))
+    await expect(github.file('maintainer/repo', '.devouch/feedback/github-12345.json', head, 4096))
       .rejects.toMatchObject({ code: 'github_file_invalid' });
   }
 });
 test('GitHub file decoding preserves UTF-8 bytes, whitespace, and BOM for strict verification', async () => {
   for (const raw of ['{ "note": "推薦" }\n', '\ufeff{}']) {
     const github = new GitHubReader(async () => Response.json(encoded(raw)));
-    expect(await github.file('maintainer/repo', '.devouch/policy.json', base, 16384)).toBe(raw);
+    expect(await github.file('maintainer/repo', '.devouch/erc8004-policy.json', base, 16384)).toBe(raw);
   }
 });
 test('a cancelled read never starts chain verification', async () => {

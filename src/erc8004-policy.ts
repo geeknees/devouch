@@ -1,9 +1,9 @@
 // ABOUTME: Applies repository trust to normalized ERC-8004 evidence independently from ENS policy.
 // ABOUTME: Pins registry addresses, implementations, and code hashes instead of treating registries as resolvers.
-import { exactKeys, object, strictJson } from './credential';
+import { exactKeys, object, strictJson } from './json';
 import { EvidenceError, insist } from './errors';
 import { sameAddress, validAddress, validHash, type FeedbackEvidence, type RegistryPin } from './erc8004';
-import type { PolicyDecision } from './policy';
+export type PolicyDecision = { policy_status: 'accepted' | 'rejected' | 'not_evaluated'; reason_codes: string[] };
 
 export type Erc8004Policy = { format: 'devouch-erc8004-policy-v1'; repositoryId: string; chainId: number;
   trustedIssuers: string[]; allowedScopes: string[]; allowedRegistries: RegistryPin[]; requiredIssuers: 1 };
@@ -11,6 +11,10 @@ export const registryKeys = ['identityRegistry', 'reputationRegistry', 'identity
   'identityCodeHash', 'reputationCodeHash', 'identityProxyCodeHash', 'reputationProxyCodeHash'] as const;
 
 export function parseErc8004Policy(raw: string): Erc8004Policy {
+  try {
+    const legacy = object(strictJson(raw, 16384));
+    if ('allowedResolvers' in legacy && legacy.format !== 'devouch-erc8004-policy-v1') throw new EvidenceError('legacy_ens_policy');
+  } catch (error) { if (error instanceof EvidenceError && error.code === 'legacy_ens_policy') throw error; }
   try {
     const p = object(strictJson(raw, 16384));
     exactKeys(p, ['format', 'repositoryId', 'chainId', 'trustedIssuers', 'allowedScopes', 'allowedRegistries', 'requiredIssuers']);

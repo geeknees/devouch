@@ -1,5 +1,7 @@
 # ERC-8004 evaluation
 
+This page records the isolated PoC in PR #26. The subsequent product migration is documented in [upgrading to 0.3](upgrading-0.3.md); references below to the unchanged ENS product describe the PoC boundary.
+
 This implements [Issue #25](https://github.com/geeknees/devouch/issues/25): read one third-party feedback on a disposable local EVM, validate its evidence, and apply two independent repository policies. It adds an evaluation path alongside the ENS application. It does not change the existing CLI, web workspace, Action, or ENS policy format.
 
 ## Reproduce

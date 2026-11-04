@@ -10,7 +10,7 @@ import reputation from '../../vendor/erc-8004/ReputationRegistryUpgradeable.json
 import minimal from '../../vendor/erc-8004/MinimalUUPS.json';
 import proxy from '../../vendor/erc-8004/ERC1967Proxy.json';
 
-export async function setupErc8004(url = process.env.DEVOUCH_TEST_RPC!) {
+export async function setupErc8004(url = process.env.DEVOUCH_TEST_RPC!, fixedTime = true) {
   if (!/^http:\/\/127\.0\.0\.1:\d+$/.test(url)) throw new Error('Local EVM required');
   const rpc = async (method: string, params: unknown[] = []) => {
     const response = await fetch(url, { method: 'POST', headers: { 'content-type': 'application/json' },
@@ -23,7 +23,7 @@ export async function setupErc8004(url = process.env.DEVOUCH_TEST_RPC!) {
   const [owner, evaluator, operator, successor] = accounts as [Address, Address, Address, Address];
   const transport = http(url, { retryCount: 0, timeout: 15000 });
   const client = createPublicClient({ chain: sepolia, transport, pollingInterval: 10 });
-  if ((await client.getBlockNumber({ cacheTime: 0 })) === 0n) await rpc('evm_setNextBlockTimestamp', [2000000000]);
+  if (fixedTime && (await client.getBlockNumber({ cacheTime: 0 })) === 0n) await rpc('evm_setNextBlockTimestamp', [2000000000]);
   const wallet = (account: Address) => createWalletClient({ account, chain: sepolia, transport });
   const receipt = (hash: Hex) => client.waitForTransactionReceipt({ hash });
   const write = async (account: Address, address: Address, abi: Abi, functionName: string, args: unknown[] = []) => {

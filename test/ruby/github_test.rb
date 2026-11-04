@@ -18,7 +18,7 @@ class GitHubTest < Minitest::Test
   end
 
   def read(value)
-    Response.new(value).file("owner/repo", ".devouch/policy.json", "a" * 40, limit: 4096)
+    Response.new(value).file("owner/repo", ".devouch/erc8004-policy.json", "a" * 40, limit: 4096)
   end
 
   def test_exact_utf8_bytes_survive_the_github_response
@@ -80,9 +80,9 @@ class GitHubTest < Minitest::Test
 
   def test_policy_get_preserves_the_immutable_ref
     with_response(200, [JSON.generate(record("{}"))]) do |api|
-      assert_equal "{}", api.file("owner/repo", ".devouch/policy.json", "a" * 40, limit: 4096)
+      assert_equal "{}", api.file("owner/repo", ".devouch/erc8004-policy.json", "a" * 40, limit: 4096)
     end
-    assert_equal "/repos/owner/repo/contents/.devouch/policy.json?ref=#{"a" * 40}", @requests.fetch(0).path
+    assert_equal "/repos/owner/repo/contents/.devouch/erc8004-policy.json?ref=#{"a" * 40}", @requests.fetch(0).path
   end
 
   def test_redirect_rate_limit_missing_metadata_and_bad_json_are_unavailable
@@ -95,7 +95,7 @@ class GitHubTest < Minitest::Test
       assert_equal 1, @requests.length
     end
     with_response(404, ["absent"]) do |api|
-      assert_nil api.file("owner/repo", ".devouch/policy.json", "a" * 40, limit: 4096)
+      assert_nil api.file("owner/repo", ".devouch/erc8004-policy.json", "a" * 40, limit: 4096)
     end
   end
 

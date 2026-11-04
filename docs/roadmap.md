@@ -2,7 +2,7 @@
 
 The maintained application provides contributor endorsement publication, withdrawal, local verification, a static workspace, and a read-only GitHub Action. See the [protocol](protocol.md) for supported behavior and [history](history.md) for dated verification evidence.
 
-The next integration work is [ERC-8004 evaluation, Issue #25](https://github.com/geeknees/devouch/issues/25): compare standard third-party feedback with the existing ENS model while keeping evidence and repository acceptance separate. Replacing ENS is a separate migration with explicit compatibility and rollback instructions.
+The ERC-8004 evaluation is implemented in [Issue #25](https://github.com/geeknees/devouch/issues/25); the source now provides the separate [migration](upgrading-0.3.md). Public-chain feedback publication/withdrawal by a real wallet and rollout of the hosted ERC workspace remain release acceptance work. Public registry reads and local EVM tests are separate evidence.
 
 Independent third-party adoption remains an open milestone. The recorded real Action trial was in this project's own repository; it is not independent adoption evidence.
 

@@ -7,8 +7,8 @@ require_relative "../../lib/devouch/action"
 class ActionTest < Minitest::Test
   class API
     attr_reader :calls
-    def initialize(event, missing: false)
-      @event, @missing, @calls = event, missing, []
+    def initialize(event, missing: false, policies: nil)
+      @event, @missing, @policies, @calls = event, missing, policies, []
     end
     def pull_request(repo, number)
       @calls << [:pull, repo, number]
@@ -16,7 +16,8 @@ class ActionTest < Minitest::Test
     end
     def file(repo, path, sha, limit:)
       @calls << [:file, repo, path, sha, limit]
-      return nil if @missing && path.include?("/vouches/")
+      return nil if @missing && path.include?("/feedback/")
+      return @policies[[path, sha]] if @policies && path.end_with?("policy.json")
       path.end_with?("policy.json") ? JSON.generate({"repositoryId" => "maintainer/repo"}) : "{}"
     end
   end
@@ -31,7 +32,7 @@ class ActionTest < Minitest::Test
   def runner(api, status: 0, evidence: "valid", policy: "accepted")
     verifier = ->(args) {
       @args = args
-      report = {"report_version" => 1, "command" => "verify", "evidence_status" => evidence, "policy_status" => policy,
+      report = {"report_version" => 2, "command" => "verify", "evidence_status" => evidence, "policy_status" => policy,
         "reason_codes" => [], "subject" => "github:12345", "subject_source" => "argument", "issuer" => nil,
         "scope" => "oss-contribution", "human_verification" => "not_included", "snapshot" => nil,
         "policy" => {"repository_id" => "maintainer/repo", "digest" => "sha256:" + "a" * 64},
@@ -48,7 +49,7 @@ class ActionTest < Minitest::Test
     assert_includes @args, "github:12345"
     refute_includes @args, "github:999"
     assert_includes api.calls, [:file, "maintainer/repo", ".devouch/policy.json", "a" * 40, 16_384]
-    assert_includes api.calls, [:file, "contributor/fork", ".devouch/vouches/github-12345.json", "b" * 40, 4096]
+    assert_includes api.calls, [:file, "contributor/fork", ".devouch/feedback/github-12345.json", "b" * 40, 4096]
   end
 
   def test_updated_api_head_does_not_replace_the_rerun_event_head
@@ -56,7 +57,38 @@ class ActionTest < Minitest::Test
     api_event["pull_request"]["head"]["sha"] = "c" * 40
     api = API.new(api_event)
     runner(api).run(event: @event, repository: "maintainer/repo", policy_path: ".devouch/policy.json")
-    assert_includes api.calls, [:file, "contributor/fork", ".devouch/vouches/github-12345.json", "b" * 40, 4096]
+    assert_includes api.calls, [:file, "contributor/fork", ".devouch/feedback/github-12345.json", "b" * 40, 4096]
+  end
+
+  def test_staged_base_policy_completes_a_missing_report_while_ens_policy_coexists
+    data = JSON.parse(File.read(File.expand_path("../../examples/erc8004/policy.json", __dir__)))
+    data["repositoryId"] = "maintainer/repo"
+    raw = JSON.generate(data)
+    policies = {
+      [".devouch/policy.json", "a" * 40] => JSON.generate({"repositoryId" => "maintainer/repo", "allowedResolvers" => []}),
+      [".devouch/erc8004-policy.json", "a" * 40] => raw
+    }
+    api = API.new(@event, missing: true, policies: policies)
+    result = Devouch::Action.new(api: api).run(event: @event, repository: "maintainer/repo")
+    assert_equal 0, result["action_exit_status"]
+    assert_equal ["missing", "not_evaluated"], result.values_at("evidence_status", "policy_status")
+    assert_equal "sha256:#{Digest::SHA256.hexdigest(raw)}", result.dig("policy", "digest")
+    assert_equal ".devouch/erc8004-policy.json", result.dig("github", "policy_path")
+    refute api.calls.any? { |call| call[2] == ".devouch/policy.json" }
+  end
+
+  def test_missing_staged_policy_does_not_fall_back_to_ens_or_pr_head_policy
+    policies = {
+      [".devouch/policy.json", "a" * 40] => JSON.generate({"repositoryId" => "maintainer/repo", "allowedResolvers" => []}),
+      [".devouch/erc8004-policy.json", "b" * 40] => "{}"
+    }
+    api = API.new(@event, missing: true, policies: policies)
+    error = assert_raises(Devouch::Error) do
+      Devouch::Action.new(api: api).run(event: @event, repository: "maintainer/repo")
+    end
+    assert_equal "policy_missing", error.code
+    assert_equal [[:file, "maintainer/repo", ".devouch/erc8004-policy.json", "a" * 40, 16_384]],
+      api.calls.select { |call| call.first == :file }
   end
 
   def test_report_mode_completed_rejection_is_success_but_unavailable_is_failure
@@ -85,10 +117,10 @@ class ActionTest < Minitest::Test
 
   def test_summary_does_not_render_input_as_html_or_inject_table_rows
     summary = Devouch::Action.summary({"issuer" => "<script>|\n\"unsafe\"",
-      "hierarchy" => [{"name" => "eth"}, {"name" => "<img>|\nparent.eth"}]})
+      "registry" => {"reputationRegistry" => "<img>|\nregistry"}})
     refute_includes summary, "<script>"
     assert_includes summary, "&lt;script&gt;&#124; &quot;unsafe&quot;"
     refute_includes summary, "<img>"
-    assert_includes summary, "ENS hierarchy | eth -&gt; &lt;img&gt;&#124; parent.eth"
+    assert_includes summary, "Reputation Registry | &lt;img&gt;&#124; registry"
   end
 end

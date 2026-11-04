@@ -1,5 +1,5 @@
 # ABOUTME: Supplies deterministic public GitHub responses to the real pre-submission CLI in integration tests.
-# ABOUTME: Keeps the bundled signature, ENS history, snapshot, and policy verification unchanged.
+# ABOUTME: Keeps the bundled ERC-8004 evidence, snapshot, and policy verification unchanged.
 require_relative "../../lib/devouch/cli"
 
 class FixtureGitHub
@@ -18,7 +18,7 @@ class FixtureGitHub
   end
 
   def file(repository, path, sha, limit:)
-    unless repository == @fixture.fetch("repository") && path == ".devouch/policy.json" && sha == @fixture.fetch("sha") && limit == 16_384
+    unless repository == @fixture.fetch("repository") && path == ".devouch/erc8004-policy.json" && sha == @fixture.fetch("sha") && limit == 16_384
       raise "Policy was not pinned to the destination commit"
     end
     @fixture.fetch("policy")

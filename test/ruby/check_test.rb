@@ -35,17 +35,19 @@ class CheckTest < Minitest::Test
     end
   end
 
+  PIN = {"identityRegistry" => "0x8004A818BFB912233c491871b3d84c89A494BD9e", "reputationRegistry" => "0x8004B663056A597Dffe9eCcC1965A193B7388713", "identityImplementation" => "0x7274e874CA62410a93Bd8bf61c69d8045E399c02", "reputationImplementation" => "0x16e0FA7f7C56B9a767E34B192B51f921BE31dA34", "identityCodeHash" => "0xa5f9624ea85e45b3f4b8558581f03bfb3e6cefab278d7bf0500ec9bd065dc16f", "reputationCodeHash" => "0x38602de97f1bd86f0a4729f7f3c0a78b1d27892e6eb581272cce5504a68fd00b", "identityProxyCodeHash" => "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41", "reputationProxyCodeHash" => "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41"}
+
   def setup
     @directory = Dir.mktmpdir("devouch-check-test-")
     @credential = File.join(@directory, "vouch.json")
     @raw = "{ \"fixture\": true }\n"
     File.binwrite(@credential, @raw)
-    @policy = {repositoryId: "maintainer/repo", chainId: 11155111, trustedIssuers: [ISSUER],
-      allowedScopes: ["oss-contribution"], allowedResolvers: [{address: RESOLVER, implementation: IMPLEMENTATION}], requiredIssuers: 1}
+    @policy = {format: "devouch-erc8004-policy-v1", repositoryId: "maintainer/repo", chainId: 11155111, trustedIssuers: [ISSUER],
+      allowedScopes: ["oss-contribution"], allowedRegistries: [PIN], requiredIssuers: 1}
     @api = API.new(JSON.pretty_generate(@policy) + "\n")
     @bridge_calls = []
     @evidence = {"evidence_status" => "valid", "reason_codes" => [], "subject" => "github:12345",
-      "issuer" => ISSUER, "scope" => "oss-contribution", "resolver" => RESOLVER, "implementation" => IMPLEMENTATION,
+      "issuer" => ISSUER, "scope" => "oss-contribution", "chainId" => 11155111, "registry" => PIN, "implementation" => IMPLEMENTATION,
       "snapshot" => {"chain_id" => 11155111, "block_number" => "11780000"}}
   end
 
@@ -78,10 +80,10 @@ class CheckTest < Minitest::Test
     assert_equal "argument", report["subject_source"]
     assert_equal "not_included", report["human_verification"]
     assert_equal({"repository" => "maintainer/repo", "base_branch" => "main", "base_sha" => SHA,
-      "policy_path" => ".devouch/policy.json"}, report["github"])
+      "policy_path" => ".devouch/erc8004-policy.json"}, report["github"])
     assert_equal "sha256:#{Digest::SHA256.hexdigest(@api.raw)}", report.dig("policy", "digest")
     assert_equal [[:repository, "maintainer/repo"], [:branch, "maintainer/repo", "main"],
-      [:file, "maintainer/repo", ".devouch/policy.json", SHA, 16_384]], @api.calls
+      [:file, "maintainer/repo", ".devouch/erc8004-policy.json", SHA, 16_384]], @api.calls
     assert_equal [{"command" => "verify", "raw" => @raw, "subject" => "github:12345", "rpc_url" => Devouch::DEFAULT_RPC}], @bridge_calls
     assert_equal @raw, File.binread(@credential)
     assert_equal files, Dir.children(@directory)
@@ -93,7 +95,7 @@ class CheckTest < Minitest::Test
     assert_equal 0, status
     assert_equal "release/v1", report.dig("github", "base_branch")
     assert_equal "b" * 40, report.dig("github", "base_sha")
-    assert_includes @api.calls, [:file, "maintainer/repo", ".devouch/policy.json", "b" * 40, 16_384]
+    assert_includes @api.calls, [:file, "maintainer/repo", ".devouch/erc8004-policy.json", "b" * 40, 16_384]
   end
 
   def test_repository_input_case_is_canonicalized_from_matching_github_metadata
@@ -124,12 +126,12 @@ class CheckTest < Minitest::Test
     end
   end
 
-  def test_a_saved_publication_is_passed_to_the_same_verifier
+  def test_legacy_publication_hint_is_rejected_before_verification
     hint = {"chainId" => 11155111, "transactionHash" => "0x" + "ab" * 32, "blockNumber" => "42", "blockHash" => "0x" + "cd" * 32}
     path = File.join(@directory, "publication.json")
     File.write(path, JSON.generate(hint))
-    assert_equal 0, run_check(arguments + ["--publication", path]).first
-    assert_equal hint, @bridge_calls.fetch(0).fetch("publication")
+    assert_equal 4, run_check(arguments + ["--publication", path]).first
+    assert_empty @bridge_calls
   end
 
   def test_missing_local_credential_is_missing_and_invalid_bytes_do_not_reach_the_bridge

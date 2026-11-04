@@ -11,16 +11,18 @@ class CliTest < Minitest::Test
   RESOLVER = "0x" + "22" * 20
   IMPLEMENTATION = "0x14f09fd05d4585759e54844dc9b00147131cf243"
 
+  PIN = {"identityRegistry" => "0x8004A818BFB912233c491871b3d84c89A494BD9e", "reputationRegistry" => "0x8004B663056A597Dffe9eCcC1965A193B7388713", "identityImplementation" => "0x7274e874CA62410a93Bd8bf61c69d8045E399c02", "reputationImplementation" => "0x16e0FA7f7C56B9a767E34B192B51f921BE31dA34", "identityCodeHash" => "0xa5f9624ea85e45b3f4b8558581f03bfb3e6cefab278d7bf0500ec9bd065dc16f", "reputationCodeHash" => "0x38602de97f1bd86f0a4729f7f3c0a78b1d27892e6eb581272cce5504a68fd00b", "identityProxyCodeHash" => "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41", "reputationProxyCodeHash" => "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41"}
+
   def setup
     @directory = Dir.mktmpdir("devouch-cli-test-")
-    @policy = {repositoryId: "demo/repo", chainId: 11155111, trustedIssuers: [ISSUER],
-      allowedScopes: ["oss-contribution"], allowedResolvers: [{address: RESOLVER, implementation: IMPLEMENTATION}], requiredIssuers: 1}
+    @policy = {format: "devouch-erc8004-policy-v1", repositoryId: "demo/repo", chainId: 11155111, trustedIssuers: [ISSUER],
+      allowedScopes: ["oss-contribution"], allowedRegistries: [PIN], requiredIssuers: 1}
     @policy_path = File.join(@directory, "policy.json")
     @credential = File.join(@directory, "vouch.json")
     File.write(@credential, "{\"fixture\":true}")
     write_policy
     @result = {"evidence_status" => "valid", "reason_codes" => [], "subject" => "github:12345",
-      "issuer" => ISSUER, "scope" => "oss-contribution", "resolver" => RESOLVER,
+      "issuer" => ISSUER, "scope" => "oss-contribution", "chainId" => 11155111, "registry" => PIN,
       "implementation" => IMPLEMENTATION, "snapshot" => {"chain_id" => 11155111, "block_number" => "11780000"}}
   end
 
@@ -49,8 +51,8 @@ class CliTest < Minitest::Test
     assert_equal "accepted", report["policy_status"]
     assert_equal "not_included", report["human_verification"]
     assert_equal "argument", report["subject_source"]
-    assert_equal "0.2.0", report["verifier_version"]
-    assert_equal 1, report["report_version"]
+    assert_equal "0.3.0", report["verifier_version"]
+    assert_equal 2, report["report_version"]
     @policy[:trustedIssuers] = []
     write_policy
     status, report = run_cli(verify_arguments)
@@ -109,7 +111,7 @@ class CliTest < Minitest::Test
   def test_fetch_preserves_exact_chain_bytes_and_refuses_overwrite
     target = File.join(@directory, "fetched.json")
     raw = "{ \"preserved\": true }\n"
-    args = ["fetch", "--name", "demo.eth", "--output", target, "--json"]
+    args = ["fetch", "--agent-id", "0", "--issuer", ISSUER, "--feedback-index", "1", "--feedback-block", "100", "--output", target, "--json"]
     response = {"raw" => raw, "subject" => "github:12345", "publication" => {"chainId" => 11155111}}
     assert_equal 0, run_cli(args, response).first
     assert_equal raw, File.binread(target)
@@ -117,10 +119,10 @@ class CliTest < Minitest::Test
     assert_equal raw, File.binread(target)
   end
 
-  def test_fetch_preflights_both_outputs_before_creating_any_file
+  def test_fetch_rejects_retired_publication_output_before_creating_any_file
     target = File.join(@directory, "fetched.json")
-    args = ["fetch", "--name", "demo.eth", "--output", target, "--publication-output", @policy_path, "--json"]
-    assert_equal 5, run_cli(args, {"raw" => "data", "publication" => {}}).first
+    args = ["fetch", "--agent-id", "0", "--issuer", ISSUER, "--feedback-index", "1", "--feedback-block", "100", "--output", target, "--publication-output", @policy_path, "--json"]
+    assert_equal 4, run_cli(args, {"raw" => "data", "publication" => {}}).first
     refute File.exist?(target)
   end
 
@@ -133,7 +135,7 @@ class CliTest < Minitest::Test
   end
 
   def request_arguments(timestamp, target)
-    ["request", "--subject", "github:12345", "--issuer", ISSUER, "--name", "demo.eth",
+    ["request", "--subject", "github:12345", "--issuer", ISSUER, "--agent-id", "0",
       "--expires-at", timestamp, "--output", target, "--json"]
   end
 
