@@ -5,7 +5,7 @@ This is an incompatible protocol migration. Existing ENS JSON cannot be relabele
 | Surface | 0.3 behavior |
 |---|---|
 | Reference | `devouch-erc8004-v1`, explicit registries, agent/evaluator/index/publication block |
-| Policy | `devouch-erc8004-policy-v1`, explicit registry implementation/proxy code pins |
+| Policy | `.devouch/erc8004-policy.json`, `devouch-erc8004-policy-v1`, explicit registry implementation/proxy code pins |
 | PR evidence path | `.devouch/feedback/github-ID.json` |
 | CLI / package | `0.3.0` |
 | Report | `report_version: 2`, registry/feedback/declaration fields |
@@ -21,12 +21,19 @@ This is an incompatible protocol migration. Existing ENS JSON cannot be relabele
 
 ## Switch consumers
 
-Update the Action's immutable commit and repository policy together through a normal PR. Place new references at `.devouch/feedback/github-ID.json`. Use `devouch check`, then check an actual PR against the migrated base. The migration PR's own base still contains the ENS policy and may report `legacy_ens_policy`; after merge the new base policy can be read. A missing reference completes as `missing / not_evaluated` in report mode, while no evaluator is trusted by the starter policy.
+Use two reviewed PRs so the new verifier can read a compatible policy from its immutable base commit:
+
+1. **Stage the ERC policy.** Add `.devouch/erc8004-policy.json` from the example, set the repository ID, and review its deployment pins and trust list. Keep the existing `.devouch/policy.json` and ENS Action unchanged. Merge this preparation PR first. The old ENS report still describes ENS evidence; an existing ENS retrieval failure is not fixed by staging a dormant file.
+2. **Switch consumers.** Base the migration PR on that merged preparation. Update the Action's immutable commit and `policy-path` to `.devouch/erc8004-policy.json`, switch CLI/Web consumers to 0.3, and remove the old ENS policy and credential files after preserving them. Place new references at `.devouch/feedback/github-ID.json`. Verify the migration PR's actual Action report before merging.
+
+The Action, CLI `check`, and Web PR verifier use the same ERC policy path. They never substitute policy from the PR head or fall back to the ENS policy. A missing staged policy is a configuration failure; `legacy_ens_policy` is a configuration mismatch that must be corrected before switching. Push a new commit, or open/reopen the migration PR, after the preparation merge to trigger a fresh report. Rerunning an old event keeps its old base/head SHAs.
+
+A missing reference completes as `missing / not_evaluated` in report mode. This is a completed absence check, not an accepted endorsement. The starter policy trusts no evaluator. Confirm the reported policy digest and base SHA, then use `devouch check` and an actual PR for any later trust or evidence changes.
 
 Deploy the reviewed static distribution separately using the release runbook. Do not describe the hosted workspace as migrated until its bytes are read back. Test approval, rejection, missing evidence, public RPC failure, withdrawal, and recovery with your actual deployment. The included suite verifies local contracts, CLI, policy parity, Action boundaries, and browser recovery; it does not replace public wallet acceptance testing.
 
 ## Rollback
 
-The previous reviewed source is [`32b9eeb7990724696dbb5fb2ee50afd2a6f5822c`](https://github.com/geeknees/devouch/tree/32b9eeb7990724696dbb5fb2ee50afd2a6f5822c); historical Action and Pages evidence is in [history](history.md). Restore a reviewed ENS distribution, its compatible policy, evidence paths, and Action pin together through a new PR and manual Pages publication. Preserve new ERC references and recovery files separately. Finish uncertain ERC sends with the ERC app before switching UI versions.
+The previous reviewed source is [`32b9eeb7990724696dbb5fb2ee50afd2a6f5822c`](https://github.com/geeknees/devouch/tree/32b9eeb7990724696dbb5fb2ee50afd2a6f5822c); historical Action and Pages evidence is in [history](history.md). First restore the compatible ENS policy at `.devouch/policy.json` through a preparation PR while the ERC consumers keep reading `.devouch/erc8004-policy.json`. Then switch the reviewed ENS distribution, evidence paths, and Action pin/path through another PR and manual Pages publication. Preserve the ERC policy, references, and recovery files separately. Finish uncertain ERC sends with the ERC app before switching UI versions.
 
 Rollback does not undo public transactions, erase feedback, restore expired/revoked recommendations, or make ERC evidence readable by ENS clients. Do not relax policy to hide a failed check. Review registry operations and trust configuration independently of the code rollback.

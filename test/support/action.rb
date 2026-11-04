@@ -12,7 +12,7 @@ event = {'number' => 7, 'repository' => {'full_name' => repository}, 'pull_reque
 api = Object.new
 api.define_singleton_method(:pull_request) { |repo, number| raise 'wrong PR' unless repo == repository && number == 7; pr }
 api.define_singleton_method(:file) do |repo, path, sha, limit:|
-  if path == '.devouch/policy.json'
+  if path == '.devouch/erc8004-policy.json'
     raise 'mutable policy' unless repo == repository && sha == base_sha && limit == 16384
     input.fetch('policy')
   else
@@ -21,5 +21,5 @@ api.define_singleton_method(:file) do |repo, path, sha, limit:|
     input['reference']
   end
 end
-result = Devouch::Action.new(api: api, rpc_url: input.fetch('rpc')).run(event: event, repository: repository, policy_path: '.devouch/policy.json')
+result = Devouch::Action.new(api: api, rpc_url: input.fetch('rpc')).run(event: event, repository: repository)
 puts JSON.generate(result)

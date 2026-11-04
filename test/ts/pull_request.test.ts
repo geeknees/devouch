@@ -58,7 +58,7 @@ test('reads the base policy and fork-head endorsement at immutable SHAs without 
   expect(report.policyDigest).toBe('sha256:' + new Bun.CryptoHasher('sha256').update(JSON.stringify(policy)).digest('hex'));
   expect(requests.map(request => request.url)).toEqual([
     'https://api.github.com/repos/maintainer/repo/pulls/7',
-    `https://api.github.com/repos/maintainer/repo/contents/.devouch/policy.json?ref=${base}`,
+    `https://api.github.com/repos/maintainer/repo/contents/.devouch/erc8004-policy.json?ref=${base}`,
     `https://api.github.com/repos/contributor/fork/contents/.devouch/feedback/github-12345.json?ref=${head}`,
   ]);
   for (const { options } of requests) {
@@ -139,7 +139,7 @@ test('content decoding rejects unsupported types, oversized files, and corrupt b
 test('GitHub file decoding preserves UTF-8 bytes, whitespace, and BOM for strict verification', async () => {
   for (const raw of ['{ "note": "推薦" }\n', '\ufeff{}']) {
     const github = new GitHubReader(async () => Response.json(encoded(raw)));
-    expect(await github.file('maintainer/repo', '.devouch/policy.json', base, 16384)).toBe(raw);
+    expect(await github.file('maintainer/repo', '.devouch/erc8004-policy.json', base, 16384)).toBe(raw);
   }
 });
 test('a cancelled read never starts chain verification', async () => {

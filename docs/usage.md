@@ -39,7 +39,7 @@ These commands prepare unsent plans. Load each in **Network and files → Load a
 ```sh
 ./exe/devouch fetch --agent-id 42 --issuer 0xEVALUATOR_PUBLIC_ADDRESS \
   --feedback-index 1 --feedback-block 12000000 --output feedback.json --json
-./exe/devouch verify --credential feedback.json --policy .devouch/policy.json \
+./exe/devouch verify --credential feedback.json --policy .devouch/erc8004-policy.json \
   --subject github:12345 --json
 ./exe/devouch check --repo OWNER/REPOSITORY --credential feedback.json \
   --subject github:12345 --json

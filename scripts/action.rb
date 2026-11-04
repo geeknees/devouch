@@ -13,7 +13,7 @@ begin
   api = Devouch::GitHub.new(token: ENV.fetch("DEVOUCH_GITHUB_TOKEN", ""))
   action = Devouch::Action.new(api: api, rpc_url: ENV.fetch("DEVOUCH_RPC_URL", Devouch::DEFAULT_RPC))
   report = action.run(event: event, repository: ENV.fetch("GITHUB_REPOSITORY"),
-    policy_path: ENV.fetch("DEVOUCH_POLICY_PATH", ".devouch/policy.json"))
+    policy_path: ENV.fetch("DEVOUCH_POLICY_PATH", Devouch::Policy::PATH))
   puts JSON.generate(report)
   File.open(ENV.fetch("GITHUB_STEP_SUMMARY"), "a") { |file| file.write(Devouch::Action.summary(report, release: ENV["DEVOUCH_RELEASE_REF"])) }
   File.open(ENV.fetch("GITHUB_OUTPUT"), "a") do |file|

@@ -114,9 +114,9 @@ module Devouch
         raise Error.new("github_branch_invalid", "The GitHub branch did not identify the requested immutable commit.", 3)
       end
       @github_context = {"repository" => repo, "base_branch" => branch, "base_sha" => revision["commit"]["sha"],
-        "policy_path" => ".devouch/policy.json"}
+        "policy_path" => Policy::PATH}
       raw = @github.file(repo, @github_context["policy_path"], @github_context["base_sha"], limit: 16_384)
-      raise Error.new("policy_missing", "The destination has no .devouch/policy.json at the checked commit.") unless raw
+      raise Error.new("policy_missing", "The destination has no #{Policy::PATH} at the checked commit.") unless raw
       @policy = Policy.new(raw)
       unless @policy.data["repositoryId"] == repo
         raise Error.new("policy_repository_mismatch", "The destination policy belongs to a different repository.")

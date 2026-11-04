@@ -80,10 +80,10 @@ class CheckTest < Minitest::Test
     assert_equal "argument", report["subject_source"]
     assert_equal "not_included", report["human_verification"]
     assert_equal({"repository" => "maintainer/repo", "base_branch" => "main", "base_sha" => SHA,
-      "policy_path" => ".devouch/policy.json"}, report["github"])
+      "policy_path" => ".devouch/erc8004-policy.json"}, report["github"])
     assert_equal "sha256:#{Digest::SHA256.hexdigest(@api.raw)}", report.dig("policy", "digest")
     assert_equal [[:repository, "maintainer/repo"], [:branch, "maintainer/repo", "main"],
-      [:file, "maintainer/repo", ".devouch/policy.json", SHA, 16_384]], @api.calls
+      [:file, "maintainer/repo", ".devouch/erc8004-policy.json", SHA, 16_384]], @api.calls
     assert_equal [{"command" => "verify", "raw" => @raw, "subject" => "github:12345", "rpc_url" => Devouch::DEFAULT_RPC}], @bridge_calls
     assert_equal @raw, File.binread(@credential)
     assert_equal files, Dir.children(@directory)
@@ -95,7 +95,7 @@ class CheckTest < Minitest::Test
     assert_equal 0, status
     assert_equal "release/v1", report.dig("github", "base_branch")
     assert_equal "b" * 40, report.dig("github", "base_sha")
-    assert_includes @api.calls, [:file, "maintainer/repo", ".devouch/policy.json", "b" * 40, 16_384]
+    assert_includes @api.calls, [:file, "maintainer/repo", ".devouch/erc8004-policy.json", "b" * 40, 16_384]
   end
 
   def test_repository_input_case_is_canonicalized_from_matching_github_metadata

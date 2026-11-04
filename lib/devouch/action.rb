@@ -19,7 +19,7 @@ module Devouch
       }
     end
 
-    def run(event:, repository:, policy_path:)
+    def run(event:, repository:, policy_path: Policy::PATH)
       pr = event.fetch("pull_request")
       number = event.fetch("number")
       author = pr.fetch("user").fetch("id")

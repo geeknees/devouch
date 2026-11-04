@@ -8,7 +8,7 @@ import { GitHubError, GitHubReader } from './github';
 export async function verifyPullRequest(url: string, reader: Pick<Erc8004Reader, 'inspect'>,
   github = new GitHubReader(), signal?: AbortSignal) {
   const pullRequest = await github.pullRequest(url, signal);
-  const policyRaw = await github.file(pullRequest.repository, '.devouch/policy.json', pullRequest.baseSha, 16_384, signal);
+  const policyRaw = await github.file(pullRequest.repository, '.devouch/erc8004-policy.json', pullRequest.baseSha, 16_384, signal);
   if (policyRaw === null) throw new GitHubError('policy_missing');
   let policy;
   try { policy = parseErc8004Policy(policyRaw); }

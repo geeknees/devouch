@@ -5,6 +5,7 @@ require_relative "files"
 
 module Devouch
   class Policy
+    PATH = ".devouch/erc8004-policy.json"
     ADDRESS = /\A0x[0-9a-fA-F]{40}\z/
     HASH = /\A0x[0-9a-fA-F]{64}\z/
     REGISTRY_KEYS = %w[identityRegistry reputationRegistry identityImplementation reputationImplementation

@@ -7,8 +7,8 @@ require_relative "../../lib/devouch/action"
 class ActionTest < Minitest::Test
   class API
     attr_reader :calls
-    def initialize(event, missing: false)
-      @event, @missing, @calls = event, missing, []
+    def initialize(event, missing: false, policies: nil)
+      @event, @missing, @policies, @calls = event, missing, policies, []
     end
     def pull_request(repo, number)
       @calls << [:pull, repo, number]
@@ -17,6 +17,7 @@ class ActionTest < Minitest::Test
     def file(repo, path, sha, limit:)
       @calls << [:file, repo, path, sha, limit]
       return nil if @missing && path.include?("/feedback/")
+      return @policies[[path, sha]] if @policies && path.end_with?("policy.json")
       path.end_with?("policy.json") ? JSON.generate({"repositoryId" => "maintainer/repo"}) : "{}"
     end
   end
@@ -57,6 +58,37 @@ class ActionTest < Minitest::Test
     api = API.new(api_event)
     runner(api).run(event: @event, repository: "maintainer/repo", policy_path: ".devouch/policy.json")
     assert_includes api.calls, [:file, "contributor/fork", ".devouch/feedback/github-12345.json", "b" * 40, 4096]
+  end
+
+  def test_staged_base_policy_completes_a_missing_report_while_ens_policy_coexists
+    data = JSON.parse(File.read(File.expand_path("../../examples/erc8004/policy.json", __dir__)))
+    data["repositoryId"] = "maintainer/repo"
+    raw = JSON.generate(data)
+    policies = {
+      [".devouch/policy.json", "a" * 40] => JSON.generate({"repositoryId" => "maintainer/repo", "allowedResolvers" => []}),
+      [".devouch/erc8004-policy.json", "a" * 40] => raw
+    }
+    api = API.new(@event, missing: true, policies: policies)
+    result = Devouch::Action.new(api: api).run(event: @event, repository: "maintainer/repo")
+    assert_equal 0, result["action_exit_status"]
+    assert_equal ["missing", "not_evaluated"], result.values_at("evidence_status", "policy_status")
+    assert_equal "sha256:#{Digest::SHA256.hexdigest(raw)}", result.dig("policy", "digest")
+    assert_equal ".devouch/erc8004-policy.json", result.dig("github", "policy_path")
+    refute api.calls.any? { |call| call[2] == ".devouch/policy.json" }
+  end
+
+  def test_missing_staged_policy_does_not_fall_back_to_ens_or_pr_head_policy
+    policies = {
+      [".devouch/policy.json", "a" * 40] => JSON.generate({"repositoryId" => "maintainer/repo", "allowedResolvers" => []}),
+      [".devouch/erc8004-policy.json", "b" * 40] => "{}"
+    }
+    api = API.new(@event, missing: true, policies: policies)
+    error = assert_raises(Devouch::Error) do
+      Devouch::Action.new(api: api).run(event: @event, repository: "maintainer/repo")
+    end
+    assert_equal "policy_missing", error.code
+    assert_equal [[:file, "maintainer/repo", ".devouch/erc8004-policy.json", "a" * 40, 16_384]],
+      api.calls.select { |call| call.first == :file }
   end
 
   def test_report_mode_completed_rejection_is_success_but_unavailable_is_failure

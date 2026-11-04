@@ -29,7 +29,7 @@ Ruby 3.4以降とNode.js 24を用意し、このrepoをcloneします。JavaScri
 
 ```sh
 ./exe/devouch --help
-./exe/devouch verify --credential feedback.json --policy .devouch/policy.json \
+./exe/devouch verify --credential feedback.json --policy .devouch/erc8004-policy.json \
   --subject github:12345 --json
 ./exe/devouch check --repo OWNER/REPOSITORY --credential feedback.json \
   --subject github:12345 --json

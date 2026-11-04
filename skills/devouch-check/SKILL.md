@@ -51,6 +51,6 @@ Also require JSON `evidence_status: valid` and `policy_status: accepted` on exit
 
 Report the destination, subject, evidence state, policy state, reasons, `github.base_branch`, `github.base_sha`, policy digest, and snapshot block/time when present. Keep `human_verification: not_included` explicit. `subject_source: argument` means the ID was supplied, not authenticated.
 
-The CLI pins the receiving policy to a GitHub base commit. Do not weaken `.devouch/policy.json`, change the workflow, substitute another subject, or modify the feedback reference to force acceptance. Changes to the destination, base branch, credential, or relevant chain state require another check. After an authorized PR is created, inspect the actual PR author and the Action's evidence/policy report too.
+The CLI pins the receiving policy to a GitHub base commit. Do not weaken `.devouch/erc8004-policy.json`, change the workflow, substitute another subject, or modify the feedback reference to force acceptance. Changes to the destination, base branch, credential, or relevant chain state require another check. After an authorized PR is created, inspect the actual PR author and the Action's evidence/policy report too.
 
 Devouch is a reference for contribution review. Acceptance does not prove humanity, account ownership, authorship, code quality, agency, or merge approval. This skill grants no permission to publish a PR, contact an issuer, sign, or transact.

@@ -29,7 +29,7 @@ Install Ruby 3.4+ and Node.js 24, then clone this repository. The committed Java
 
 ```sh
 ./exe/devouch --help
-./exe/devouch verify --credential feedback.json --policy .devouch/policy.json \
+./exe/devouch verify --credential feedback.json --policy .devouch/erc8004-policy.json \
   --subject github:12345 --json
 ./exe/devouch check --repo OWNER/REPOSITORY --credential feedback.json \
   --subject github:12345 --json

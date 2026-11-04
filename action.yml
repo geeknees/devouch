@@ -5,7 +5,7 @@ description: Verify portable contributor endorsements on ERC-8004 and report rep
 inputs:
   policy-path:
     description: Repository-relative JSON policy path, read from the PR base SHA.
-    default: .devouch/policy.json
+    default: .devouch/erc8004-policy.json
   mode:
     description: Report-only mode; completed evidence decisions do not force merge approval.
     default: report
