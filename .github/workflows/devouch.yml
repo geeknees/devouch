@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - uses: geeknees/devouch@4aa03f7f6bea64701a6bbab0ff6420df1457b2fb
+      - uses: geeknees/devouch@b258e40925838e075b78763b7859a68cee65cb59
         with:
           policy-path: .devouch/policy.json
           mode: report
