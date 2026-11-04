@@ -3,7 +3,7 @@
 [English README](../README.md) | [日本語README](../README.ja.md)
 
 Detailed workspace and CLI instructions, connection settings, and support boundaries.
-The [verification record](implementation-status.md) distinguishes local tests, public deployment, and real-wallet checks.
+The [verification record](history.md) distinguishes local tests, public deployment, and real-wallet checks.
 
 ## Run the workspace
 
@@ -84,7 +84,7 @@ The [namespace guide](namespaces.md) covers the transactions, recovery, and boun
 
 The [demo examples](../examples/demo/README.md) retrieve the original direct-name endorsement for
 [masusanou](https://github.com/masusanou), numeric ID `287365775`, from its recorded publication transaction.
-The [current subname and wallet checks](sepolia-namespace-check.md) are recorded separately.
+The [current subname and wallet checks](history.md) are recorded separately.
 
 ## CLI
 
@@ -125,7 +125,7 @@ The JSON includes the checked branch, commit, and policy digest. Proceed with an
 only on exit **0**; every other code stops this preflight flow. The command makes no file changes or PR submissions
 and needs no wallet or GitHub token. Acceptance concerns the endorsement at that snapshot; it does not establish
 posting permission, code quality, or human verification. Recheck before submission if the policy or ENS state changes.
-See the [agent operator guide](agent-operator-guide.md#prを作る前の送信前チェック).
+See the [agent operator guide](agent-operator-guide.md#check-before-submitting).
 
 CLI-capable agents can use the portable **[devouch-check SKILL](../skills/devouch-check/SKILL.md)**.
 Copy the `skills/devouch-check/` folder to the skill location supported by your agent, or load its instructions
@@ -155,7 +155,7 @@ The alternate is `https://rpc.sepolia.ethpandaops.io`.
 Both passed recorded demo history checks; this does not guarantee future availability or history retention.
 PublicNode later returned unavailable historical state for the demo name and is unsuitable as its fallback.
 Provider-specific historical limits still apply. No automatic fallback hides provider failures.
-See the [public-chain checks](demo-evidence.md) and [latest verification record](implementation-status.md).
+See the [public-chain checks](history.md) and [latest verification record](history.md).
 
 The workspace has a separate **Connection settings** field.
 **Diagnose selected RPC** checks Sepolia, a fresh snapshot, and sample historical state/log reads.
@@ -177,7 +177,7 @@ Verification uses a recent snapshot two blocks behind the RPC's head; it is not 
 Historical RPC access, Ethereum/ENS, name maintenance, GitHub, and the chosen wallet remain dependencies.
 Revocation does not alter already displayed GitHub checks. Names, numeric account IDs, signatures, relationships,
 and withdrawn values remain in public history.
-`human_verification` is always `not_included`; see the [README boundaries](../README.md#boundaries).
+`human_verification` is always `not_included`; see the [README boundaries](design.md#evidence-and-policy).
 The [protocol](protocol.md) defines the verification rules, and the [upgrade guide](upgrading-0.2.md) records compatibility.
 
 ## Development
@@ -189,7 +189,7 @@ On macOS the browser test uses installed Google Chrome; on Linux install Playwri
 bunx playwright install --with-deps chromium
 ```
 
-Use mise to supply runtimes if they are not on PATH. Run the [README checks](../README.md#develop-and-verify)
+Use mise to supply runtimes if they are not on PATH. Run the [README checks](../CONTRIBUTING.md#local-development)
 after installing the browser. Integration tests start a fresh loopback EVM, install pinned official ENS bytecode,
 and generate disposable accounts in memory. They make no public-chain writes.
 Browser tests cover explicit consent, cancellation, unknown delivery, reload/recovery, withdrawal, and mobile overflow.

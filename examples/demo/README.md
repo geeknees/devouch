@@ -1,4 +1,6 @@
-# Demo policies and publication
+# Historical ENS policy examples
+
+This recorded endorsement expired on 2026-10-02. It is a historical fixture, not a currently valid quick start.
 
 These reviewable policies use the on-chain owner and resolver of `masusanou-dev.eth`.
 They do not contain credentials or imply that a maintainer has merged or approved them.
@@ -8,7 +10,7 @@ They do not contain credentials or imply that a maintainer has merged or approve
 - `policy-b-reject.json`: that second policy declines every issuer.
 
 The B repository name is an illustrative identifier for CLI comparison, not an existing demo repository.
-The owner published masusanou's endorsement on Sepolia. The [verification record](../../docs/demo-evidence.md)
+The owner published masusanou's endorsement on Sepolia. The [verification record](https://github.com/geeknees/devouch/blob/32b9eeb7990724696dbb5fb2ee50afd2a6f5822c/docs/demo-evidence.md)
 contains the receipt, original digest, and results. Retrieve that same original and compare:
 
 ```sh
@@ -27,4 +29,4 @@ No publication is performed by these commands.
 
 The [adoption workflow](../../.github/workflows/devouch.yml) pins the locally tested Action commit.
 Follow the [release runbook](../../docs/release-runbook.md) and verify that the repository and pinned commit
-are publicly accessible before using it for the fork-PR demonstration.
+are publicly accessible before adopting that version.

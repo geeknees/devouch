@@ -6,109 +6,60 @@
 
 [English](README.md) | [日本語](README.ja.md)
 
-Portable contributor endorsements, published and withdrawn by their issuer on ENSv2.
-One signed recommendation can be evaluated by multiple repositories; each maintainer chooses whom to trust.
+Portable contributor endorsements. An issuer publishes a recommendation; each repository decides whether to accept it.
 
-Inspired by [Mitchell Hashimoto's vouch](https://github.com/mitchellh/vouch), which asks whether a trusted person
-has vouched for a contributor before a maintainer spends time reviewing their work.
-vouch already supports sharing contributor lists across repositories. Devouch explores issuer-signed endorsements
-with an expiry and a withdrawal history on ENSv2, while keeping each repository's acceptance policy independent.
-It is a separate implementation; see the [source comparison](docs/hackathon-research.md#vouch-が扱っている信頼).
+Devouch provides a **Ruby CLI**, a **[static web workspace](https://geeknees.github.io/devouch/)**, and a **read-only GitHub Action**. The current application uses ENSv2 on Sepolia, with no Devouch API, database, shared publisher key, or custom endorsement contract.
 
-Devouch provides a Ruby CLI, a [static web workspace](https://geeknees.github.io/devouch/), and a read-only GitHub Action.
-Issuers manage endorsements and agent identities under their own ENS names; repositories apply their own acceptance policies.
-It uses Sepolia's official Permissioned Resolver and UserRegistry implementations, with no Devouch API,
-database, shared publisher key, or custom endorsement contract.
+**Valid evidence and repository acceptance are separate.** The same endorsement can be `valid / accepted` in one repository and `valid / rejected` in another. It is input to human review and does not prove humanity, account ownership, authorship, code quality, agency, or permission to merge.
 
-## Try it
+## Start here
 
-Open the **[wallet-free verification page](https://geeknees.github.io/devouch/?name=masusanou.vouches.geeknees.eth#verify)**
-to check an ENSv2 subname endorsement's signature and ENS hierarchy at a fresh Sepolia block.
-It shows the issuer's ENS name, subject, scope, expiry, and evidence status.
-The same evidence is **accepted** by example repository A and **rejected** by B (`issuer_not_trusted`);
-add the issuer to B's **Trusted issuers** field to make it accepted. These examples do not change a real repository's policy.
-
-| In the workspace | What you can do |
+| Your goal | Read |
 |---|---|
-| [Verify a PR](https://geeknees.github.io/devouch/?pr=https%3A%2F%2Fgithub.com%2Fgeeknees%2Fdevouch%2Fpull%2F2#verify) | Check a public PR's endorsement against its base policy and explore the result in a trust map. |
-| [My endorsements](https://geeknees.github.io/devouch/#manage) | Save up to eight ENS names, refresh evidence with days left until expiry, and inspect agent permissions. Results reset on reload. |
-| [Namespaces](https://geeknees.github.io/devouch/#namespaces) | Create subnames and manage agent profile permissions with your wallet. |
-| Connection settings | Diagnose your RPC and explicitly choose another provider. |
+| Try verification, publish, or withdraw an endorsement | [Usage guide](docs/usage.md) |
+| Add verification to your repository | [Maintainer guide](docs/adoption-guide.md) |
+| Submit contributions from a user or agent account | [Contributor and agent guide](docs/agent-operator-guide.md) |
+| Build or contribute to Devouch | [Contributing](CONTRIBUTING.md) |
+| Understand the format, boundaries, and architecture | [Documentation index](docs/README.md) |
 
-Publishing and withdrawing require your wallet; verification does not. Dark and light modes are available.
-See the [usage guide](docs/usage.md) for the full workflows, local startup, and RPC settings.
+## Try verification
 
-## CLI
+Open the [workspace](https://geeknees.github.io/devouch/#verify) and enter an ENS name or public PR URL. Verification does not require a wallet. Publishing and withdrawing require the issuer's wallet and Sepolia ETH.
 
-Use Ruby 3.4 or newer and Node.js 24. Bundled distribution files are included; running the CLI needs no JavaScript dependency installation.
-From this checkout, retrieve the demo endorsement into new files and check it against a repository's policy:
+A [public example](https://geeknees.github.io/devouch/?name=masusanou.vouches.geeknees.eth#verify) is available, but its current state and expiry must be checked. The workspace's example repository policies can accept or reject the same evidence without changing any real repository.
+
+To use the CLI, install Ruby 3.4+ and Node.js 24, then clone this repository. Bundled JavaScript is included; CLI use does not require a JavaScript dependency install.
 
 ```sh
-./exe/devouch fetch --name masusanou-dev.eth --output vouch.json \
+./exe/devouch --help
+./exe/devouch fetch --name CONTRIBUTOR.vouches.ISSUER.eth --output vouch.json \
   --publication-output publication.json --json
-
-./exe/devouch check --repo geeknees/devouch --credential vouch.json \
-  --subject github:287365775 --json
+./exe/devouch check --repo OWNER/REPOSITORY --credential vouch.json \
+  --subject github:12345 --json
 ```
 
-For your own PR, use its destination repository and actual author's numeric GitHub ID.
-`check` verifies the endorsement and repository policy; it does not submit a PR. Continue an authorized submission only on exit **0**.
-The same verifier is available through the **GitHub Action** below and the portable **[devouch-check SKILL](skills/devouch-check/SKILL.md)** for CLI-capable agents.
-See the [CLI usage guide](docs/usage.md#cli) for all commands, original-file handling, exit codes, and connection settings.
+Replace the name, repository, and numeric GitHub ID with your actual inputs. `check` retrieves the destination repository's policy and verifies the endorsement. It does not submit a PR. See [CLI usage and exit codes](docs/usage.md#cli).
 
 ## Adopt in a repository
 
-Add a maintainer-approved `.devouch/policy.json` and a workflow pinned to a published Devouch commit.
-Each contributor includes their original endorsement as `.devouch/vouches/github-ID.json`.
-The **[Maintainers](https://geeknees.github.io/devouch/#maintainers)** screen helps select trusted issuers and download a policy and workflow.
-The Action reads policy at the PR's base SHA and the author's endorsement at its head SHA; it does not execute PR code or approve merges.
-Follow the [maintainer guide](docs/adoption-guide.md) or [agent operator guide](docs/agent-operator-guide.md).
+A maintainer adds `.devouch/policy.json` and a workflow pinned to a reviewed Devouch commit. Each contributor includes their original endorsement as `.devouch/vouches/github-ID.json`.
 
-## ENSv2 namespaces
+The Action binds the subject to the actual PR author's numeric ID, reads policy at the base SHA and evidence at the head SHA, and does not execute PR code. Read the result's evidence and policy fields; a green workflow alone does not mean acceptance. Follow the [maintainer guide](docs/adoption-guide.md).
 
-- **One subname per endorsement.** Names such as `masusanou.vouches.geeknees.eth` have their own resolver record and withdrawal history. The readable label is separate from the signed GitHub numeric ID.
-- **Agents as namespaces.** A name can hold a controller-declared GitHub identity and wallet. ENSv2 Enhanced Access Control lets the controller grant and revoke individual profile fields while retaining endorsement and namespace authority.
-- **Verification through the hierarchy.** The verifier follows each parent, registry, ownership, and relevant role change. Restoring changed authority does not reactivate an old endorsement.
+CLI-capable agents can use the portable [devouch-check skill](skills/devouch-check/SKILL.md). Endorsement checks do not grant permission to publish a contribution.
 
-Publication, individual withdrawal, and agent profile permission grants, updates, and revocation have been exercised with real wallets on Sepolia.
-See the [namespace guide](docs/namespaces.md) and [wallet-test record](docs/sepolia-namespace-check.md).
+## Design and status
 
-## Design choices
+- Repository-local trust, with no global reputation score or token rewards.
+- Issuer-controlled publication and withdrawal, with no mandatory Devouch-operated service.
+- Explicit expiry, history, and RPC failure handling. Public data remains in chain history after withdrawal.
+- Human review and merge decisions remain with maintainers.
 
-The reasoning and sources are in the [planning notes](docs/hackathon-planning.md) (Japanese).
+Devouch is inspired by [Mitchell Hashimoto's vouch](https://github.com/mitchellh/vouch). It is a separate implementation; vouch also supports sharing contributor lists across repositories. See [design principles and trade-offs](docs/design.md).
 
-- **No global score.** Trust depends on who is asking. Each repository chooses whose endorsements it accepts; the same endorsement can be accepted by one project and rejected by another. A single score would take that judgment away from maintainers.
-- **No token rewards.** Paying for endorsements or activity invites volume over judgment and pushes the cost onto maintainers. [What happened to Tea?](https://nesbitt.io/2026/06/11/what-happened-to-tea.html) describes how count-based incentives were abused in package registries. Devouch rewards nothing; an endorsement is worth only what the recommender's reputation is worth to each project.
-- **No central server.** Publishing, retrieving, verifying and withdrawing need no Devouch-operated service, key or database. The recommender owns the ENS record, and anyone can check it with the static page, the CLI or the Action against any RPC. Devouch can't forge, block or silently change an endorsement.
+This is test-network software. [Verification history](docs/history.md) records dated checks; [the roadmap](docs/roadmap.md) distinguishes open work, including ERC-8004 evaluation and independent adoption. World ID is not integrated; `human_verification` is `not_included`.
 
-## Roadmap
-
-Independent third-party adoption is the next adoption milestone;
-the current Action trial is in the project's own repository. World ID remains deferred under the conditions below.
-
-## Boundaries
-
-This is a reference for contribution review. It does not prove humanity, account ownership, authorship, code quality, agency, or merge approval.
-`human_verification` is always `not_included`.
-[World sandbox](https://sandbox.auth.world.org/) was inspected; World authentication is not implemented or claimed.
-
-**Why World ID is not integrated yet:** this is a trade-off with the **No central server** choice above.
-The integration paths checked for this event require an app-controlled secret: the agent sign-in path we inspected
-uses a confidential OIDC client, and [IDKit 4.0 requires the relying party to sign proof requests](https://docs.world.org/world-id/idkit/signatures).
-A shared integration operated by Devouch would make participants using that integration depend on its key and service.
-Self-hosted integrations could distribute that responsibility, but that complete path has not been validated here.
-[On-chain proof verification already exists](https://docs.world.org/world-id/idkit/onchain-verification);
-verification alone does not remove the request-signing requirement.
-Proof of personhood and a contributor recommendation answer different questions and can complement each other.
-World ID remains deferred until a complete integration can be verified without a mandatory Devouch-operated service.
-See the [prize plan and integration conditions](docs/ethglobal-tokyo-2026-prize-plan.md#world-を追加する場合の条件) (Japanese).
-
-For supported names and signatures, history checks, snapshot limits, and public data, see
-the [support boundaries](docs/usage.md#support-boundaries) and [verification protocol](docs/protocol.md).
-
-## Develop and verify
-
-In addition to Ruby and Node.js, use Bun 1.3.13, Bundler, and Chrome/Chromium. Use mise if runtimes are not on PATH.
+## Develop
 
 ```sh
 bundle install
@@ -120,12 +71,6 @@ bun run typecheck
 bun run test:integration
 ```
 
-Integration tests rebuild `dist/` and run against pinned official ENS contracts on a local EVM; they make no public-chain writes.
-See [development details](docs/usage.md#development) for browser setup and distribution checks.
+Use Bun 1.3.13 and Chrome/Chromium in addition to Ruby and Node.js. The integration suite rebuilds `dist/` and uses disposable local EVMs. See [Contributing](CONTRIBUTING.md) for setup and distribution checks.
 
-## Development history
-
-The [verification record](docs/implementation-status.md) covers implementation and deployment history;
-the [AI tool disclosure](docs/submission.md#ai-tool-disclosure) describes how AI tools were used.
-
-MIT licensed. [ENS artifact provenance](vendor/ens-v2/README.md) and distribution notices identify third-party code.
+MIT licensed. [ENS artifact provenance](vendor/ens-v2/README.md) and bundled notices identify third-party code.
