@@ -23,10 +23,16 @@ const processEnvRpc = () => process.env.DEVOUCH_TEST_RPC!;
 test('wallet registration, owner mapping, CLI request/fetch/verify, and evaluator revocation use the same real registries', async () => {
   const f = await setupErc8004(processEnvRpc(), false), directory = await mkdtemp(join(tmpdir(), 'devouch-erc-product-'));
   const deployment: Deployment = { format: 'devouch-erc8004-deployment-v1', chainId: 11155111, registry: f.policy.allowedRegistries[0]! };
-  let account = f.owner, sends = 0;
+  let account = f.owner, sends = 0, estimates = 0, estimatedGas = 0n;
   const provider = { request: async ({ method, params }: { method: string; params?: unknown[] }) => {
     if (method === 'eth_requestAccounts' || method === 'eth_accounts') return [account];
-    if (method === 'eth_sendTransaction') sends++;
+    if (method === 'eth_estimateGas') {
+      estimates++; const value = await f.rpc(method, params); estimatedGas = BigInt(String(value)); return value;
+    }
+    if (method === 'eth_sendTransaction') {
+      sends++;
+      expect(BigInt((params![0] as { gas: string }).gas)).toBe((estimatedGas * 5n + 3n) / 4n);
+    }
     return f.rpc(method, params);
   } } as unknown as EIP1193Provider;
   const submission = new Submission(() => {}), session = new WalletSession(provider, f.reader, submission);
@@ -91,7 +97,7 @@ test('wallet registration, owner mapping, CLI request/fetch/verify, and evaluato
     expect(revoked.report).toMatchObject({ evidence_status: 'revoked', policy_status: 'not_evaluated' });
     expect(await action()).toMatchObject({ action_exit_status: 0,
       evidence_status: 'revoked', policy_status: 'not_evaluated' });
-    expect(sends).toBe(4);
+    expect(sends).toBe(4); expect(estimates).toBe(4);
   } finally { await rm(directory, { recursive: true, force: true }); }
 }, 30000);
 

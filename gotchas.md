@@ -8,6 +8,7 @@
 - PRの方針はbase SHA、参照はhead SHA、対象はPR作者IDに固定する。検証器と同じPRで方針形式を置き換えると旧baseとの不整合になる。先行PRで `.devouch/erc8004-policy.json` を追加し、そのマージ後にCLI・Web・Actionを同じパスへ切り替える。legacy_ens_policyを想定内としてマージせず、PR headの方針へ代替もしない。古い実行の再試行は古いbaseを使うため、新しいPRイベントで検証する。
 - pendingはウォレット送信前に保存する。応答不明なら重複送信せず、保存したplanとtxのsender / destination / value / calldata、receiptとstateを照合する。hex文字列は大小文字でなくbytesの一致を比較する。
 - MetaMaskのスマートアカウントは直接呼び出しを包む場合がある。ウォレットから返って保存されたhashに限り、sender・value・canonicalな失敗receiptを照合してpendingを解除できる。成功したwrapperやhash不明の送信をこの例外で受理しない。外側のgas残量だけで内部のout of gasを否定せず、EIP-7702のdelegationが失敗取引後も残る点にも注意する。MetaMaskの警告は取引失敗と別に原因を確認する。
+- 初回EIP-7702取引のガス再現は親blockと元のauthorizationList・nonce・feeを保持する。失敗後のstateで直接呼び出しが通っても再現成功とは言えない。MetaMaskはwrapperのgasを再計算するため、Devouchの直接呼び出し用25%余裕をwrapperの修正済み証拠にしない。見積もり失敗は送信前に止め、pendingを作らない。詳細は [wallet-gas.md](docs/wallet-gas.md)。
 - JSONを読むTextDecoderは `ignoreBOM: true` と `fatal: true` を使い、BOMと不正UTF-8を厳密な検証へ渡す。Rubyでは `object_class` だけに頼らず `allow_duplicate_key: false` も使い、両言語の共通fixtureを検証する。
 - Rubyの長さ指定IO.readは空ファイルでnilを返す。入力エラーとして扱う。Time.iso8601は存在しない日付や不正な時差を補正するため、入力と正規化結果を照合する。
 - native fetchをclass fieldへ直接代入してthis経由で呼ぶとChromeでIllegal invocationになる。既定fetcherは関数で包み、ブラウザでも通信を検査する。

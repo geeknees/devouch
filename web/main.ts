@@ -55,7 +55,14 @@ async function task(work: () => Promise<void>) {
   catch (error) {
     const code = error instanceof EvidenceError ? error.code :
       error && typeof error === 'object' && 'code' in error && typeof error.code === 'string' ? error.code : 'operation_unavailable';
-    status(code.replaceAll('_', ' ') + (submission.pending ? '. Check the pending transaction before trying again.' : '.'), true);
+    const gasErrors: Record<string, string> = {
+      gas_estimation_failed: 'The wallet could not estimate gas. No transaction was sent. Check the wallet network and RPC before preparing again.',
+      gas_estimate_invalid: 'The wallet returned an invalid gas estimate. No transaction was sent.',
+      gas_block_unavailable: 'The network gas limit could not be checked. No transaction was sent.',
+      gas_limit_exceeds_block: 'The buffered gas estimate exceeds the network block limit. No transaction was sent.',
+      gas_simulation_failed: 'The call failed simulation at the proposed gas limit. No transaction was sent. Review the failure before retrying.',
+    };
+    status(gasErrors[code] ?? code.replaceAll('_', ' ') + (submission.pending ? '. Check the pending transaction before trying again.' : '.'), true);
   } finally { busy = false; render(); }
 }
 async function file(id: string, max = 32768) {

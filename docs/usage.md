@@ -15,6 +15,12 @@ Run `bun run build` and `node scripts/serve.ts`, then open the printed loopback 
 
 The controller's GitHub declaration and evaluator's recommendation do not prove GitHub account ownership. Agent transfer, approval changes, mapping changes, and registry upgrades require new feedback under this conservative profile, even if the old state is restored.
 
+## Gas preflight
+
+Before saving a pending operation or requesting wallet submission, Devouch asks the connected wallet to estimate the exact zero-value registry call. It rounds the estimate up with a 25% margin, checks the network block gas limit, and simulates the call at that proposed limit. It then rechecks the plan's current state, expiry, wallet account, and network. A failed estimate, invalid response, over-limit result, or failed bounded simulation stops before sending; no pending operation is created and there is no fixed-gas fallback.
+
+This is a margin for direct registry calls, not a fix for every smart-account transaction. MetaMask can wrap the call and replace the proposed gas limit during approval. Neither this estimate nor a successful direct-call simulation proves that the wrapped transaction will succeed. Successful wrapped calls still need exact confirmation support. See [the investigation and remaining validation](wallet-gas.md) before retrying a known failed smart-account registration. Review the final gas limit and maximum fee in the wallet; Devouch does not set gas prices.
+
 ## Recovery
 
 Pending operations are saved locally before wallet submission. A lost response can mean the transaction was sent. Reloading does not permit a duplicate. Check wallet history, enter the exact hash, and check the transaction. A rejected wallet request clears its pending record; an unknown outcome does not. Save the public recovery JSON when moving between browsers. Recovery requires the matching network's RPC, but no wallet connection.
