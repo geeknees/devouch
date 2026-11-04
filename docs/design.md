@@ -4,15 +4,15 @@ Devouch is a tool for contributor review. The issuer decides whom to recommend; 
 
 ## Evidence and policy
 
-A recommendation can be valid and still be rejected by a repository. The verifier checks its signature, subject, scope, lifetime, publication, and withdrawal history. Repository policy chooses the trusted issuers and supported publication infrastructure. Devouch does not assign a global reputation score, reward activity with tokens, or treat a missing recommendation as proof of abuse.
+A recommendation can be valid and still be rejected by a repository. The verifier checks its committed payload, subject, scope, lifetime, publication, and withdrawal history. Repository policy chooses the trusted issuers and supported publication infrastructure. Devouch does not assign a global reputation score, reward activity with tokens, or treat a missing recommendation as proof of abuse.
 
 An endorsement does not prove humanity, GitHub account ownership, authorship, agency, code quality, or permission to merge. `human_verification` is `not_included`. There is no automatic PR approval or merge.
 
 ## Infrastructure and costs
 
-The current implementation publishes to the issuer's ENSv2 records. The static workspace, Ruby CLI, and read-only Action verify through RPC without a Devouch-operated API, database, shared signing key, or custom endorsement contract. Issuers control publication and withdrawal, and pay the transaction costs.
+The current implementation publishes third-party feedback to the ERC-8004 Reputation Registry. The static workspace, Ruby CLI, and read-only Action verify through RPC without a Devouch-operated API, database, shared signing key, or custom endorsement contract. Issuers control publication and withdrawal, and pay the transaction costs.
 
-This moves responsibility to wallet management, ENS permissions, RPC availability, chain history, and maintainer-controlled deployment pins. The verifier fails with `unavailable` when it cannot retrieve required evidence; it does not reinterpret missing history as success. Revocation is reflected on the next check. Previously stored GitHub check results do not update automatically.
+This moves responsibility to wallet management, registry authority and upgrade governance, RPC availability, chain history, and maintainer-controlled deployment pins. The verifier fails with `unavailable` when it cannot retrieve required evidence; it does not reinterpret missing history as success. Revocation is reflected on the next check. Previously stored GitHub check results do not update automatically.
 
 GitHub numeric IDs and recommendation relationships are public. Withdrawing a recommendation does not erase its historical transactions. Never publish secrets or private personal data in a credential or profile.
 
@@ -24,8 +24,8 @@ Devouch explores issuer-signed publication, expiry, and withdrawal history inste
 
 ## Identity integrations
 
-An ENS agent profile is a controller's declaration, not proof that the controller owns the declared GitHub account. Profile editing permissions and contribution authority are different things.
+An ERC-8004 GitHub mapping is a controller's declaration, not proof that the controller owns the declared GitHub account. Profile editing permissions and contribution authority are different things.
 
 World ID is not integrated. A future personhood integration must bind its proof to the intended subject and operation and work without a mandatory Devouch-operated secret or service. Personhood and a recommendation answer different questions. Any new integration requires its own verification of success, rejection, expiry, data exposure, and operational dependencies.
 
-ERC-8004 is being evaluated in [Issue #25](https://github.com/geeknees/devouch/issues/25). Its third-party feedback model, transferable identities, and controller declarations need explicit treatment before replacing ENS. See [the roadmap](roadmap.md).
+[Issue #25's evaluation](erc8004-evaluation.md) led to the ERC-8004 third-party feedback profile. Transferable identities, controller declarations, expiry, and authority history remain explicit application rules. See [the roadmap](roadmap.md).

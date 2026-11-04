@@ -10,13 +10,20 @@
       "allowedScopes": [
         "oss-contribution"
       ],
-      "allowedResolvers": [
+      "requiredIssuers": 1,
+      "format": "devouch-erc8004-policy-v1",
+      "allowedRegistries": [
         {
-          "address": "0x234567890abcdef1234567890abcdef123456789",
-          "implementation": "0x14f09fd05d4585759e54844dc9b00147131cf243"
+          "identityRegistry": "0x234567890abcdef1234567890abcdef123456789",
+          "reputationRegistry": "0x8004B663056A597Dffe9eCcC1965A193B7388713",
+          "identityImplementation": "0x14f09fd05d4585759e54844dc9b00147131cf243",
+          "reputationImplementation": "0x16e0FA7f7C56B9a767E34B192B51f921BE31dA34",
+          "identityCodeHash": "0xa5f9624ea85e45b3f4b8558581f03bfb3e6cefab278d7bf0500ec9bd065dc16f",
+          "reputationCodeHash": "0x38602de97f1bd86f0a4729f7f3c0a78b1d27892e6eb581272cce5504a68fd00b",
+          "identityProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41",
+          "reputationProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41"
         }
-      ],
-      "requiredIssuers": 1
+      ]
     },
     "evidence": {
       "evidence_status": "valid",
@@ -24,8 +31,17 @@
       "subject": "github:287365775",
       "issuer": "0x1234567890abcdef1234567890abcdef12345678",
       "scope": "oss-contribution",
-      "resolver": "0x234567890abcdef1234567890abcdef123456789",
-      "implementation": "0x14f09fd05d4585759e54844dc9b00147131cf243"
+      "chainId": 11155111,
+      "registry": {
+        "identityRegistry": "0x234567890abcdef1234567890abcdef123456789",
+        "reputationRegistry": "0x8004B663056A597Dffe9eCcC1965A193B7388713",
+        "identityImplementation": "0x14f09fd05d4585759e54844dc9b00147131cf243",
+        "reputationImplementation": "0x16e0FA7f7C56B9a767E34B192B51f921BE31dA34",
+        "identityCodeHash": "0xa5f9624ea85e45b3f4b8558581f03bfb3e6cefab278d7bf0500ec9bd065dc16f",
+        "reputationCodeHash": "0x38602de97f1bd86f0a4729f7f3c0a78b1d27892e6eb581272cce5504a68fd00b",
+        "identityProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41",
+        "reputationProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41"
+      }
     },
     "expected": {
       "policy_status": "accepted",
@@ -43,13 +59,20 @@
       "allowedScopes": [
         "oss-contribution"
       ],
-      "allowedResolvers": [
+      "requiredIssuers": 1,
+      "format": "devouch-erc8004-policy-v1",
+      "allowedRegistries": [
         {
-          "address": "0x234567890abcdef1234567890abcdef123456789",
-          "implementation": "0x14f09fd05d4585759e54844dc9b00147131cf243"
+          "identityRegistry": "0x234567890abcdef1234567890abcdef123456789",
+          "reputationRegistry": "0x8004B663056A597Dffe9eCcC1965A193B7388713",
+          "identityImplementation": "0x14f09fd05d4585759e54844dc9b00147131cf243",
+          "reputationImplementation": "0x16e0FA7f7C56B9a767E34B192B51f921BE31dA34",
+          "identityCodeHash": "0xa5f9624ea85e45b3f4b8558581f03bfb3e6cefab278d7bf0500ec9bd065dc16f",
+          "reputationCodeHash": "0x38602de97f1bd86f0a4729f7f3c0a78b1d27892e6eb581272cce5504a68fd00b",
+          "identityProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41",
+          "reputationProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41"
         }
-      ],
-      "requiredIssuers": 1
+      ]
     },
     "evidence": {
       "evidence_status": "valid",
@@ -57,8 +80,17 @@
       "subject": "github:287365775",
       "issuer": "0x1234567890abcdef1234567890abcdef12345678",
       "scope": "oss-contribution",
-      "resolver": "0x234567890abcdef1234567890abcdef123456789",
-      "implementation": "0x14f09fd05d4585759e54844dc9b00147131cf243"
+      "chainId": 11155111,
+      "registry": {
+        "identityRegistry": "0x234567890abcdef1234567890abcdef123456789",
+        "reputationRegistry": "0x8004B663056A597Dffe9eCcC1965A193B7388713",
+        "identityImplementation": "0x14f09fd05d4585759e54844dc9b00147131cf243",
+        "reputationImplementation": "0x16e0FA7f7C56B9a767E34B192B51f921BE31dA34",
+        "identityCodeHash": "0xa5f9624ea85e45b3f4b8558581f03bfb3e6cefab278d7bf0500ec9bd065dc16f",
+        "reputationCodeHash": "0x38602de97f1bd86f0a4729f7f3c0a78b1d27892e6eb581272cce5504a68fd00b",
+        "identityProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41",
+        "reputationProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41"
+      }
     },
     "expected": {
       "policy_status": "accepted",
@@ -66,7 +98,7 @@
     }
   },
   {
-    "name": "resolver addresses are case insensitive",
+    "name": "registry addresses are case insensitive",
     "policy": {
       "repositoryId": "demo/repo-a",
       "chainId": 11155111,
@@ -76,13 +108,20 @@
       "allowedScopes": [
         "oss-contribution"
       ],
-      "allowedResolvers": [
+      "requiredIssuers": 1,
+      "format": "devouch-erc8004-policy-v1",
+      "allowedRegistries": [
         {
-          "address": "0x234567890ABCDEF1234567890ABCDEF123456789",
-          "implementation": "0x14F09FD05D4585759E54844DC9B00147131CF243"
+          "identityRegistry": "0x234567890ABCDEF1234567890ABCDEF123456789",
+          "reputationRegistry": "0x8004B663056A597Dffe9eCcC1965A193B7388713",
+          "identityImplementation": "0x14F09FD05D4585759E54844DC9B00147131CF243",
+          "reputationImplementation": "0x16e0FA7f7C56B9a767E34B192B51f921BE31dA34",
+          "identityCodeHash": "0xa5f9624ea85e45b3f4b8558581f03bfb3e6cefab278d7bf0500ec9bd065dc16f",
+          "reputationCodeHash": "0x38602de97f1bd86f0a4729f7f3c0a78b1d27892e6eb581272cce5504a68fd00b",
+          "identityProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41",
+          "reputationProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41"
         }
-      ],
-      "requiredIssuers": 1
+      ]
     },
     "evidence": {
       "evidence_status": "valid",
@@ -90,8 +129,17 @@
       "subject": "github:287365775",
       "issuer": "0x1234567890abcdef1234567890abcdef12345678",
       "scope": "oss-contribution",
-      "resolver": "0x234567890abcdef1234567890abcdef123456789",
-      "implementation": "0x14f09fd05d4585759e54844dc9b00147131cf243"
+      "chainId": 11155111,
+      "registry": {
+        "identityRegistry": "0x234567890abcdef1234567890abcdef123456789",
+        "reputationRegistry": "0x8004B663056A597Dffe9eCcC1965A193B7388713",
+        "identityImplementation": "0x14f09fd05d4585759e54844dc9b00147131cf243",
+        "reputationImplementation": "0x16e0FA7f7C56B9a767E34B192B51f921BE31dA34",
+        "identityCodeHash": "0xa5f9624ea85e45b3f4b8558581f03bfb3e6cefab278d7bf0500ec9bd065dc16f",
+        "reputationCodeHash": "0x38602de97f1bd86f0a4729f7f3c0a78b1d27892e6eb581272cce5504a68fd00b",
+        "identityProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41",
+        "reputationProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41"
+      }
     },
     "expected": {
       "policy_status": "accepted",
@@ -107,13 +155,20 @@
       "allowedScopes": [
         "oss-contribution"
       ],
-      "allowedResolvers": [
+      "requiredIssuers": 1,
+      "format": "devouch-erc8004-policy-v1",
+      "allowedRegistries": [
         {
-          "address": "0x234567890abcdef1234567890abcdef123456789",
-          "implementation": "0x14f09fd05d4585759e54844dc9b00147131cf243"
+          "identityRegistry": "0x234567890abcdef1234567890abcdef123456789",
+          "reputationRegistry": "0x8004B663056A597Dffe9eCcC1965A193B7388713",
+          "identityImplementation": "0x14f09fd05d4585759e54844dc9b00147131cf243",
+          "reputationImplementation": "0x16e0FA7f7C56B9a767E34B192B51f921BE31dA34",
+          "identityCodeHash": "0xa5f9624ea85e45b3f4b8558581f03bfb3e6cefab278d7bf0500ec9bd065dc16f",
+          "reputationCodeHash": "0x38602de97f1bd86f0a4729f7f3c0a78b1d27892e6eb581272cce5504a68fd00b",
+          "identityProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41",
+          "reputationProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41"
         }
-      ],
-      "requiredIssuers": 1
+      ]
     },
     "evidence": {
       "evidence_status": "valid",
@@ -121,8 +176,17 @@
       "subject": "github:287365775",
       "issuer": "0x1234567890abcdef1234567890abcdef12345678",
       "scope": "oss-contribution",
-      "resolver": "0x234567890abcdef1234567890abcdef123456789",
-      "implementation": "0x14f09fd05d4585759e54844dc9b00147131cf243"
+      "chainId": 11155111,
+      "registry": {
+        "identityRegistry": "0x234567890abcdef1234567890abcdef123456789",
+        "reputationRegistry": "0x8004B663056A597Dffe9eCcC1965A193B7388713",
+        "identityImplementation": "0x14f09fd05d4585759e54844dc9b00147131cf243",
+        "reputationImplementation": "0x16e0FA7f7C56B9a767E34B192B51f921BE31dA34",
+        "identityCodeHash": "0xa5f9624ea85e45b3f4b8558581f03bfb3e6cefab278d7bf0500ec9bd065dc16f",
+        "reputationCodeHash": "0x38602de97f1bd86f0a4729f7f3c0a78b1d27892e6eb581272cce5504a68fd00b",
+        "identityProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41",
+        "reputationProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41"
+      }
     },
     "expected": {
       "policy_status": "rejected",
@@ -142,13 +206,20 @@
       "allowedScopes": [
         "oss-contribution"
       ],
-      "allowedResolvers": [
+      "requiredIssuers": 1,
+      "format": "devouch-erc8004-policy-v1",
+      "allowedRegistries": [
         {
-          "address": "0x234567890abcdef1234567890abcdef123456789",
-          "implementation": "0x14f09fd05d4585759e54844dc9b00147131cf243"
+          "identityRegistry": "0x234567890abcdef1234567890abcdef123456789",
+          "reputationRegistry": "0x8004B663056A597Dffe9eCcC1965A193B7388713",
+          "identityImplementation": "0x14f09fd05d4585759e54844dc9b00147131cf243",
+          "reputationImplementation": "0x16e0FA7f7C56B9a767E34B192B51f921BE31dA34",
+          "identityCodeHash": "0xa5f9624ea85e45b3f4b8558581f03bfb3e6cefab278d7bf0500ec9bd065dc16f",
+          "reputationCodeHash": "0x38602de97f1bd86f0a4729f7f3c0a78b1d27892e6eb581272cce5504a68fd00b",
+          "identityProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41",
+          "reputationProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41"
         }
-      ],
-      "requiredIssuers": 1
+      ]
     },
     "evidence": {
       "evidence_status": "valid",
@@ -156,8 +227,17 @@
       "subject": "github:287365775",
       "issuer": "0x1234567890abcdef1234567890abcdef12345678",
       "scope": "oss-contribution",
-      "resolver": "0x234567890abcdef1234567890abcdef123456789",
-      "implementation": "0x14f09fd05d4585759e54844dc9b00147131cf243"
+      "chainId": 11155111,
+      "registry": {
+        "identityRegistry": "0x234567890abcdef1234567890abcdef123456789",
+        "reputationRegistry": "0x8004B663056A597Dffe9eCcC1965A193B7388713",
+        "identityImplementation": "0x14f09fd05d4585759e54844dc9b00147131cf243",
+        "reputationImplementation": "0x16e0FA7f7C56B9a767E34B192B51f921BE31dA34",
+        "identityCodeHash": "0xa5f9624ea85e45b3f4b8558581f03bfb3e6cefab278d7bf0500ec9bd065dc16f",
+        "reputationCodeHash": "0x38602de97f1bd86f0a4729f7f3c0a78b1d27892e6eb581272cce5504a68fd00b",
+        "identityProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41",
+        "reputationProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41"
+      }
     },
     "expected": {
       "policy_status": "rejected",
@@ -177,13 +257,20 @@
       "allowedScopes": [
         "documentation"
       ],
-      "allowedResolvers": [
+      "requiredIssuers": 1,
+      "format": "devouch-erc8004-policy-v1",
+      "allowedRegistries": [
         {
-          "address": "0x234567890abcdef1234567890abcdef123456789",
-          "implementation": "0x14f09fd05d4585759e54844dc9b00147131cf243"
+          "identityRegistry": "0x234567890abcdef1234567890abcdef123456789",
+          "reputationRegistry": "0x8004B663056A597Dffe9eCcC1965A193B7388713",
+          "identityImplementation": "0x14f09fd05d4585759e54844dc9b00147131cf243",
+          "reputationImplementation": "0x16e0FA7f7C56B9a767E34B192B51f921BE31dA34",
+          "identityCodeHash": "0xa5f9624ea85e45b3f4b8558581f03bfb3e6cefab278d7bf0500ec9bd065dc16f",
+          "reputationCodeHash": "0x38602de97f1bd86f0a4729f7f3c0a78b1d27892e6eb581272cce5504a68fd00b",
+          "identityProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41",
+          "reputationProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41"
         }
-      ],
-      "requiredIssuers": 1
+      ]
     },
     "evidence": {
       "evidence_status": "valid",
@@ -191,8 +278,17 @@
       "subject": "github:287365775",
       "issuer": "0x1234567890abcdef1234567890abcdef12345678",
       "scope": "oss-contribution",
-      "resolver": "0x234567890abcdef1234567890abcdef123456789",
-      "implementation": "0x14f09fd05d4585759e54844dc9b00147131cf243"
+      "chainId": 11155111,
+      "registry": {
+        "identityRegistry": "0x234567890abcdef1234567890abcdef123456789",
+        "reputationRegistry": "0x8004B663056A597Dffe9eCcC1965A193B7388713",
+        "identityImplementation": "0x14f09fd05d4585759e54844dc9b00147131cf243",
+        "reputationImplementation": "0x16e0FA7f7C56B9a767E34B192B51f921BE31dA34",
+        "identityCodeHash": "0xa5f9624ea85e45b3f4b8558581f03bfb3e6cefab278d7bf0500ec9bd065dc16f",
+        "reputationCodeHash": "0x38602de97f1bd86f0a4729f7f3c0a78b1d27892e6eb581272cce5504a68fd00b",
+        "identityProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41",
+        "reputationProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41"
+      }
     },
     "expected": {
       "policy_status": "rejected",
@@ -212,13 +308,20 @@
       "allowedScopes": [
         "oss-contribution"
       ],
-      "allowedResolvers": [
+      "requiredIssuers": 1,
+      "format": "devouch-erc8004-policy-v1",
+      "allowedRegistries": [
         {
-          "address": "0x234567890abcdef1234567890abcdef123456789",
-          "implementation": "0x14f09fd05d4585759e54844dc9b00147131cf243"
+          "identityRegistry": "0x234567890abcdef1234567890abcdef123456789",
+          "reputationRegistry": "0x8004B663056A597Dffe9eCcC1965A193B7388713",
+          "identityImplementation": "0x14f09fd05d4585759e54844dc9b00147131cf243",
+          "reputationImplementation": "0x16e0FA7f7C56B9a767E34B192B51f921BE31dA34",
+          "identityCodeHash": "0xa5f9624ea85e45b3f4b8558581f03bfb3e6cefab278d7bf0500ec9bd065dc16f",
+          "reputationCodeHash": "0x38602de97f1bd86f0a4729f7f3c0a78b1d27892e6eb581272cce5504a68fd00b",
+          "identityProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41",
+          "reputationProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41"
         }
-      ],
-      "requiredIssuers": 1
+      ]
     },
     "evidence": {
       "evidence_status": "valid",
@@ -226,8 +329,17 @@
       "subject": "github:287365775",
       "issuer": "0x1234567890abcdef1234567890abcdef12345678",
       "scope": "OSS-CONTRIBUTION",
-      "resolver": "0x234567890abcdef1234567890abcdef123456789",
-      "implementation": "0x14f09fd05d4585759e54844dc9b00147131cf243"
+      "chainId": 11155111,
+      "registry": {
+        "identityRegistry": "0x234567890abcdef1234567890abcdef123456789",
+        "reputationRegistry": "0x8004B663056A597Dffe9eCcC1965A193B7388713",
+        "identityImplementation": "0x14f09fd05d4585759e54844dc9b00147131cf243",
+        "reputationImplementation": "0x16e0FA7f7C56B9a767E34B192B51f921BE31dA34",
+        "identityCodeHash": "0xa5f9624ea85e45b3f4b8558581f03bfb3e6cefab278d7bf0500ec9bd065dc16f",
+        "reputationCodeHash": "0x38602de97f1bd86f0a4729f7f3c0a78b1d27892e6eb581272cce5504a68fd00b",
+        "identityProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41",
+        "reputationProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41"
+      }
     },
     "expected": {
       "policy_status": "rejected",
@@ -237,7 +349,7 @@
     }
   },
   {
-    "name": "resolver not allowed",
+    "name": "registry not allowed",
     "policy": {
       "repositoryId": "demo/repo-a",
       "chainId": 11155111,
@@ -247,8 +359,9 @@
       "allowedScopes": [
         "oss-contribution"
       ],
-      "allowedResolvers": [],
-      "requiredIssuers": 1
+      "requiredIssuers": 1,
+      "format": "devouch-erc8004-policy-v1",
+      "allowedRegistries": []
     },
     "evidence": {
       "evidence_status": "valid",
@@ -256,13 +369,22 @@
       "subject": "github:287365775",
       "issuer": "0x1234567890abcdef1234567890abcdef12345678",
       "scope": "oss-contribution",
-      "resolver": "0x234567890abcdef1234567890abcdef123456789",
-      "implementation": "0x14f09fd05d4585759e54844dc9b00147131cf243"
+      "chainId": 11155111,
+      "registry": {
+        "identityRegistry": "0x234567890abcdef1234567890abcdef123456789",
+        "reputationRegistry": "0x8004B663056A597Dffe9eCcC1965A193B7388713",
+        "identityImplementation": "0x14f09fd05d4585759e54844dc9b00147131cf243",
+        "reputationImplementation": "0x16e0FA7f7C56B9a767E34B192B51f921BE31dA34",
+        "identityCodeHash": "0xa5f9624ea85e45b3f4b8558581f03bfb3e6cefab278d7bf0500ec9bd065dc16f",
+        "reputationCodeHash": "0x38602de97f1bd86f0a4729f7f3c0a78b1d27892e6eb581272cce5504a68fd00b",
+        "identityProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41",
+        "reputationProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41"
+      }
     },
     "expected": {
       "policy_status": "rejected",
       "reason_codes": [
-        "resolver_not_allowed"
+        "registry_not_allowed"
       ]
     }
   },
@@ -277,13 +399,20 @@
       "allowedScopes": [
         "oss-contribution"
       ],
-      "allowedResolvers": [
+      "requiredIssuers": 1,
+      "format": "devouch-erc8004-policy-v1",
+      "allowedRegistries": [
         {
-          "address": "0x234567890abcdef1234567890abcdef123456789",
-          "implementation": "0x5555555555555555555555555555555555555555"
+          "identityRegistry": "0x234567890abcdef1234567890abcdef123456789",
+          "reputationRegistry": "0x8004B663056A597Dffe9eCcC1965A193B7388713",
+          "identityImplementation": "0x5555555555555555555555555555555555555555",
+          "reputationImplementation": "0x16e0FA7f7C56B9a767E34B192B51f921BE31dA34",
+          "identityCodeHash": "0xa5f9624ea85e45b3f4b8558581f03bfb3e6cefab278d7bf0500ec9bd065dc16f",
+          "reputationCodeHash": "0x38602de97f1bd86f0a4729f7f3c0a78b1d27892e6eb581272cce5504a68fd00b",
+          "identityProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41",
+          "reputationProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41"
         }
-      ],
-      "requiredIssuers": 1
+      ]
     },
     "evidence": {
       "evidence_status": "valid",
@@ -291,13 +420,22 @@
       "subject": "github:287365775",
       "issuer": "0x1234567890abcdef1234567890abcdef12345678",
       "scope": "oss-contribution",
-      "resolver": "0x234567890abcdef1234567890abcdef123456789",
-      "implementation": "0x14f09fd05d4585759e54844dc9b00147131cf243"
+      "chainId": 11155111,
+      "registry": {
+        "identityRegistry": "0x234567890abcdef1234567890abcdef123456789",
+        "reputationRegistry": "0x8004B663056A597Dffe9eCcC1965A193B7388713",
+        "identityImplementation": "0x14f09fd05d4585759e54844dc9b00147131cf243",
+        "reputationImplementation": "0x16e0FA7f7C56B9a767E34B192B51f921BE31dA34",
+        "identityCodeHash": "0xa5f9624ea85e45b3f4b8558581f03bfb3e6cefab278d7bf0500ec9bd065dc16f",
+        "reputationCodeHash": "0x38602de97f1bd86f0a4729f7f3c0a78b1d27892e6eb581272cce5504a68fd00b",
+        "identityProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41",
+        "reputationProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41"
+      }
     },
     "expected": {
       "policy_status": "rejected",
       "reason_codes": [
-        "resolver_not_allowed"
+        "registry_not_allowed"
       ]
     }
   },
@@ -308,8 +446,9 @@
       "chainId": 11155111,
       "trustedIssuers": [],
       "allowedScopes": [],
-      "allowedResolvers": [],
-      "requiredIssuers": 1
+      "requiredIssuers": 1,
+      "format": "devouch-erc8004-policy-v1",
+      "allowedRegistries": []
     },
     "evidence": {
       "evidence_status": "valid",
@@ -317,15 +456,24 @@
       "subject": "github:287365775",
       "issuer": "0x1234567890abcdef1234567890abcdef12345678",
       "scope": "oss-contribution",
-      "resolver": "0x234567890abcdef1234567890abcdef123456789",
-      "implementation": "0x14f09fd05d4585759e54844dc9b00147131cf243"
+      "chainId": 11155111,
+      "registry": {
+        "identityRegistry": "0x234567890abcdef1234567890abcdef123456789",
+        "reputationRegistry": "0x8004B663056A597Dffe9eCcC1965A193B7388713",
+        "identityImplementation": "0x14f09fd05d4585759e54844dc9b00147131cf243",
+        "reputationImplementation": "0x16e0FA7f7C56B9a767E34B192B51f921BE31dA34",
+        "identityCodeHash": "0xa5f9624ea85e45b3f4b8558581f03bfb3e6cefab278d7bf0500ec9bd065dc16f",
+        "reputationCodeHash": "0x38602de97f1bd86f0a4729f7f3c0a78b1d27892e6eb581272cce5504a68fd00b",
+        "identityProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41",
+        "reputationProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41"
+      }
     },
     "expected": {
       "policy_status": "rejected",
       "reason_codes": [
         "issuer_not_trusted",
         "scope_not_allowed",
-        "resolver_not_allowed"
+        "registry_not_allowed"
       ]
     }
   },
@@ -340,13 +488,20 @@
       "allowedScopes": [
         "oss-contribution"
       ],
-      "allowedResolvers": [
+      "requiredIssuers": 1,
+      "format": "devouch-erc8004-policy-v1",
+      "allowedRegistries": [
         {
-          "address": "0x234567890abcdef1234567890abcdef123456789",
-          "implementation": "0x14f09fd05d4585759e54844dc9b00147131cf243"
+          "identityRegistry": "0x234567890abcdef1234567890abcdef123456789",
+          "reputationRegistry": "0x8004B663056A597Dffe9eCcC1965A193B7388713",
+          "identityImplementation": "0x14f09fd05d4585759e54844dc9b00147131cf243",
+          "reputationImplementation": "0x16e0FA7f7C56B9a767E34B192B51f921BE31dA34",
+          "identityCodeHash": "0xa5f9624ea85e45b3f4b8558581f03bfb3e6cefab278d7bf0500ec9bd065dc16f",
+          "reputationCodeHash": "0x38602de97f1bd86f0a4729f7f3c0a78b1d27892e6eb581272cce5504a68fd00b",
+          "identityProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41",
+          "reputationProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41"
         }
-      ],
-      "requiredIssuers": 1
+      ]
     },
     "evidence": {
       "evidence_status": "valid",
@@ -354,15 +509,24 @@
       "subject": "github:287365775",
       "issuer": null,
       "scope": null,
-      "resolver": null,
-      "implementation": null
+      "chainId": 11155111,
+      "registry": {
+        "identityRegistry": null,
+        "reputationRegistry": "0x8004B663056A597Dffe9eCcC1965A193B7388713",
+        "identityImplementation": null,
+        "reputationImplementation": "0x16e0FA7f7C56B9a767E34B192B51f921BE31dA34",
+        "identityCodeHash": "0xa5f9624ea85e45b3f4b8558581f03bfb3e6cefab278d7bf0500ec9bd065dc16f",
+        "reputationCodeHash": "0x38602de97f1bd86f0a4729f7f3c0a78b1d27892e6eb581272cce5504a68fd00b",
+        "identityProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41",
+        "reputationProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41"
+      }
     },
     "expected": {
       "policy_status": "rejected",
       "reason_codes": [
         "issuer_not_trusted",
         "scope_not_allowed",
-        "resolver_not_allowed"
+        "registry_not_allowed"
       ]
     }
   },
@@ -377,13 +541,20 @@
       "allowedScopes": [
         "oss-contribution"
       ],
-      "allowedResolvers": [
+      "requiredIssuers": 1,
+      "format": "devouch-erc8004-policy-v1",
+      "allowedRegistries": [
         {
-          "address": "0x234567890abcdef1234567890abcdef123456789",
-          "implementation": "0x14f09fd05d4585759e54844dc9b00147131cf243"
+          "identityRegistry": "0x234567890abcdef1234567890abcdef123456789",
+          "reputationRegistry": "0x8004B663056A597Dffe9eCcC1965A193B7388713",
+          "identityImplementation": "0x14f09fd05d4585759e54844dc9b00147131cf243",
+          "reputationImplementation": "0x16e0FA7f7C56B9a767E34B192B51f921BE31dA34",
+          "identityCodeHash": "0xa5f9624ea85e45b3f4b8558581f03bfb3e6cefab278d7bf0500ec9bd065dc16f",
+          "reputationCodeHash": "0x38602de97f1bd86f0a4729f7f3c0a78b1d27892e6eb581272cce5504a68fd00b",
+          "identityProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41",
+          "reputationProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41"
         }
-      ],
-      "requiredIssuers": 1
+      ]
     },
     "evidence": {
       "evidence_status": "invalid",
@@ -393,8 +564,17 @@
       "subject": "github:287365775",
       "issuer": "0x1234567890abcdef1234567890abcdef12345678",
       "scope": "oss-contribution",
-      "resolver": "0x234567890abcdef1234567890abcdef123456789",
-      "implementation": "0x14f09fd05d4585759e54844dc9b00147131cf243"
+      "chainId": 11155111,
+      "registry": {
+        "identityRegistry": "0x234567890abcdef1234567890abcdef123456789",
+        "reputationRegistry": "0x8004B663056A597Dffe9eCcC1965A193B7388713",
+        "identityImplementation": "0x14f09fd05d4585759e54844dc9b00147131cf243",
+        "reputationImplementation": "0x16e0FA7f7C56B9a767E34B192B51f921BE31dA34",
+        "identityCodeHash": "0xa5f9624ea85e45b3f4b8558581f03bfb3e6cefab278d7bf0500ec9bd065dc16f",
+        "reputationCodeHash": "0x38602de97f1bd86f0a4729f7f3c0a78b1d27892e6eb581272cce5504a68fd00b",
+        "identityProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41",
+        "reputationProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41"
+      }
     },
     "expected": {
       "policy_status": "not_evaluated",
@@ -414,13 +594,20 @@
       "allowedScopes": [
         "oss-contribution"
       ],
-      "allowedResolvers": [
+      "requiredIssuers": 1,
+      "format": "devouch-erc8004-policy-v1",
+      "allowedRegistries": [
         {
-          "address": "0x234567890abcdef1234567890abcdef123456789",
-          "implementation": "0x14f09fd05d4585759e54844dc9b00147131cf243"
+          "identityRegistry": "0x234567890abcdef1234567890abcdef123456789",
+          "reputationRegistry": "0x8004B663056A597Dffe9eCcC1965A193B7388713",
+          "identityImplementation": "0x14f09fd05d4585759e54844dc9b00147131cf243",
+          "reputationImplementation": "0x16e0FA7f7C56B9a767E34B192B51f921BE31dA34",
+          "identityCodeHash": "0xa5f9624ea85e45b3f4b8558581f03bfb3e6cefab278d7bf0500ec9bd065dc16f",
+          "reputationCodeHash": "0x38602de97f1bd86f0a4729f7f3c0a78b1d27892e6eb581272cce5504a68fd00b",
+          "identityProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41",
+          "reputationProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41"
         }
-      ],
-      "requiredIssuers": 1
+      ]
     },
     "evidence": {
       "evidence_status": "missing",
@@ -430,8 +617,17 @@
       "subject": "github:287365775",
       "issuer": "0x1234567890abcdef1234567890abcdef12345678",
       "scope": "oss-contribution",
-      "resolver": "0x234567890abcdef1234567890abcdef123456789",
-      "implementation": "0x14f09fd05d4585759e54844dc9b00147131cf243"
+      "chainId": 11155111,
+      "registry": {
+        "identityRegistry": "0x234567890abcdef1234567890abcdef123456789",
+        "reputationRegistry": "0x8004B663056A597Dffe9eCcC1965A193B7388713",
+        "identityImplementation": "0x14f09fd05d4585759e54844dc9b00147131cf243",
+        "reputationImplementation": "0x16e0FA7f7C56B9a767E34B192B51f921BE31dA34",
+        "identityCodeHash": "0xa5f9624ea85e45b3f4b8558581f03bfb3e6cefab278d7bf0500ec9bd065dc16f",
+        "reputationCodeHash": "0x38602de97f1bd86f0a4729f7f3c0a78b1d27892e6eb581272cce5504a68fd00b",
+        "identityProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41",
+        "reputationProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41"
+      }
     },
     "expected": {
       "policy_status": "not_evaluated",
@@ -451,13 +647,20 @@
       "allowedScopes": [
         "oss-contribution"
       ],
-      "allowedResolvers": [
+      "requiredIssuers": 1,
+      "format": "devouch-erc8004-policy-v1",
+      "allowedRegistries": [
         {
-          "address": "0x234567890abcdef1234567890abcdef123456789",
-          "implementation": "0x14f09fd05d4585759e54844dc9b00147131cf243"
+          "identityRegistry": "0x234567890abcdef1234567890abcdef123456789",
+          "reputationRegistry": "0x8004B663056A597Dffe9eCcC1965A193B7388713",
+          "identityImplementation": "0x14f09fd05d4585759e54844dc9b00147131cf243",
+          "reputationImplementation": "0x16e0FA7f7C56B9a767E34B192B51f921BE31dA34",
+          "identityCodeHash": "0xa5f9624ea85e45b3f4b8558581f03bfb3e6cefab278d7bf0500ec9bd065dc16f",
+          "reputationCodeHash": "0x38602de97f1bd86f0a4729f7f3c0a78b1d27892e6eb581272cce5504a68fd00b",
+          "identityProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41",
+          "reputationProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41"
         }
-      ],
-      "requiredIssuers": 1
+      ]
     },
     "evidence": {
       "evidence_status": "revoked",
@@ -467,8 +670,17 @@
       "subject": "github:287365775",
       "issuer": "0x1234567890abcdef1234567890abcdef12345678",
       "scope": "oss-contribution",
-      "resolver": "0x234567890abcdef1234567890abcdef123456789",
-      "implementation": "0x14f09fd05d4585759e54844dc9b00147131cf243"
+      "chainId": 11155111,
+      "registry": {
+        "identityRegistry": "0x234567890abcdef1234567890abcdef123456789",
+        "reputationRegistry": "0x8004B663056A597Dffe9eCcC1965A193B7388713",
+        "identityImplementation": "0x14f09fd05d4585759e54844dc9b00147131cf243",
+        "reputationImplementation": "0x16e0FA7f7C56B9a767E34B192B51f921BE31dA34",
+        "identityCodeHash": "0xa5f9624ea85e45b3f4b8558581f03bfb3e6cefab278d7bf0500ec9bd065dc16f",
+        "reputationCodeHash": "0x38602de97f1bd86f0a4729f7f3c0a78b1d27892e6eb581272cce5504a68fd00b",
+        "identityProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41",
+        "reputationProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41"
+      }
     },
     "expected": {
       "policy_status": "not_evaluated",
@@ -488,13 +700,20 @@
       "allowedScopes": [
         "oss-contribution"
       ],
-      "allowedResolvers": [
+      "requiredIssuers": 1,
+      "format": "devouch-erc8004-policy-v1",
+      "allowedRegistries": [
         {
-          "address": "0x234567890abcdef1234567890abcdef123456789",
-          "implementation": "0x14f09fd05d4585759e54844dc9b00147131cf243"
+          "identityRegistry": "0x234567890abcdef1234567890abcdef123456789",
+          "reputationRegistry": "0x8004B663056A597Dffe9eCcC1965A193B7388713",
+          "identityImplementation": "0x14f09fd05d4585759e54844dc9b00147131cf243",
+          "reputationImplementation": "0x16e0FA7f7C56B9a767E34B192B51f921BE31dA34",
+          "identityCodeHash": "0xa5f9624ea85e45b3f4b8558581f03bfb3e6cefab278d7bf0500ec9bd065dc16f",
+          "reputationCodeHash": "0x38602de97f1bd86f0a4729f7f3c0a78b1d27892e6eb581272cce5504a68fd00b",
+          "identityProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41",
+          "reputationProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41"
         }
-      ],
-      "requiredIssuers": 1
+      ]
     },
     "evidence": {
       "evidence_status": "expired",
@@ -504,8 +723,17 @@
       "subject": "github:287365775",
       "issuer": "0x1234567890abcdef1234567890abcdef12345678",
       "scope": "oss-contribution",
-      "resolver": "0x234567890abcdef1234567890abcdef123456789",
-      "implementation": "0x14f09fd05d4585759e54844dc9b00147131cf243"
+      "chainId": 11155111,
+      "registry": {
+        "identityRegistry": "0x234567890abcdef1234567890abcdef123456789",
+        "reputationRegistry": "0x8004B663056A597Dffe9eCcC1965A193B7388713",
+        "identityImplementation": "0x14f09fd05d4585759e54844dc9b00147131cf243",
+        "reputationImplementation": "0x16e0FA7f7C56B9a767E34B192B51f921BE31dA34",
+        "identityCodeHash": "0xa5f9624ea85e45b3f4b8558581f03bfb3e6cefab278d7bf0500ec9bd065dc16f",
+        "reputationCodeHash": "0x38602de97f1bd86f0a4729f7f3c0a78b1d27892e6eb581272cce5504a68fd00b",
+        "identityProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41",
+        "reputationProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41"
+      }
     },
     "expected": {
       "policy_status": "not_evaluated",
@@ -525,13 +753,20 @@
       "allowedScopes": [
         "oss-contribution"
       ],
-      "allowedResolvers": [
+      "requiredIssuers": 1,
+      "format": "devouch-erc8004-policy-v1",
+      "allowedRegistries": [
         {
-          "address": "0x234567890abcdef1234567890abcdef123456789",
-          "implementation": "0x14f09fd05d4585759e54844dc9b00147131cf243"
+          "identityRegistry": "0x234567890abcdef1234567890abcdef123456789",
+          "reputationRegistry": "0x8004B663056A597Dffe9eCcC1965A193B7388713",
+          "identityImplementation": "0x14f09fd05d4585759e54844dc9b00147131cf243",
+          "reputationImplementation": "0x16e0FA7f7C56B9a767E34B192B51f921BE31dA34",
+          "identityCodeHash": "0xa5f9624ea85e45b3f4b8558581f03bfb3e6cefab278d7bf0500ec9bd065dc16f",
+          "reputationCodeHash": "0x38602de97f1bd86f0a4729f7f3c0a78b1d27892e6eb581272cce5504a68fd00b",
+          "identityProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41",
+          "reputationProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41"
         }
-      ],
-      "requiredIssuers": 1
+      ]
     },
     "evidence": {
       "evidence_status": "unavailable",
@@ -541,8 +776,17 @@
       "subject": "github:287365775",
       "issuer": "0x1234567890abcdef1234567890abcdef12345678",
       "scope": "oss-contribution",
-      "resolver": "0x234567890abcdef1234567890abcdef123456789",
-      "implementation": "0x14f09fd05d4585759e54844dc9b00147131cf243"
+      "chainId": 11155111,
+      "registry": {
+        "identityRegistry": "0x234567890abcdef1234567890abcdef123456789",
+        "reputationRegistry": "0x8004B663056A597Dffe9eCcC1965A193B7388713",
+        "identityImplementation": "0x14f09fd05d4585759e54844dc9b00147131cf243",
+        "reputationImplementation": "0x16e0FA7f7C56B9a767E34B192B51f921BE31dA34",
+        "identityCodeHash": "0xa5f9624ea85e45b3f4b8558581f03bfb3e6cefab278d7bf0500ec9bd065dc16f",
+        "reputationCodeHash": "0x38602de97f1bd86f0a4729f7f3c0a78b1d27892e6eb581272cce5504a68fd00b",
+        "identityProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41",
+        "reputationProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41"
+      }
     },
     "expected": {
       "policy_status": "not_evaluated",
@@ -552,7 +796,7 @@
     }
   },
   {
-    "name": "another chain",
+    "name": "different chain is rejected by policy",
     "policy": {
       "repositoryId": "demo/repo-a",
       "chainId": 1,
@@ -562,13 +806,20 @@
       "allowedScopes": [
         "oss-contribution"
       ],
-      "allowedResolvers": [
+      "requiredIssuers": 1,
+      "format": "devouch-erc8004-policy-v1",
+      "allowedRegistries": [
         {
-          "address": "0x234567890abcdef1234567890abcdef123456789",
-          "implementation": "0x14f09fd05d4585759e54844dc9b00147131cf243"
+          "identityRegistry": "0x234567890abcdef1234567890abcdef123456789",
+          "reputationRegistry": "0x8004B663056A597Dffe9eCcC1965A193B7388713",
+          "identityImplementation": "0x14f09fd05d4585759e54844dc9b00147131cf243",
+          "reputationImplementation": "0x16e0FA7f7C56B9a767E34B192B51f921BE31dA34",
+          "identityCodeHash": "0xa5f9624ea85e45b3f4b8558581f03bfb3e6cefab278d7bf0500ec9bd065dc16f",
+          "reputationCodeHash": "0x38602de97f1bd86f0a4729f7f3c0a78b1d27892e6eb581272cce5504a68fd00b",
+          "identityProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41",
+          "reputationProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41"
         }
-      ],
-      "requiredIssuers": 1
+      ]
     },
     "evidence": {
       "evidence_status": "valid",
@@ -576,11 +827,23 @@
       "subject": "github:287365775",
       "issuer": "0x1234567890abcdef1234567890abcdef12345678",
       "scope": "oss-contribution",
-      "resolver": "0x234567890abcdef1234567890abcdef123456789",
-      "implementation": "0x14f09fd05d4585759e54844dc9b00147131cf243"
+      "chainId": 11155111,
+      "registry": {
+        "identityRegistry": "0x234567890abcdef1234567890abcdef123456789",
+        "reputationRegistry": "0x8004B663056A597Dffe9eCcC1965A193B7388713",
+        "identityImplementation": "0x14f09fd05d4585759e54844dc9b00147131cf243",
+        "reputationImplementation": "0x16e0FA7f7C56B9a767E34B192B51f921BE31dA34",
+        "identityCodeHash": "0xa5f9624ea85e45b3f4b8558581f03bfb3e6cefab278d7bf0500ec9bd065dc16f",
+        "reputationCodeHash": "0x38602de97f1bd86f0a4729f7f3c0a78b1d27892e6eb581272cce5504a68fd00b",
+        "identityProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41",
+        "reputationProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41"
+      }
     },
     "expected": {
-      "error": "invalid_policy"
+      "policy_status": "rejected",
+      "reason_codes": [
+        "chain_not_allowed"
+      ]
     }
   },
   {
@@ -594,13 +857,20 @@
       "allowedScopes": [
         "oss-contribution"
       ],
-      "allowedResolvers": [
+      "requiredIssuers": 1,
+      "format": "devouch-erc8004-policy-v1",
+      "allowedRegistries": [
         {
-          "address": "0x234567890abcdef1234567890abcdef123456789",
-          "implementation": "0x14f09fd05d4585759e54844dc9b00147131cf243"
+          "identityRegistry": "0x234567890abcdef1234567890abcdef123456789",
+          "reputationRegistry": "0x8004B663056A597Dffe9eCcC1965A193B7388713",
+          "identityImplementation": "0x14f09fd05d4585759e54844dc9b00147131cf243",
+          "reputationImplementation": "0x16e0FA7f7C56B9a767E34B192B51f921BE31dA34",
+          "identityCodeHash": "0xa5f9624ea85e45b3f4b8558581f03bfb3e6cefab278d7bf0500ec9bd065dc16f",
+          "reputationCodeHash": "0x38602de97f1bd86f0a4729f7f3c0a78b1d27892e6eb581272cce5504a68fd00b",
+          "identityProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41",
+          "reputationProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41"
         }
-      ],
-      "requiredIssuers": 1
+      ]
     },
     "evidence": {
       "evidence_status": "valid",
@@ -608,8 +878,17 @@
       "subject": "github:287365775",
       "issuer": "0x1234567890abcdef1234567890abcdef12345678",
       "scope": "oss-contribution",
-      "resolver": "0x234567890abcdef1234567890abcdef123456789",
-      "implementation": "0x14f09fd05d4585759e54844dc9b00147131cf243"
+      "chainId": 11155111,
+      "registry": {
+        "identityRegistry": "0x234567890abcdef1234567890abcdef123456789",
+        "reputationRegistry": "0x8004B663056A597Dffe9eCcC1965A193B7388713",
+        "identityImplementation": "0x14f09fd05d4585759e54844dc9b00147131cf243",
+        "reputationImplementation": "0x16e0FA7f7C56B9a767E34B192B51f921BE31dA34",
+        "identityCodeHash": "0xa5f9624ea85e45b3f4b8558581f03bfb3e6cefab278d7bf0500ec9bd065dc16f",
+        "reputationCodeHash": "0x38602de97f1bd86f0a4729f7f3c0a78b1d27892e6eb581272cce5504a68fd00b",
+        "identityProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41",
+        "reputationProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41"
+      }
     },
     "expected": {
       "error": "invalid_policy"
@@ -626,13 +905,20 @@
       "allowedScopes": [
         "oss-contribution"
       ],
-      "allowedResolvers": [
+      "requiredIssuers": 2,
+      "format": "devouch-erc8004-policy-v1",
+      "allowedRegistries": [
         {
-          "address": "0x234567890abcdef1234567890abcdef123456789",
-          "implementation": "0x14f09fd05d4585759e54844dc9b00147131cf243"
+          "identityRegistry": "0x234567890abcdef1234567890abcdef123456789",
+          "reputationRegistry": "0x8004B663056A597Dffe9eCcC1965A193B7388713",
+          "identityImplementation": "0x14f09fd05d4585759e54844dc9b00147131cf243",
+          "reputationImplementation": "0x16e0FA7f7C56B9a767E34B192B51f921BE31dA34",
+          "identityCodeHash": "0xa5f9624ea85e45b3f4b8558581f03bfb3e6cefab278d7bf0500ec9bd065dc16f",
+          "reputationCodeHash": "0x38602de97f1bd86f0a4729f7f3c0a78b1d27892e6eb581272cce5504a68fd00b",
+          "identityProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41",
+          "reputationProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41"
         }
-      ],
-      "requiredIssuers": 2
+      ]
     },
     "evidence": {
       "evidence_status": "valid",
@@ -640,8 +926,17 @@
       "subject": "github:287365775",
       "issuer": "0x1234567890abcdef1234567890abcdef12345678",
       "scope": "oss-contribution",
-      "resolver": "0x234567890abcdef1234567890abcdef123456789",
-      "implementation": "0x14f09fd05d4585759e54844dc9b00147131cf243"
+      "chainId": 11155111,
+      "registry": {
+        "identityRegistry": "0x234567890abcdef1234567890abcdef123456789",
+        "reputationRegistry": "0x8004B663056A597Dffe9eCcC1965A193B7388713",
+        "identityImplementation": "0x14f09fd05d4585759e54844dc9b00147131cf243",
+        "reputationImplementation": "0x16e0FA7f7C56B9a767E34B192B51f921BE31dA34",
+        "identityCodeHash": "0xa5f9624ea85e45b3f4b8558581f03bfb3e6cefab278d7bf0500ec9bd065dc16f",
+        "reputationCodeHash": "0x38602de97f1bd86f0a4729f7f3c0a78b1d27892e6eb581272cce5504a68fd00b",
+        "identityProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41",
+        "reputationProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41"
+      }
     },
     "expected": {
       "error": "invalid_policy"
@@ -658,13 +953,20 @@
       "allowedScopes": [
         "oss-contribution"
       ],
-      "allowedResolvers": [
+      "requiredIssuers": "1",
+      "format": "devouch-erc8004-policy-v1",
+      "allowedRegistries": [
         {
-          "address": "0x234567890abcdef1234567890abcdef123456789",
-          "implementation": "0x14f09fd05d4585759e54844dc9b00147131cf243"
+          "identityRegistry": "0x234567890abcdef1234567890abcdef123456789",
+          "reputationRegistry": "0x8004B663056A597Dffe9eCcC1965A193B7388713",
+          "identityImplementation": "0x14f09fd05d4585759e54844dc9b00147131cf243",
+          "reputationImplementation": "0x16e0FA7f7C56B9a767E34B192B51f921BE31dA34",
+          "identityCodeHash": "0xa5f9624ea85e45b3f4b8558581f03bfb3e6cefab278d7bf0500ec9bd065dc16f",
+          "reputationCodeHash": "0x38602de97f1bd86f0a4729f7f3c0a78b1d27892e6eb581272cce5504a68fd00b",
+          "identityProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41",
+          "reputationProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41"
         }
-      ],
-      "requiredIssuers": "1"
+      ]
     },
     "evidence": {
       "evidence_status": "valid",
@@ -672,8 +974,17 @@
       "subject": "github:287365775",
       "issuer": "0x1234567890abcdef1234567890abcdef12345678",
       "scope": "oss-contribution",
-      "resolver": "0x234567890abcdef1234567890abcdef123456789",
-      "implementation": "0x14f09fd05d4585759e54844dc9b00147131cf243"
+      "chainId": 11155111,
+      "registry": {
+        "identityRegistry": "0x234567890abcdef1234567890abcdef123456789",
+        "reputationRegistry": "0x8004B663056A597Dffe9eCcC1965A193B7388713",
+        "identityImplementation": "0x14f09fd05d4585759e54844dc9b00147131cf243",
+        "reputationImplementation": "0x16e0FA7f7C56B9a767E34B192B51f921BE31dA34",
+        "identityCodeHash": "0xa5f9624ea85e45b3f4b8558581f03bfb3e6cefab278d7bf0500ec9bd065dc16f",
+        "reputationCodeHash": "0x38602de97f1bd86f0a4729f7f3c0a78b1d27892e6eb581272cce5504a68fd00b",
+        "identityProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41",
+        "reputationProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41"
+      }
     },
     "expected": {
       "error": "invalid_policy"
@@ -687,13 +998,20 @@
       "trustedIssuers": [
         "0x1234567890abcdef1234567890abcdef12345678"
       ],
-      "allowedResolvers": [
+      "requiredIssuers": 1,
+      "format": "devouch-erc8004-policy-v1",
+      "allowedRegistries": [
         {
-          "address": "0x234567890abcdef1234567890abcdef123456789",
-          "implementation": "0x14f09fd05d4585759e54844dc9b00147131cf243"
+          "identityRegistry": "0x234567890abcdef1234567890abcdef123456789",
+          "reputationRegistry": "0x8004B663056A597Dffe9eCcC1965A193B7388713",
+          "identityImplementation": "0x14f09fd05d4585759e54844dc9b00147131cf243",
+          "reputationImplementation": "0x16e0FA7f7C56B9a767E34B192B51f921BE31dA34",
+          "identityCodeHash": "0xa5f9624ea85e45b3f4b8558581f03bfb3e6cefab278d7bf0500ec9bd065dc16f",
+          "reputationCodeHash": "0x38602de97f1bd86f0a4729f7f3c0a78b1d27892e6eb581272cce5504a68fd00b",
+          "identityProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41",
+          "reputationProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41"
         }
-      ],
-      "requiredIssuers": 1
+      ]
     },
     "evidence": {
       "evidence_status": "valid",
@@ -701,8 +1019,17 @@
       "subject": "github:287365775",
       "issuer": "0x1234567890abcdef1234567890abcdef12345678",
       "scope": "oss-contribution",
-      "resolver": "0x234567890abcdef1234567890abcdef123456789",
-      "implementation": "0x14f09fd05d4585759e54844dc9b00147131cf243"
+      "chainId": 11155111,
+      "registry": {
+        "identityRegistry": "0x234567890abcdef1234567890abcdef123456789",
+        "reputationRegistry": "0x8004B663056A597Dffe9eCcC1965A193B7388713",
+        "identityImplementation": "0x14f09fd05d4585759e54844dc9b00147131cf243",
+        "reputationImplementation": "0x16e0FA7f7C56B9a767E34B192B51f921BE31dA34",
+        "identityCodeHash": "0xa5f9624ea85e45b3f4b8558581f03bfb3e6cefab278d7bf0500ec9bd065dc16f",
+        "reputationCodeHash": "0x38602de97f1bd86f0a4729f7f3c0a78b1d27892e6eb581272cce5504a68fd00b",
+        "identityProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41",
+        "reputationProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41"
+      }
     },
     "expected": {
       "error": "invalid_policy"
@@ -719,14 +1046,21 @@
       "allowedScopes": [
         "oss-contribution"
       ],
-      "allowedResolvers": [
-        {
-          "address": "0x234567890abcdef1234567890abcdef123456789",
-          "implementation": "0x14f09fd05d4585759e54844dc9b00147131cf243"
-        }
-      ],
       "requiredIssuers": 1,
-      "trusted": true
+      "trusted": true,
+      "format": "devouch-erc8004-policy-v1",
+      "allowedRegistries": [
+        {
+          "identityRegistry": "0x234567890abcdef1234567890abcdef123456789",
+          "reputationRegistry": "0x8004B663056A597Dffe9eCcC1965A193B7388713",
+          "identityImplementation": "0x14f09fd05d4585759e54844dc9b00147131cf243",
+          "reputationImplementation": "0x16e0FA7f7C56B9a767E34B192B51f921BE31dA34",
+          "identityCodeHash": "0xa5f9624ea85e45b3f4b8558581f03bfb3e6cefab278d7bf0500ec9bd065dc16f",
+          "reputationCodeHash": "0x38602de97f1bd86f0a4729f7f3c0a78b1d27892e6eb581272cce5504a68fd00b",
+          "identityProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41",
+          "reputationProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41"
+        }
+      ]
     },
     "evidence": {
       "evidence_status": "valid",
@@ -734,8 +1068,17 @@
       "subject": "github:287365775",
       "issuer": "0x1234567890abcdef1234567890abcdef12345678",
       "scope": "oss-contribution",
-      "resolver": "0x234567890abcdef1234567890abcdef123456789",
-      "implementation": "0x14f09fd05d4585759e54844dc9b00147131cf243"
+      "chainId": 11155111,
+      "registry": {
+        "identityRegistry": "0x234567890abcdef1234567890abcdef123456789",
+        "reputationRegistry": "0x8004B663056A597Dffe9eCcC1965A193B7388713",
+        "identityImplementation": "0x14f09fd05d4585759e54844dc9b00147131cf243",
+        "reputationImplementation": "0x16e0FA7f7C56B9a767E34B192B51f921BE31dA34",
+        "identityCodeHash": "0xa5f9624ea85e45b3f4b8558581f03bfb3e6cefab278d7bf0500ec9bd065dc16f",
+        "reputationCodeHash": "0x38602de97f1bd86f0a4729f7f3c0a78b1d27892e6eb581272cce5504a68fd00b",
+        "identityProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41",
+        "reputationProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41"
+      }
     },
     "expected": {
       "error": "invalid_policy"
@@ -752,13 +1095,20 @@
       "allowedScopes": [
         "oss-contribution"
       ],
-      "allowedResolvers": [
+      "requiredIssuers": 1,
+      "format": "devouch-erc8004-policy-v1",
+      "allowedRegistries": [
         {
-          "address": "0x234567890abcdef1234567890abcdef123456789",
-          "implementation": "0x14f09fd05d4585759e54844dc9b00147131cf243"
+          "identityRegistry": "0x234567890abcdef1234567890abcdef123456789",
+          "reputationRegistry": "0x8004B663056A597Dffe9eCcC1965A193B7388713",
+          "identityImplementation": "0x14f09fd05d4585759e54844dc9b00147131cf243",
+          "reputationImplementation": "0x16e0FA7f7C56B9a767E34B192B51f921BE31dA34",
+          "identityCodeHash": "0xa5f9624ea85e45b3f4b8558581f03bfb3e6cefab278d7bf0500ec9bd065dc16f",
+          "reputationCodeHash": "0x38602de97f1bd86f0a4729f7f3c0a78b1d27892e6eb581272cce5504a68fd00b",
+          "identityProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41",
+          "reputationProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41"
         }
-      ],
-      "requiredIssuers": 1
+      ]
     },
     "evidence": {
       "evidence_status": "valid",
@@ -766,8 +1116,17 @@
       "subject": "github:287365775",
       "issuer": "0x1234567890abcdef1234567890abcdef12345678",
       "scope": "oss-contribution",
-      "resolver": "0x234567890abcdef1234567890abcdef123456789",
-      "implementation": "0x14f09fd05d4585759e54844dc9b00147131cf243"
+      "chainId": 11155111,
+      "registry": {
+        "identityRegistry": "0x234567890abcdef1234567890abcdef123456789",
+        "reputationRegistry": "0x8004B663056A597Dffe9eCcC1965A193B7388713",
+        "identityImplementation": "0x14f09fd05d4585759e54844dc9b00147131cf243",
+        "reputationImplementation": "0x16e0FA7f7C56B9a767E34B192B51f921BE31dA34",
+        "identityCodeHash": "0xa5f9624ea85e45b3f4b8558581f03bfb3e6cefab278d7bf0500ec9bd065dc16f",
+        "reputationCodeHash": "0x38602de97f1bd86f0a4729f7f3c0a78b1d27892e6eb581272cce5504a68fd00b",
+        "identityProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41",
+        "reputationProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41"
+      }
     },
     "expected": {
       "error": "invalid_policy"
@@ -784,13 +1143,20 @@
       "allowedScopes": [
         "oss-contribution"
       ],
-      "allowedResolvers": [
+      "requiredIssuers": 1,
+      "format": "devouch-erc8004-policy-v1",
+      "allowedRegistries": [
         {
-          "address": "0x234567890abcdef1234567890abcdef123456789",
-          "implementation": "0x14f09fd05d4585759e54844dc9b00147131cf243"
+          "identityRegistry": "0x234567890abcdef1234567890abcdef123456789",
+          "reputationRegistry": "0x8004B663056A597Dffe9eCcC1965A193B7388713",
+          "identityImplementation": "0x14f09fd05d4585759e54844dc9b00147131cf243",
+          "reputationImplementation": "0x16e0FA7f7C56B9a767E34B192B51f921BE31dA34",
+          "identityCodeHash": "0xa5f9624ea85e45b3f4b8558581f03bfb3e6cefab278d7bf0500ec9bd065dc16f",
+          "reputationCodeHash": "0x38602de97f1bd86f0a4729f7f3c0a78b1d27892e6eb581272cce5504a68fd00b",
+          "identityProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41",
+          "reputationProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41"
         }
-      ],
-      "requiredIssuers": 1
+      ]
     },
     "evidence": {
       "evidence_status": "valid",
@@ -798,8 +1164,17 @@
       "subject": "github:287365775",
       "issuer": "0x1234567890abcdef1234567890abcdef12345678",
       "scope": "oss-contribution",
-      "resolver": "0x234567890abcdef1234567890abcdef123456789",
-      "implementation": "0x14f09fd05d4585759e54844dc9b00147131cf243"
+      "chainId": 11155111,
+      "registry": {
+        "identityRegistry": "0x234567890abcdef1234567890abcdef123456789",
+        "reputationRegistry": "0x8004B663056A597Dffe9eCcC1965A193B7388713",
+        "identityImplementation": "0x14f09fd05d4585759e54844dc9b00147131cf243",
+        "reputationImplementation": "0x16e0FA7f7C56B9a767E34B192B51f921BE31dA34",
+        "identityCodeHash": "0xa5f9624ea85e45b3f4b8558581f03bfb3e6cefab278d7bf0500ec9bd065dc16f",
+        "reputationCodeHash": "0x38602de97f1bd86f0a4729f7f3c0a78b1d27892e6eb581272cce5504a68fd00b",
+        "identityProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41",
+        "reputationProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41"
+      }
     },
     "expected": {
       "error": "invalid_policy"
@@ -816,13 +1191,20 @@
       "allowedScopes": [
         "oss-contribution"
       ],
-      "allowedResolvers": [
+      "requiredIssuers": 1,
+      "format": "devouch-erc8004-policy-v1",
+      "allowedRegistries": [
         {
-          "address": "0x234567890abcdef1234567890abcdef123456789",
-          "implementation": "0x14f09fd05d4585759e54844dc9b00147131cf243"
+          "identityRegistry": "0x234567890abcdef1234567890abcdef123456789",
+          "reputationRegistry": "0x8004B663056A597Dffe9eCcC1965A193B7388713",
+          "identityImplementation": "0x14f09fd05d4585759e54844dc9b00147131cf243",
+          "reputationImplementation": "0x16e0FA7f7C56B9a767E34B192B51f921BE31dA34",
+          "identityCodeHash": "0xa5f9624ea85e45b3f4b8558581f03bfb3e6cefab278d7bf0500ec9bd065dc16f",
+          "reputationCodeHash": "0x38602de97f1bd86f0a4729f7f3c0a78b1d27892e6eb581272cce5504a68fd00b",
+          "identityProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41",
+          "reputationProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41"
         }
-      ],
-      "requiredIssuers": 1
+      ]
     },
     "evidence": {
       "evidence_status": "valid",
@@ -830,8 +1212,17 @@
       "subject": "github:287365775",
       "issuer": "0x1234567890abcdef1234567890abcdef12345678",
       "scope": "oss-contribution",
-      "resolver": "0x234567890abcdef1234567890abcdef123456789",
-      "implementation": "0x14f09fd05d4585759e54844dc9b00147131cf243"
+      "chainId": 11155111,
+      "registry": {
+        "identityRegistry": "0x234567890abcdef1234567890abcdef123456789",
+        "reputationRegistry": "0x8004B663056A597Dffe9eCcC1965A193B7388713",
+        "identityImplementation": "0x14f09fd05d4585759e54844dc9b00147131cf243",
+        "reputationImplementation": "0x16e0FA7f7C56B9a767E34B192B51f921BE31dA34",
+        "identityCodeHash": "0xa5f9624ea85e45b3f4b8558581f03bfb3e6cefab278d7bf0500ec9bd065dc16f",
+        "reputationCodeHash": "0x38602de97f1bd86f0a4729f7f3c0a78b1d27892e6eb581272cce5504a68fd00b",
+        "identityProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41",
+        "reputationProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41"
+      }
     },
     "expected": {
       "error": "invalid_policy"
@@ -848,13 +1239,20 @@
       "allowedScopes": [
         "oss-contribution"
       ],
-      "allowedResolvers": [
+      "requiredIssuers": 1,
+      "format": "devouch-erc8004-policy-v1",
+      "allowedRegistries": [
         {
-          "address": "0x234567890abcdef1234567890abcdef123456789",
-          "implementation": "0x14f09fd05d4585759e54844dc9b00147131cf243"
+          "identityRegistry": "0x234567890abcdef1234567890abcdef123456789",
+          "reputationRegistry": "0x8004B663056A597Dffe9eCcC1965A193B7388713",
+          "identityImplementation": "0x14f09fd05d4585759e54844dc9b00147131cf243",
+          "reputationImplementation": "0x16e0FA7f7C56B9a767E34B192B51f921BE31dA34",
+          "identityCodeHash": "0xa5f9624ea85e45b3f4b8558581f03bfb3e6cefab278d7bf0500ec9bd065dc16f",
+          "reputationCodeHash": "0x38602de97f1bd86f0a4729f7f3c0a78b1d27892e6eb581272cce5504a68fd00b",
+          "identityProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41",
+          "reputationProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41"
         }
-      ],
-      "requiredIssuers": 1
+      ]
     },
     "evidence": {
       "evidence_status": "valid",
@@ -862,8 +1260,17 @@
       "subject": "github:287365775",
       "issuer": "0x1234567890abcdef1234567890abcdef12345678",
       "scope": "oss-contribution",
-      "resolver": "0x234567890abcdef1234567890abcdef123456789",
-      "implementation": "0x14f09fd05d4585759e54844dc9b00147131cf243"
+      "chainId": 11155111,
+      "registry": {
+        "identityRegistry": "0x234567890abcdef1234567890abcdef123456789",
+        "reputationRegistry": "0x8004B663056A597Dffe9eCcC1965A193B7388713",
+        "identityImplementation": "0x14f09fd05d4585759e54844dc9b00147131cf243",
+        "reputationImplementation": "0x16e0FA7f7C56B9a767E34B192B51f921BE31dA34",
+        "identityCodeHash": "0xa5f9624ea85e45b3f4b8558581f03bfb3e6cefab278d7bf0500ec9bd065dc16f",
+        "reputationCodeHash": "0x38602de97f1bd86f0a4729f7f3c0a78b1d27892e6eb581272cce5504a68fd00b",
+        "identityProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41",
+        "reputationProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41"
+      }
     },
     "expected": {
       "error": "invalid_policy"
@@ -880,13 +1287,20 @@
       "allowedScopes": [
         "oss-contribution\n"
       ],
-      "allowedResolvers": [
+      "requiredIssuers": 1,
+      "format": "devouch-erc8004-policy-v1",
+      "allowedRegistries": [
         {
-          "address": "0x234567890abcdef1234567890abcdef123456789",
-          "implementation": "0x14f09fd05d4585759e54844dc9b00147131cf243"
+          "identityRegistry": "0x234567890abcdef1234567890abcdef123456789",
+          "reputationRegistry": "0x8004B663056A597Dffe9eCcC1965A193B7388713",
+          "identityImplementation": "0x14f09fd05d4585759e54844dc9b00147131cf243",
+          "reputationImplementation": "0x16e0FA7f7C56B9a767E34B192B51f921BE31dA34",
+          "identityCodeHash": "0xa5f9624ea85e45b3f4b8558581f03bfb3e6cefab278d7bf0500ec9bd065dc16f",
+          "reputationCodeHash": "0x38602de97f1bd86f0a4729f7f3c0a78b1d27892e6eb581272cce5504a68fd00b",
+          "identityProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41",
+          "reputationProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41"
         }
-      ],
-      "requiredIssuers": 1
+      ]
     },
     "evidence": {
       "evidence_status": "valid",
@@ -894,15 +1308,24 @@
       "subject": "github:287365775",
       "issuer": "0x1234567890abcdef1234567890abcdef12345678",
       "scope": "oss-contribution",
-      "resolver": "0x234567890abcdef1234567890abcdef123456789",
-      "implementation": "0x14f09fd05d4585759e54844dc9b00147131cf243"
+      "chainId": 11155111,
+      "registry": {
+        "identityRegistry": "0x234567890abcdef1234567890abcdef123456789",
+        "reputationRegistry": "0x8004B663056A597Dffe9eCcC1965A193B7388713",
+        "identityImplementation": "0x14f09fd05d4585759e54844dc9b00147131cf243",
+        "reputationImplementation": "0x16e0FA7f7C56B9a767E34B192B51f921BE31dA34",
+        "identityCodeHash": "0xa5f9624ea85e45b3f4b8558581f03bfb3e6cefab278d7bf0500ec9bd065dc16f",
+        "reputationCodeHash": "0x38602de97f1bd86f0a4729f7f3c0a78b1d27892e6eb581272cce5504a68fd00b",
+        "identityProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41",
+        "reputationProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41"
+      }
     },
     "expected": {
       "error": "invalid_policy"
     }
   },
   {
-    "name": "extra resolver property",
+    "name": "extra registry property",
     "policy": {
       "repositoryId": "demo/repo-a",
       "chainId": 11155111,
@@ -912,14 +1335,21 @@
       "allowedScopes": [
         "oss-contribution"
       ],
-      "allowedResolvers": [
+      "requiredIssuers": 1,
+      "format": "devouch-erc8004-policy-v1",
+      "allowedRegistries": [
         {
-          "address": "0x234567890abcdef1234567890abcdef123456789",
-          "implementation": "0x14f09fd05d4585759e54844dc9b00147131cf243",
+          "identityRegistry": "0x234567890abcdef1234567890abcdef123456789",
+          "reputationRegistry": "0x8004B663056A597Dffe9eCcC1965A193B7388713",
+          "identityImplementation": "0x14f09fd05d4585759e54844dc9b00147131cf243",
+          "reputationImplementation": "0x16e0FA7f7C56B9a767E34B192B51f921BE31dA34",
+          "identityCodeHash": "0xa5f9624ea85e45b3f4b8558581f03bfb3e6cefab278d7bf0500ec9bd065dc16f",
+          "reputationCodeHash": "0x38602de97f1bd86f0a4729f7f3c0a78b1d27892e6eb581272cce5504a68fd00b",
+          "identityProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41",
+          "reputationProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41",
           "name": "demo.eth"
         }
-      ],
-      "requiredIssuers": 1
+      ]
     },
     "evidence": {
       "evidence_status": "valid",
@@ -927,8 +1357,17 @@
       "subject": "github:287365775",
       "issuer": "0x1234567890abcdef1234567890abcdef12345678",
       "scope": "oss-contribution",
-      "resolver": "0x234567890abcdef1234567890abcdef123456789",
-      "implementation": "0x14f09fd05d4585759e54844dc9b00147131cf243"
+      "chainId": 11155111,
+      "registry": {
+        "identityRegistry": "0x234567890abcdef1234567890abcdef123456789",
+        "reputationRegistry": "0x8004B663056A597Dffe9eCcC1965A193B7388713",
+        "identityImplementation": "0x14f09fd05d4585759e54844dc9b00147131cf243",
+        "reputationImplementation": "0x16e0FA7f7C56B9a767E34B192B51f921BE31dA34",
+        "identityCodeHash": "0xa5f9624ea85e45b3f4b8558581f03bfb3e6cefab278d7bf0500ec9bd065dc16f",
+        "reputationCodeHash": "0x38602de97f1bd86f0a4729f7f3c0a78b1d27892e6eb581272cce5504a68fd00b",
+        "identityProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41",
+        "reputationProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41"
+      }
     },
     "expected": {
       "error": "invalid_policy"
@@ -945,13 +1384,20 @@
       "allowedScopes": [
         "oss-contribution"
       ],
-      "allowedResolvers": [
+      "requiredIssuers": 1,
+      "format": "devouch-erc8004-policy-v1",
+      "allowedRegistries": [
         {
-          "address": "0x234567890abcdef1234567890abcdef123456789",
-          "implementation": "0x0000000000000000000000000000000000000000"
+          "identityRegistry": "0x234567890abcdef1234567890abcdef123456789",
+          "reputationRegistry": "0x8004B663056A597Dffe9eCcC1965A193B7388713",
+          "identityImplementation": "0x0000000000000000000000000000000000000000",
+          "reputationImplementation": "0x16e0FA7f7C56B9a767E34B192B51f921BE31dA34",
+          "identityCodeHash": "0xa5f9624ea85e45b3f4b8558581f03bfb3e6cefab278d7bf0500ec9bd065dc16f",
+          "reputationCodeHash": "0x38602de97f1bd86f0a4729f7f3c0a78b1d27892e6eb581272cce5504a68fd00b",
+          "identityProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41",
+          "reputationProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41"
         }
-      ],
-      "requiredIssuers": 1
+      ]
     },
     "evidence": {
       "evidence_status": "valid",
@@ -959,8 +1405,17 @@
       "subject": "github:287365775",
       "issuer": "0x1234567890abcdef1234567890abcdef12345678",
       "scope": "oss-contribution",
-      "resolver": "0x234567890abcdef1234567890abcdef123456789",
-      "implementation": "0x14f09fd05d4585759e54844dc9b00147131cf243"
+      "chainId": 11155111,
+      "registry": {
+        "identityRegistry": "0x234567890abcdef1234567890abcdef123456789",
+        "reputationRegistry": "0x8004B663056A597Dffe9eCcC1965A193B7388713",
+        "identityImplementation": "0x14f09fd05d4585759e54844dc9b00147131cf243",
+        "reputationImplementation": "0x16e0FA7f7C56B9a767E34B192B51f921BE31dA34",
+        "identityCodeHash": "0xa5f9624ea85e45b3f4b8558581f03bfb3e6cefab278d7bf0500ec9bd065dc16f",
+        "reputationCodeHash": "0x38602de97f1bd86f0a4729f7f3c0a78b1d27892e6eb581272cce5504a68fd00b",
+        "identityProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41",
+        "reputationProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41"
+      }
     },
     "expected": {
       "error": "invalid_policy"
@@ -1041,13 +1496,20 @@
       "allowedScopes": [
         "oss-contribution"
       ],
-      "allowedResolvers": [
+      "requiredIssuers": 1,
+      "format": "devouch-erc8004-policy-v1",
+      "allowedRegistries": [
         {
-          "address": "0x234567890abcdef1234567890abcdef123456789",
-          "implementation": "0x14f09fd05d4585759e54844dc9b00147131cf243"
+          "identityRegistry": "0x234567890abcdef1234567890abcdef123456789",
+          "reputationRegistry": "0x8004B663056A597Dffe9eCcC1965A193B7388713",
+          "identityImplementation": "0x14f09fd05d4585759e54844dc9b00147131cf243",
+          "reputationImplementation": "0x16e0FA7f7C56B9a767E34B192B51f921BE31dA34",
+          "identityCodeHash": "0xa5f9624ea85e45b3f4b8558581f03bfb3e6cefab278d7bf0500ec9bd065dc16f",
+          "reputationCodeHash": "0x38602de97f1bd86f0a4729f7f3c0a78b1d27892e6eb581272cce5504a68fd00b",
+          "identityProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41",
+          "reputationProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41"
         }
-      ],
-      "requiredIssuers": 1
+      ]
     },
     "evidence": {
       "evidence_status": "valid",
@@ -1055,8 +1517,17 @@
       "subject": "github:287365775",
       "issuer": "0x1234567890abcdef1234567890abcdef12345678",
       "scope": "oss-contribution",
-      "resolver": "0x234567890abcdef1234567890abcdef123456789",
-      "implementation": "0x14f09fd05d4585759e54844dc9b00147131cf243"
+      "chainId": 11155111,
+      "registry": {
+        "identityRegistry": "0x234567890abcdef1234567890abcdef123456789",
+        "reputationRegistry": "0x8004B663056A597Dffe9eCcC1965A193B7388713",
+        "identityImplementation": "0x14f09fd05d4585759e54844dc9b00147131cf243",
+        "reputationImplementation": "0x16e0FA7f7C56B9a767E34B192B51f921BE31dA34",
+        "identityCodeHash": "0xa5f9624ea85e45b3f4b8558581f03bfb3e6cefab278d7bf0500ec9bd065dc16f",
+        "reputationCodeHash": "0x38602de97f1bd86f0a4729f7f3c0a78b1d27892e6eb581272cce5504a68fd00b",
+        "identityProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41",
+        "reputationProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41"
+      }
     },
     "expected": {
       "error": "invalid_policy"
@@ -1071,8 +1542,17 @@
       "subject": "github:287365775",
       "issuer": "0x1234567890abcdef1234567890abcdef12345678",
       "scope": "oss-contribution",
-      "resolver": "0x234567890abcdef1234567890abcdef123456789",
-      "implementation": "0x14f09fd05d4585759e54844dc9b00147131cf243"
+      "chainId": 11155111,
+      "registry": {
+        "identityRegistry": "0x234567890abcdef1234567890abcdef123456789",
+        "reputationRegistry": "0x8004B663056A597Dffe9eCcC1965A193B7388713",
+        "identityImplementation": "0x14f09fd05d4585759e54844dc9b00147131cf243",
+        "reputationImplementation": "0x16e0FA7f7C56B9a767E34B192B51f921BE31dA34",
+        "identityCodeHash": "0xa5f9624ea85e45b3f4b8558581f03bfb3e6cefab278d7bf0500ec9bd065dc16f",
+        "reputationCodeHash": "0x38602de97f1bd86f0a4729f7f3c0a78b1d27892e6eb581272cce5504a68fd00b",
+        "identityProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41",
+        "reputationProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41"
+      }
     },
     "expected": {
       "error": "invalid_policy"
@@ -1087,8 +1567,17 @@
       "subject": "github:287365775",
       "issuer": "0x1234567890abcdef1234567890abcdef12345678",
       "scope": "oss-contribution",
-      "resolver": "0x234567890abcdef1234567890abcdef123456789",
-      "implementation": "0x14f09fd05d4585759e54844dc9b00147131cf243"
+      "chainId": 11155111,
+      "registry": {
+        "identityRegistry": "0x234567890abcdef1234567890abcdef123456789",
+        "reputationRegistry": "0x8004B663056A597Dffe9eCcC1965A193B7388713",
+        "identityImplementation": "0x14f09fd05d4585759e54844dc9b00147131cf243",
+        "reputationImplementation": "0x16e0FA7f7C56B9a767E34B192B51f921BE31dA34",
+        "identityCodeHash": "0xa5f9624ea85e45b3f4b8558581f03bfb3e6cefab278d7bf0500ec9bd065dc16f",
+        "reputationCodeHash": "0x38602de97f1bd86f0a4729f7f3c0a78b1d27892e6eb581272cce5504a68fd00b",
+        "identityProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41",
+        "reputationProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41"
+      }
     },
     "expected": {
       "error": "invalid_policy"
@@ -1096,15 +1585,24 @@
   },
   {
     "name": "duplicate policy key",
-    "policy_raw": "{\"repositoryId\":\"demo/repo-a\",\"chainId\":11155111,\"trustedIssuers\":[\"0x1234567890abcdef1234567890abcdef12345678\"],\"allowedScopes\":[\"oss-contribution\"],\"allowedResolvers\":[{\"address\":\"0x234567890abcdef1234567890abcdef123456789\",\"implementation\":\"0x14f09fd05d4585759e54844dc9b00147131cf243\"}],\"requiredIssuers\":1,\"requiredIssuers\":1}",
+    "policy_raw": "{\"repositoryId\":\"demo/repo-a\",\"chainId\":11155111,\"trustedIssuers\":[\"0x1234567890abcdef1234567890abcdef12345678\"],\"allowedScopes\":[\"oss-contribution\"],\"requiredIssuers\":1,\"format\":\"devouch-erc8004-policy-v1\",\"allowedRegistries\":[{\"identityRegistry\":\"0x234567890abcdef1234567890abcdef123456789\",\"reputationRegistry\":\"0x8004B663056A597Dffe9eCcC1965A193B7388713\",\"identityImplementation\":\"0x14f09fd05d4585759e54844dc9b00147131cf243\",\"reputationImplementation\":\"0x16e0FA7f7C56B9a767E34B192B51f921BE31dA34\",\"identityCodeHash\":\"0xa5f9624ea85e45b3f4b8558581f03bfb3e6cefab278d7bf0500ec9bd065dc16f\",\"reputationCodeHash\":\"0x38602de97f1bd86f0a4729f7f3c0a78b1d27892e6eb581272cce5504a68fd00b\",\"identityProxyCodeHash\":\"0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41\",\"reputationProxyCodeHash\":\"0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41\"}],\"requiredIssuers\":1}",
     "evidence": {
       "evidence_status": "valid",
       "reason_codes": [],
       "subject": "github:287365775",
       "issuer": "0x1234567890abcdef1234567890abcdef12345678",
       "scope": "oss-contribution",
-      "resolver": "0x234567890abcdef1234567890abcdef123456789",
-      "implementation": "0x14f09fd05d4585759e54844dc9b00147131cf243"
+      "chainId": 11155111,
+      "registry": {
+        "identityRegistry": "0x234567890abcdef1234567890abcdef123456789",
+        "reputationRegistry": "0x8004B663056A597Dffe9eCcC1965A193B7388713",
+        "identityImplementation": "0x14f09fd05d4585759e54844dc9b00147131cf243",
+        "reputationImplementation": "0x16e0FA7f7C56B9a767E34B192B51f921BE31dA34",
+        "identityCodeHash": "0xa5f9624ea85e45b3f4b8558581f03bfb3e6cefab278d7bf0500ec9bd065dc16f",
+        "reputationCodeHash": "0x38602de97f1bd86f0a4729f7f3c0a78b1d27892e6eb581272cce5504a68fd00b",
+        "identityProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41",
+        "reputationProxyCodeHash": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41"
+      }
     },
     "expected": {
       "error": "invalid_policy"

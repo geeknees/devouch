@@ -19,7 +19,7 @@ bun run test:integration
 git diff --exit-code -- dist/
 ```
 
-The integration runner builds the distribution and runs each test file in a separate Bun process and disposable local EVM. It sends no public-chain transactions. On macOS it uses installed Google Chrome; on Linux run `bunx playwright install --with-deps chromium`. See [development setup](docs/usage.md#development) for details.
+The integration runner builds the distribution and runs each test file in a separate Bun process and disposable local EVM. It sends no public-chain transactions. On macOS it uses installed Google Chrome; on Linux run `bunx playwright install --with-deps chromium`. See [workspace usage](docs/usage.md#workspace) for local serving.
 
 For source changes, add or update behavior tests and run the affected suite. For documentation changes, check relative links and commands. Regenerate `dist/` when its inputs change and include the generated changes in the same PR; the final diff check above should be clean after committing that build.
 

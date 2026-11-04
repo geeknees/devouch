@@ -1,45 +1,42 @@
-// ABOUTME: Tests transaction outcome recovery and explicit wallet rejection semantics.
-// ABOUTME: Ensures an unknown submission cannot be retried as a fresh transaction.
+// ABOUTME: Tests unknown wallet delivery and recovery imports for reviewed ERC-8004 calls.
+// ABOUTME: Preserves cancellation, persistence-before-send, duplicate-send, and calldata safety boundaries.
 import { expect, test } from 'bun:test';
-import { Submission, validatePending, type Pending } from '../../web/submission';
+import { encodeFunctionData } from 'viem';
+import { identityAbi } from '../../src/erc8004';
+import { DEFAULT_DEPLOYMENT } from '../../src/erc8004-deployment';
+import { validateTransactionPlan } from '../../src/erc8004-operations';
+import { Submission, validatePending } from '../../web/submission';
+const plan = () => validateTransactionPlan({ format: 'devouch-erc8004-plan-v1', operation: 'register',
+  deployment: DEFAULT_DEPLOYMENT, from: '0x1111111111111111111111111111111111111111', agentId: null, subject: null,
+  feedbackData: null, feedbackIndex: null, snapshot: { blockNumber: '10', blockHash: '0x' + 'aa'.repeat(32), timestamp: '1000' },
+  transaction: { to: DEFAULT_DEPLOYMENT.registry.identityRegistry, data: encodeFunctionData({ abi: identityAbi, functionName: 'register' }), value: '0x0' } });
 
-const draft = { kind: 'publish', name: 'demo.eth', to: '0x' + '11'.repeat(20), data: '0x1234' } as Pending;
 test('wallet rejection clears pending state without reporting success', async () => {
-  const saved: (Pending | null)[] = [];
-  const submission = new Submission(value => saved.push(value));
-  await expect(submission.submit(draft, async () => { throw { code: 4001 }; })).rejects.toThrow('wallet_rejected');
-  expect(submission.pending).toBeNull();
-  expect(saved.at(-1)).toBeNull();
+  const saved: unknown[] = [], submission = new Submission(p => saved.push(p));
+  await expect(submission.send(plan(), async () => { throw { code: 4001 }; })).rejects.toThrow('wallet_rejected');
+  expect(submission.pending).toBeNull(); expect(saved.length).toBe(2);
 });
 test('transport failure retains an unknown operation and blocks resubmission', async () => {
   const submission = new Submission(() => {});
-  await expect(submission.submit(draft, async () => { throw new Error('connection lost'); })).rejects.toThrow('submission_unknown');
-  expect(submission.pending?.hash).toBeUndefined();
-  await expect(submission.submit(draft, async () => '0x1234')).rejects.toThrow('pending_transaction');
+  await expect(submission.send(plan(), async () => { throw new Error('network'); })).rejects.toThrow('submission_unknown');
+  expect(submission.pending?.hash).toBeNull();
+  await expect(submission.send(plan(), async () => '0x' + '12'.repeat(32))).rejects.toThrow('pending_transaction');
 });
-test('a returned hash is persisted before receipt verification', async () => {
-  const saved: (Pending | null)[] = [];
-  const submission = new Submission(value => saved.push(value));
-  expect(await submission.submit(draft, async () => '0x1234')).toBe('0x1234');
-  expect(saved.at(-1)?.hash).toBe('0x1234');
-  submission.complete();
-  expect(submission.pending).toBeNull();
+test('a returned hash is persisted only after the operation was saved before wallet submission', async () => {
+  const saved: unknown[] = [], submission = new Submission(p => saved.push(p));
+  const hash = await submission.send(plan(), async () => { expect(saved.length).toBe(1); return '0x' + '12'.repeat(32); });
+  expect(saved.length).toBe(2); expect(submission.pending?.hash).toBe(hash);
 });
-test('recovery imports require an exact supported operation and an identified sender', () => {
-  const recovery = { ...draft, account: '0x' + '22'.repeat(20), kind: 'bind', value: '0x' + '33'.repeat(20) };
-  expect(validatePending(recovery).name).toBe('demo.eth');
-  expect(() => validatePending({ ...recovery, hash: '0x1234' })).toThrow();
-  expect(() => validatePending({ ...recovery, kind: 'transfer' })).toThrow();
-  expect(() => validatePending({ ...recovery, account: undefined })).toThrow();
-  expect(() => validatePending({ ...recovery, data: '0x123' })).toThrow();
-  expect(() => validatePending({ ...recovery, key: 'url' })).toThrow('invalid_recovery');
+test('unavailable storage prevents wallet submission', async () => {
+  let calls = 0;
+  const submission = new Submission(() => { throw new Error('storage unavailable'); });
+  await expect(submission.send(plan(), async () => { calls++; return '0x' + '12'.repeat(32); })).rejects.toThrow();
+  expect(calls).toBe(0);
 });
-
-test('agent recovery accepts only explicitly permitted profile keys', () => {
-  const recovery = { ...draft, name: 'agent.demo.eth', kind: 'grant-profile', account: '0x' + '22'.repeat(20),
-    helper: '0x' + '33'.repeat(20), key: 'url' };
-  expect(validatePending(recovery).key).toBe('url');
-  expect(() => validatePending({ ...recovery, key: 'devouch.vouch' })).toThrow('unsupported_agent_permission');
-  expect(() => validatePending({ ...recovery, helper: undefined })).toThrow();
-  expect(() => validatePending({ ...recovery, key: undefined })).toThrow();
+test('recovery imports reject altered transaction bytes and unexpected public fields', () => {
+  const p = plan();
+  expect(validatePending({ plan: p, hash: null }).plan).toEqual(p);
+  for (const tx of [{ ...p.transaction, value: '0x1' }, { ...p.transaction, data: '0x' },
+    { ...p.transaction, to: p.from }]) expect(() => validatePending({ plan: { ...p, transaction: tx }, hash: null })).toThrow();
+  expect(() => validatePending({ plan: p, hash: null, privateKey: 'never accepted' })).toThrow();
 });

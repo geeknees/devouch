@@ -6,22 +6,29 @@ require_relative "files"
 module Devouch
   class Policy
     ADDRESS = /\A0x[0-9a-fA-F]{40}\z/
+    HASH = /\A0x[0-9a-fA-F]{64}\z/
+    REGISTRY_KEYS = %w[identityRegistry reputationRegistry identityImplementation reputationImplementation
+      identityCodeHash reputationCodeHash identityProxyCodeHash reputationProxyCodeHash].freeze
     attr_reader :data, :digest
 
     def initialize(raw)
       @data = Files.parse(raw)
       @digest = "sha256:#{Digest::SHA256.hexdigest(raw)}"
+      if @data.is_a?(Hash) && @data.key?("allowedResolvers") && @data["format"] != "devouch-erc8004-policy-v1"
+        raise Error.new("legacy_ens_policy", "ENS policies require an explicit ERC-8004 migration. See docs/upgrading-0.3.md.")
+      end
       valid = @data.is_a?(Hash) &&
-        @data.keys.sort == %w[repositoryId chainId trustedIssuers allowedScopes allowedResolvers requiredIssuers].sort &&
+        @data.keys.sort == %w[format repositoryId chainId trustedIssuers allowedScopes allowedRegistries requiredIssuers].sort &&
+        @data["format"] == "devouch-erc8004-policy-v1" &&
         @data["repositoryId"].is_a?(String) && @data["repositoryId"].match?(/\A[a-zA-Z0-9_.-]+\/[a-zA-Z0-9_.-]+\z/) &&
-        @data["chainId"] == 11155111 && @data["requiredIssuers"] == 1 &&
+        @data["chainId"].is_a?(Integer) && @data["chainId"].between?(1, 9_007_199_254_740_991) && @data["requiredIssuers"] == 1 &&
         array?("trustedIssuers") { |value| address?(value) } &&
         array?("allowedScopes") { |value| value.is_a?(String) && value.match?(/\A[a-z][a-z0-9-]{0,63}\z/) } &&
-        array?("allowedResolvers") { |value| value.is_a?(Hash) && value.keys.sort == %w[address implementation] &&
-          address?(value["address"]) && address?(value["implementation"]) }
+        array?("allowedRegistries") { |value| value.is_a?(Hash) && value.keys.sort == REGISTRY_KEYS.sort &&
+          REGISTRY_KEYS.all? { |key| key.end_with?("Hash") ? value[key].is_a?(String) && value[key].match?(HASH) : address?(value[key]) } }
       raise JSON::ParserError unless valid
     rescue JSON::ParserError
-      raise Error.new("invalid_policy", "Use a Sepolia policy with requiredIssuers: 1 and explicit issuer, scope, and resolver lists.")
+      raise Error.new("invalid_policy", "Use an ERC-8004 policy with requiredIssuers: 1 and explicit chain, issuer, scope, and registry pins.")
     end
 
     def description
@@ -30,10 +37,11 @@ module Devouch
 
     def reasons(evidence)
       reasons = []
+      reasons << "chain_not_allowed" unless @data["chainId"] == evidence["chainId"]
       reasons << "issuer_not_trusted" unless @data["trustedIssuers"].any? { |issuer| equal_address?(issuer, evidence["issuer"]) }
       reasons << "scope_not_allowed" unless @data["allowedScopes"].include?(evidence["scope"])
-      reasons << "resolver_not_allowed" unless @data["allowedResolvers"].any? { |entry|
-        equal_address?(entry["address"], evidence["resolver"]) && equal_address?(entry["implementation"], evidence["implementation"])
+      reasons << "registry_not_allowed" unless @data["allowedRegistries"].any? { |entry|
+        evidence["registry"].is_a?(Hash) && REGISTRY_KEYS.all? { |key| equal_address?(entry[key], evidence["registry"][key]) }
       }
       reasons
     end

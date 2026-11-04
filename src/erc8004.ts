@@ -2,7 +2,7 @@
 // ABOUTME: Separates registry evidence from repository trust and rejects missing history or changed authority.
 import { createPublicClient, getAddress, http, keccak256, parseAbi, parseEventLogs, sha256, stringToHex,
   type Address, type Hex, type PublicClient } from 'viem';
-import { exactKeys, object, strictJson } from './credential';
+import { exactKeys, object, strictJson } from './json';
 import { EvidenceError, insist, type EvidenceStatus } from './errors';
 
 export const identityAbi = parseAbi([
@@ -52,6 +52,7 @@ export type FeedbackEvidence = { evidence_status: EvidenceStatus; reason_codes: 
 
 export function parseFeedbackReference(raw: string): FeedbackReference {
   const r = object(strictJson(raw, 4096));
+  insist(r.formatVersion !== 1, 'legacy_ens_credential');
   exactKeys(r, ['format', 'chainId', 'identityRegistry', 'reputationRegistry', 'agentId', 'clientAddress', 'feedbackIndex', 'feedbackBlock']);
   insist(r.format === 'devouch-erc8004-v1' && Number.isSafeInteger(r.chainId) && Number(r.chainId) > 0);
   insist(validAddress(r.identityRegistry) && validAddress(r.reputationRegistry) && validAddress(r.clientAddress));
@@ -88,6 +89,27 @@ export class Erc8004Reader {
   readonly client: PublicClient;
   constructor(client: PublicClient | string) {
     this.client = typeof client === 'string' ? createPublicClient({ transport: http(client, { retryCount: 0, timeout: 15000 }) }) : client;
+  }
+
+  private async feedback(reference: FeedbackReference) {
+    const r = parseFeedbackReference(JSON.stringify(reference));
+    const origin = BigInt(r.feedbackBlock);
+    const logs = await this.client.getLogs({ address: r.reputationRegistry, fromBlock: origin, toBlock: origin });
+    const events = parseEventLogs({ abi: reputationAbi, eventName: 'NewFeedback', logs }).filter(log =>
+      log.args.agentId === BigInt(r.agentId) && sameAddress(log.args.clientAddress, r.clientAddress)
+      && log.args.feedbackIndex === BigInt(r.feedbackIndex));
+    insist(events.length === 1, 'feedback_event_missing', 'missing');
+    const event = events[0]!, raw = readDataURI(event.args.feedbackURI);
+    insist(sha256(stringToHex(raw)) === event.args.feedbackHash.toLowerCase(), 'feedback_hash_mismatch');
+    return { event, data: parseFeedbackData(raw) };
+  }
+
+  async fetch(reference: FeedbackReference) {
+    const r = parseFeedbackReference(JSON.stringify(reference));
+    insist(await this.client.getChainId() === r.chainId, 'wrong_chain', 'unavailable');
+    const { event, data } = await this.feedback(r);
+    return { raw: JSON.stringify(r) + '\n', subject: data.subject, data,
+      publication: { blockNumber: r.feedbackBlock, blockHash: event.blockHash, transactionHash: event.transactionHash } };
   }
 
   async registryPin(identityRegistry: Address, reputationRegistry: Address, blockNumber: bigint): Promise<RegistryPin> {
@@ -128,14 +150,7 @@ export class Erc8004Reader {
       const last = await this.client.readContract({ address: r.reputationRegistry, abi: reputationAbi,
         functionName: 'getLastIndex', args: [agentId, r.clientAddress], blockNumber: observed });
       insist(index <= last, 'feedback_missing', 'missing');
-      const logs = await this.client.getLogs({ address: r.reputationRegistry, fromBlock: origin, toBlock: origin });
-      const events = parseEventLogs({ abi: reputationAbi, eventName: 'NewFeedback', logs }).filter(log =>
-        log.args.agentId === agentId && sameAddress(log.args.clientAddress, r.clientAddress) && log.args.feedbackIndex === index);
-      insist(events.length === 1, 'feedback_event_missing', 'missing');
-      const event = events[0]!, f = event.args;
-      const raw = readDataURI(f.feedbackURI);
-      insist(sha256(stringToHex(raw)) === f.feedbackHash.toLowerCase(), 'feedback_hash_mismatch');
-      const data = parseFeedbackData(raw);
+      const { event, data } = await this.feedback(r), f = event.args;
       insist(data.subject === subject, 'subject_mismatch');
       insist(f.tag1 === data.scope && f.tag2 === 'devouch-feedback-v1' && f.value === 1n && f.valueDecimals === 0,
         'unsupported_feedback_semantics');

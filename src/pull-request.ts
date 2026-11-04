@@ -1,39 +1,34 @@
-// ABOUTME: Binds a public PR author's endorsement to its base policy and fixed head commit.
-// ABOUTME: Reuses the signature, ENS history, snapshot, and shared repository-policy verifiers.
-import type { ChainEvidence, ChainReader, Snapshot } from './chain';
-import { parseCredential, type ParsedCredential } from './credential';
+// ABOUTME: Binds ERC-8004 evidence to the actual PR author and the immutable base policy.
+// ABOUTME: Reads only bounded public JSON at fixed commits and never checks out or executes PR code.
+import { Erc8004Reader, parseFeedbackReference, type FeedbackEvidence, type FeedbackReference } from './erc8004';
+import { evaluateErc8004Policy, parseErc8004Policy } from './erc8004-policy';
 import { EvidenceError, insist } from './errors';
 import { GitHubError, GitHubReader } from './github';
-import { evaluatePolicy, parsePolicy, type PolicyEvidence } from './policy';
 
-export async function verifyPullRequest(url: string, reader: Pick<ChainReader, 'inspect'>,
+export async function verifyPullRequest(url: string, reader: Pick<Erc8004Reader, 'inspect'>,
   github = new GitHubReader(), signal?: AbortSignal) {
   const pullRequest = await github.pullRequest(url, signal);
   const policyRaw = await github.file(pullRequest.repository, '.devouch/policy.json', pullRequest.baseSha, 16_384, signal);
   if (policyRaw === null) throw new GitHubError('policy_missing');
   let policy;
-  try { policy = parsePolicy(policyRaw); } catch { throw new GitHubError('invalid_policy'); }
+  try { policy = parseErc8004Policy(policyRaw); }
+  catch (error) { throw new GitHubError(error instanceof EvidenceError ? error.code : 'invalid_policy'); }
   if (policy.repositoryId !== pullRequest.repository) throw new GitHubError('policy_repository_mismatch');
   const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(policyRaw));
   const policyDigest = 'sha256:' + Array.from(new Uint8Array(digest), byte => byte.toString(16).padStart(2, '0')).join('');
-  const subject = 'github:' + pullRequest.authorId, credentialPath = `.devouch/vouches/github-${pullRequest.authorId}.json`;
+  const subject = 'github:' + pullRequest.authorId, credentialPath = `.devouch/feedback/github-${pullRequest.authorId}.json`;
   const raw = await github.file(pullRequest.headRepository, credentialPath, pullRequest.headSha, 4096, signal);
-  let parsed: ParsedCredential | null = null;
-  let signatureStatus: 'valid' | 'invalid' | 'not_verified' = 'not_verified';
-  let evidence: PolicyEvidence & { snapshot: Snapshot | null; hierarchy?: ChainEvidence['hierarchy'] };
+  let reference: FeedbackReference | null = null, evidence: FeedbackEvidence;
   try {
     insist(raw !== null, 'credential_missing', 'missing');
-    parsed = await parseCredential(raw);
-    signatureStatus = 'valid';
-    insist(parsed.message.subject === subject, 'subject_mismatch');
+    reference = parseFeedbackReference(raw);
     signal?.throwIfAborted();
-    const proof = await reader.inspect(parsed), m = parsed.message;
-    evidence = { ...proof, issuer: m.issuer, scope: m.scope, resolver: m.resolver };
+    evidence = await reader.inspect(reference, subject);
+    if (evidence.evidence_status === 'valid') insist(evidence.subject === subject, 'subject_mismatch');
   } catch (error) {
     const failure = error instanceof EvidenceError ? error : new EvidenceError('verification_unavailable', 'unavailable');
-    if (failure.code === 'invalid_signature') signatureStatus = 'invalid';
-    evidence = { evidence_status: failure.status, reason_codes: [failure.code], snapshot: null };
+    evidence = { evidence_status: failure.status, reason_codes: [failure.code] };
   }
-  return { pullRequest, subject, credentialPath, policy, policyRaw, policyDigest, parsed, signatureStatus,
-    evidence, decision: evaluatePolicy(policy, evidence) };
+  return { pullRequest, subject, credentialPath, policy, policyRaw, policyDigest, reference,
+    evidence, decision: evaluateErc8004Policy(policy, evidence) };
 }

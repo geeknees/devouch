@@ -1,6 +1,6 @@
 // ABOUTME: Reads public GitHub PR identity and bounded JSON files at immutable commit SHAs.
 // ABOUTME: Uses anonymous GET requests to a fixed origin without redirects or repository execution.
-import { object, strictJson } from './credential';
+import { object, strictJson } from './json';
 
 const ORIGIN = 'https://api.github.com';
 const REPOSITORY = /^[a-zA-Z0-9_.-]+\/[a-zA-Z0-9_.-]+(?![\s\S])/;
@@ -81,7 +81,7 @@ export class GitHubReader {
   }
 
   async file(repo: string, path: string, sha: string, limit: number, signal?: AbortSignal): Promise<string | null> {
-    if (!repository(repo) || !SHA.test(sha) || !/^\.devouch\/(?:policy|vouches\/github-[1-9][0-9]*)\.json$/.test(path)
+    if (!repository(repo) || !SHA.test(sha) || !/^\.devouch\/(?:policy|feedback\/github-[1-9][0-9]*)\.json$/.test(path)
       || !Number.isSafeInteger(limit) || limit <= 0 || limit > 16_384) throw new GitHubError('github_file_invalid');
     const record = await this.get(`/repos/${repo}/contents/${path}?ref=${sha}`, true, signal);
     if (record === null) return null;

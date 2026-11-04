@@ -7,7 +7,7 @@ Maintainers publish the reviewed distribution and its immutable Action reference
 1. Run the checks in [Contributing](../CONTRIBUTING.md), regenerate `dist/`, and review the source/distribution diff. Keep third-party notices and font licenses.
 2. Check the release diff for private data, keys, tokens, credential-bearing endpoints, and local runtime files. Do not commit `.devouch/local/`, recordings, or raw provider logs.
 3. Use a reviewed feature branch and normal PR process. Record the exact head SHA and hosted Test result. Never use a test result from a different commit as release evidence.
-4. Read the applicable [upgrade guide](upgrading-0.2.md). Identify policy and credential compatibility changes and a reviewed rollback target.
+4. Read the applicable [upgrade guide](upgrading-0.3.md). Identify policy and credential compatibility changes and a reviewed rollback target.
 
 ## Publish the Action
 

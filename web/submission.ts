@@ -1,70 +1,36 @@
-// ABOUTME: Persists public transaction intent before asking the wallet to submit.
-// ABOUTME: Blocks automatic resubmission when delivery is unknown and supports receipt recovery.
-import type { Address, Hex } from 'viem';
+// ABOUTME: Persists a reviewed public ERC-8004 operation before contacting the wallet.
+// ABOUTME: Blocks duplicate sends after unknown delivery and clears only rejection or verified completion.
+import { type Hex } from 'viem';
+import { exactKeys, object } from '../src/json';
 import { EvidenceError, insist } from '../src/errors';
-import { address, object, uint } from '../src/credential';
-import { nameParts } from '../src/ens';
-import { profileKey } from '../src/agent-namespace';
-
-export type Pending = { kind: 'publish' | 'revoke' | 'deploy' | 'bind' | 'grant' | 'remove'
-  | 'deploy-registry' | 'parent-registry' | 'bind-registry' | 'register-name' | 'grant-profile' | 'remove-profile' | 'profile';
-  name: string; to: Address; data: Hex; hash?: Hex; raw?: string; recordId?: string;
-  value?: string; helper?: Address; account?: Address; key?: string };
-
-export function validatePending(input: unknown): Pending {
-  const value = object(input);
-  insist(['publish', 'revoke', 'deploy', 'bind', 'grant', 'remove', 'deploy-registry', 'parent-registry',
-    'bind-registry', 'register-name', 'grant-profile', 'remove-profile', 'profile'].includes(value.kind as string), 'invalid_recovery');
-  insist(Object.keys(value).every(key => ['kind', 'name', 'to', 'data', 'hash', 'raw', 'recordId', 'value', 'helper', 'account', 'key'].includes(key)), 'invalid_recovery');
-  address(value.to); address(value.account);
-  insist(typeof value.name === 'string'); nameParts(value.name);
-  insist(typeof value.data === 'string' && /^0x(?:[0-9a-fA-F]{2})+$/.test(value.data) && value.data.length <= 20000, 'invalid_recovery');
-  if (value.hash !== undefined) insist(typeof value.hash === 'string' && /^0x[0-9a-fA-F]{64}$/.test(value.hash), 'invalid_recovery');
-  if (value.kind === 'publish' || value.kind === 'revoke') {
-    uint(value.recordId);
-    insist(typeof value.raw === 'string' && new TextEncoder().encode(value.raw).length <= 4096, 'invalid_recovery');
-    insist(value.value === (value.kind === 'publish' ? value.raw : ''), 'invalid_recovery');
-  }
-  if (['bind', 'parent-registry', 'bind-registry'].includes(value.kind as string)) address(value.value);
-  if (value.kind === 'register-name') uint(value.value, 64);
-  if (['grant', 'remove', 'grant-profile', 'remove-profile'].includes(value.kind as string)) address(value.helper);
-  if (['grant-profile', 'remove-profile', 'profile'].includes(value.kind as string)) {
-    insist(typeof value.key === 'string', 'invalid_recovery'); profileKey(value.key);
-  } else insist(value.key === undefined, 'invalid_recovery');
-  if (value.kind === 'profile') insist(typeof value.value === 'string' && new TextEncoder().encode(value.value).length <= 2048, 'invalid_recovery');
-  return value as Pending;
-}
-
+import { validHash } from '../src/erc8004';
+import { validateTransactionPlan, type TransactionPlan } from '../src/erc8004-operations';
+export type Pending = { plan: TransactionPlan; hash: Hex | null };
 export function isWalletRejection(error: unknown): boolean {
-  let current = error;
-  for (let depth = 0; depth < 6 && current && typeof current === 'object'; depth++) {
-    if ('code' in current && current.code === 4001) return true;
-    current = 'cause' in current ? current.cause : undefined;
-  }
-  return false;
+  return !!error && typeof error === 'object' && 'code' in error && error.code === 4001;
 }
-
+export function validatePending(value: unknown): Pending {
+  const p = object(value); exactKeys(p, ['plan', 'hash']); insist(p.hash === null || validHash(p.hash));
+  return { plan: validateTransactionPlan(p.plan), hash: p.hash as Hex | null };
+}
 export class Submission {
   pending: Pending | null;
-  constructor(private save: (value: Pending | null) => void, initial: Pending | null = null) {
-    this.pending = initial;
-  }
-  async submit(draft: Pending, send: () => Promise<Hex>) {
+  constructor(private persist: (value: Pending | null) => void, pending: Pending | null = null) { this.pending = pending; }
+  private save(value: Pending | null) { this.persist(value); this.pending = value; }
+  async send(plan: TransactionPlan, send: () => Promise<unknown>) {
     insist(!this.pending, 'pending_transaction');
-    this.pending = draft;
-    this.save(draft);
-    try {
-      const hash = await send();
-      this.pending = { ...draft, hash };
-      this.save(this.pending);
-      return hash;
-    } catch (error) {
-      if (isWalletRejection(error)) {
-        this.complete();
-        throw new EvidenceError('wallet_rejected');
-      }
+    this.save({ plan: validateTransactionPlan(plan), hash: null });
+    let result: unknown;
+    try { result = await send(); }
+    catch (error) {
+      if (isWalletRejection(error)) { this.save(null); throw new EvidenceError('wallet_rejected'); }
       throw new EvidenceError('submission_unknown', 'unavailable');
     }
+    insist(validHash(result), 'submission_unknown', 'unavailable');
+    // If saving the returned hash fails, the previously persisted unknown operation still blocks another send.
+    this.save({ plan, hash: result });
+    return result;
   }
-  complete() { this.pending = null; this.save(null); }
+  complete() { this.save(null); }
+  import(value: unknown) { insist(!this.pending, 'pending_transaction'); this.save(validatePending(value)); }
 }

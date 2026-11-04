@@ -43,7 +43,7 @@ module Devouch
         raise Error.new("policy_repository_mismatch", "The base policy belongs to a different repository.")
       end
       subject = "github:#{author}"
-      credential_path = ".devouch/vouches/github-#{author}.json"
+      credential_path = ".devouch/feedback/github-#{author}.json"
       credential = @api.file(head.fetch("repo").fetch("full_name"), credential_path, head.fetch("sha"), limit: 4096)
       status, report = Dir.mktmpdir("devouch-action-") do |directory|
         policy_file = File.join(directory, "policy.json")
@@ -71,7 +71,8 @@ module Devouch
       rows = [
         ["Evidence", report["evidence_status"]], ["Repository policy", report["policy_status"]],
         ["Subject", report["subject"]], ["Issuer", report["issuer"]], ["Scope", report["scope"]],
-        ["ENS hierarchy", Array(report["hierarchy"]).map { |hop| hop["name"] }.join(" -> ")],
+        ["Reputation Registry", report.dig("registry", "reputationRegistry")],
+        ["GitHub ownership", report.dig("declaration", "account_ownership") || "not_verified"],
         ["Reasons", Array(report["reason_codes"]).join(", ")],
         ["Repository / PR", "#{report.dig("github", "repository")} ##{report.dig("github", "pull_request")}"],
         ["Base SHA", report.dig("github", "base_sha")], ["Head SHA", report.dig("github", "head_sha")],
@@ -99,7 +100,7 @@ module Devouch
       when 2 then [report["evidence_status"], "not_evaluated"] if %w[invalid missing expired revoked].include?(report["evidence_status"])
       when 3 then ["unavailable", "not_evaluated"]
       end
-      unless report["report_version"] == 1 && report["command"] == "verify" &&
+      unless report["report_version"] == 2 && report["command"] == "verify" &&
           expected && expected == [report["evidence_status"], report["policy_status"]] &&
           report["subject"] == subject && report["human_verification"] == "not_included" && report["reason_codes"].is_a?(Array)
         raise Error.new("invalid_verifier_report", "The verifier JSON and exit code do not agree.", 70)

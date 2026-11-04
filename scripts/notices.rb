@@ -1,4 +1,4 @@
-# ABOUTME: Collects license texts for installed production packages, ENS artifacts, and bundled fonts.
+# ABOUTME: Collects license texts for installed production packages, ERC-8004 artifacts, and bundled fonts.
 # ABOUTME: Includes attribution in both the CLI and independently hosted static distribution.
 require "json"
 require "pathname"
@@ -28,7 +28,7 @@ end
 JSON.parse(root.join("package.json").read).fetch("dependencies").keys.sort.each do |name|
   visit.call(resolve_package.call(name, root))
 end
-notices << "ENSv2 artifacts: see vendor/ens-v2/README.md for pinned provenance.\n#{root.join('vendor/ens-v2/LICENSE').read}"
+notices << "ERC-8004 fixtures: see vendor/erc-8004/README.md for pinned provenance.\n#{root.join('vendor/erc-8004/LICENSE-OpenZeppelin').read}"
 fonts = JSON.parse(root.join('web/fonts/sources.json').read)
 fonts.fetch('licenses').each do |license|
   notices << "Bundled font: #{license.fetch('file')}\nSource: #{license.fetch('source')}\n" \
@@ -40,4 +40,4 @@ text = "Devouch distribution\n#{root.join('LICENSE').read}\n\nThird-party notice
   FileUtils.mkdir_p(target.dirname)
   target.write(text)
 end
-puts "Included licenses for #{visited.length} production packages, ENSv2, and #{fonts.fetch('licenses').length} font families."
+puts "Included licenses for #{visited.length} production packages, ERC-8004, and #{fonts.fetch('licenses').length} font families."

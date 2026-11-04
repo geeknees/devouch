@@ -16,7 +16,7 @@ class ActionTest < Minitest::Test
     end
     def file(repo, path, sha, limit:)
       @calls << [:file, repo, path, sha, limit]
-      return nil if @missing && path.include?("/vouches/")
+      return nil if @missing && path.include?("/feedback/")
       path.end_with?("policy.json") ? JSON.generate({"repositoryId" => "maintainer/repo"}) : "{}"
     end
   end
@@ -31,7 +31,7 @@ class ActionTest < Minitest::Test
   def runner(api, status: 0, evidence: "valid", policy: "accepted")
     verifier = ->(args) {
       @args = args
-      report = {"report_version" => 1, "command" => "verify", "evidence_status" => evidence, "policy_status" => policy,
+      report = {"report_version" => 2, "command" => "verify", "evidence_status" => evidence, "policy_status" => policy,
         "reason_codes" => [], "subject" => "github:12345", "subject_source" => "argument", "issuer" => nil,
         "scope" => "oss-contribution", "human_verification" => "not_included", "snapshot" => nil,
         "policy" => {"repository_id" => "maintainer/repo", "digest" => "sha256:" + "a" * 64},
@@ -48,7 +48,7 @@ class ActionTest < Minitest::Test
     assert_includes @args, "github:12345"
     refute_includes @args, "github:999"
     assert_includes api.calls, [:file, "maintainer/repo", ".devouch/policy.json", "a" * 40, 16_384]
-    assert_includes api.calls, [:file, "contributor/fork", ".devouch/vouches/github-12345.json", "b" * 40, 4096]
+    assert_includes api.calls, [:file, "contributor/fork", ".devouch/feedback/github-12345.json", "b" * 40, 4096]
   end
 
   def test_updated_api_head_does_not_replace_the_rerun_event_head
@@ -56,7 +56,7 @@ class ActionTest < Minitest::Test
     api_event["pull_request"]["head"]["sha"] = "c" * 40
     api = API.new(api_event)
     runner(api).run(event: @event, repository: "maintainer/repo", policy_path: ".devouch/policy.json")
-    assert_includes api.calls, [:file, "contributor/fork", ".devouch/vouches/github-12345.json", "b" * 40, 4096]
+    assert_includes api.calls, [:file, "contributor/fork", ".devouch/feedback/github-12345.json", "b" * 40, 4096]
   end
 
   def test_report_mode_completed_rejection_is_success_but_unavailable_is_failure
@@ -85,10 +85,10 @@ class ActionTest < Minitest::Test
 
   def test_summary_does_not_render_input_as_html_or_inject_table_rows
     summary = Devouch::Action.summary({"issuer" => "<script>|\n\"unsafe\"",
-      "hierarchy" => [{"name" => "eth"}, {"name" => "<img>|\nparent.eth"}]})
+      "registry" => {"reputationRegistry" => "<img>|\nregistry"}})
     refute_includes summary, "<script>"
     assert_includes summary, "&lt;script&gt;&#124; &quot;unsafe&quot;"
     refute_includes summary, "<img>"
-    assert_includes summary, "ENS hierarchy | eth -&gt; &lt;img&gt;&#124; parent.eth"
+    assert_includes summary, "Reputation Registry | &lt;img&gt;&#124; registry"
   end
 end
