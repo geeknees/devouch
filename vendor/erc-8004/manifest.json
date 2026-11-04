@@ -1,0 +1,16 @@
+{
+  "implementationCommit": "b9e466c250744a7e06b13dff9d3c2844ed64f825",
+  "specificationCommit": "503591a6e80e6e1affdd6403341e25269141f046",
+  "compiler": "0.8.24+commit.e11b9ed9",
+  "openzeppelin": "5.4.0",
+  "files": {
+    "ERC1967Proxy.json": "ca461925e6f09f16444bc1003c416b299a464031630607ffd53a9e1267e54d4f",
+    "IdentityRegistryUpgradeable.json": "5b046941b91a9ce17c84522383cdc2e77b417e064e5983c7f618913c44b3a5eb",
+    "MinimalUUPS.json": "fe6f595265f1fc822b6d71e5ecc33b1106ad7ee741d69cdddd74fb5798e79d18",
+    "ReputationRegistryUpgradeable.json": "1eb7581d483d89ed5f99f46b37bd80851e1192e7b400db4878b8dbb90120189b",
+    "compiler-input.json": "5caf36ea37f11639f734862141875a5744dbb3b6eb8f46382c528eeb42544a3e",
+    "contracts/IdentityRegistryUpgradeable.sol": "18c8ca8c88493b46e54d000c96eaf7470d1f9dbfe55493fd7fa923bae543ff75",
+    "contracts/MinimalUUPS.sol": "aae449c7c3b0a72a231649c5a123de693c53faf8912f197bc41d928b58d64296",
+    "contracts/ReputationRegistryUpgradeable.sol": "9063eba192391c3e6959edcad452184f07a6c1b3975391e7c4d77dbf1eaabf09"
+  }
+}
