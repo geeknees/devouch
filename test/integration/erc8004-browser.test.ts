@@ -17,7 +17,7 @@ afterAll(async () => { await browser?.close(); site?.kill(); if (site) await sit
 
 test('unknown publication delivery survives reload and exact recovery precedes download, verification, and withdrawal', async () => {
   const f = await setupErc8004(process.env.DEVOUCH_TEST_RPC!, false), page = await browser.newPage();
-  let sends = 0, sentHash = '', loseResponse = true;
+  let sends = 0, sentHash = '', loseResponse = true, estimateFails = true;
   const errors: string[] = [], external: string[] = [];
   page.on('pageerror', error => errors.push(error.message));
   await page.route('**/*', async route => {
@@ -26,6 +26,7 @@ test('unknown publication delivery survives reload and exact recovery precedes d
   });
   await page.exposeFunction('testWalletRequest', async (request: { method: string; params?: unknown[] }) => {
     if (request.method === 'eth_requestAccounts' || request.method === 'eth_accounts') return [f.evaluator];
+    if (request.method === 'eth_estimateGas' && estimateFails) throw new Error('fixture estimate unavailable');
     const result = await f.rpc(request.method, request.params);
     if (request.method === 'eth_sendTransaction') {
       sends++; sentHash = String(result);
@@ -53,6 +54,10 @@ test('unknown publication delivery survives reload and exact recovery precedes d
     await browserExpect(page.locator('#review')).toBeVisible();
     await browserExpect(page.locator('#send')).toBeDisabled(); expect(sends).toBe(0);
     await page.locator('#consent').check(); await page.locator('#send').click();
+    await browserExpect(page.locator('#status')).toContainText('The wallet could not estimate gas. No transaction was sent.');
+    await browserExpect(page.locator('#pending-panel')).toBeHidden(); expect(sends).toBe(0);
+    expect(await page.evaluate(() => localStorage.getItem('devouch.erc8004.pending.v1'))).toBeNull();
+    estimateFails = false; await page.locator('#send').click();
     await browserExpect(page.locator('#status')).toContainText('submission unknown');
     await browserExpect(page.locator('#pending-panel')).toBeVisible(); expect(sends).toBe(1);
     await page.reload(); await browserExpect(page.locator('#pending-panel')).toBeVisible(); await selectRpc();
