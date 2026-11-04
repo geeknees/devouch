@@ -37,7 +37,7 @@ Ruby 3.4以降とNode.js 24を用意し、このrepoをcloneします。JavaScri
 
 独立した評価者から実際のfeedback参照ファイルを受け取り、投稿するアカウントの数値IDを使います。`check` は投稿先の方針を固定commitから取得し、PRは送信しません。登録・対応付け・発行・取得・撤回の操作は[利用方法](docs/usage.md)にまとめています。
 
-画面をローカルで動かすには `bun install --frozen-lockfile`、`bun run build`、`node scripts/serve.ts` を実行し、表示されたURLを開きます。検証はウォレット不要、発行は対象ウォレットとSepoliaのガス代が必要です。[公開ワークスペース](https://geeknees.github.io/devouch/)は別途配信するため、0.3の公開と読み戻し確認まではENS版の可能性があります。
+画面をローカルで動かすには `bun install --frozen-lockfile`、`bun run build`、`node scripts/serve.ts` を実行し、表示されたURLを開きます。検証はウォレット不要、発行は対象ウォレットとSepoliaのガス代が必要です。[公開ワークスペース](https://geeknees.github.io/devouch/)はERC-8004 0.3を配信しており、配信ファイルとウォレット不要のPR検証を[2026-11-05（日本時間）に確認しました](docs/history.md)。Pagesの配信更新はソースのマージとは別に行います。
 
 ## repoへ導入する
 
@@ -49,7 +49,7 @@ Actionを確認済みのERC-8004 commitへ固定します。緑のジョブで�
 
 agentの管理者がGitHub IDを宣言し、独立した評価者が推薦します。agentの所有者と承認済みoperatorは自己推薦できません。信頼する評価者・用途・chain・registry実装はrepoごとに選びます。共通スコア、トークン報酬、自動承認・マージはありません。撤回しても公開履歴は残り、次回検証から判定へ反映されます。
 
-[ERC-8004評価](docs/erc8004-evaluation.md)にENSからの移行理由と制約を記載しています。ローカルEVM・CLI・ブラウザの検証と[公開registryの読み取り結果](docs/erc8004-deployment.md)は別の証拠です。実ウォレットでの公開feedback発行・撤回とERC画面の公開配信は、別途リリース時の受入確認に残ります。テストネット向けで、`human_verification` は `not_included` です。
+[ERC-8004評価](docs/erc8004-evaluation.md)にENSからの移行理由と制約を記載しています。ローカルEVM・CLI・ブラウザの検証、[公開registryの読み取り結果](docs/erc8004-deployment.md)、[公開画面の動作確認](docs/history.md)は別の証拠です。実ウォレットでの公開feedback発行・撤回と、公開された投稿者推薦の受理は未検証です。テストネット向けで、`human_verification` は `not_included` です。
 
 [Mitchell Hashimotoのvouch](https://github.com/mitchellh/vouch)を参考にした別実装です。vouchにもrepo間で推薦リストを共有する機能があります。[設計](docs/design.md)、[検証履歴](docs/history.md)、[ロードマップ](docs/roadmap.md)も参照してください。
 

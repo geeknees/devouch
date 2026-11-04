@@ -37,7 +37,7 @@ Install Ruby 3.4+ and Node.js 24, then clone this repository. The committed Java
 
 Obtain a real feedback reference from an independent evaluator and use the intended account's numeric ID. `check` reads the receiving repository's policy at an immutable base commit. It never submits a PR. The [usage guide](docs/usage.md) covers registration, mapping, publication, retrieval, and withdrawal.
 
-For the local workspace, run `bun install --frozen-lockfile`, `bun run build`, and `node scripts/serve.ts`, then open the printed URL. Verification needs no wallet; publication needs the relevant wallet and Sepolia gas. The [hosted workspace](https://geeknees.github.io/devouch/) is deployed separately and may still serve the ENS release until maintainers publish and verify 0.3.
+For the local workspace, run `bun install --frozen-lockfile`, `bun run build`, and `node scripts/serve.ts`, then open the printed URL. Verification needs no wallet; publication needs the relevant wallet and Sepolia gas. The [hosted workspace](https://geeknees.github.io/devouch/) serves ERC-8004 0.3; its deployed files and wallet-free PR verification were [checked on 2026-11-05 JST](docs/history.md). Pages deployment remains separate from source merges.
 
 ## Adopt in a repository
 
@@ -49,7 +49,7 @@ Pin the Action to a reviewed ERC-8004 commit. Read evidence and policy fields: a
 
 The controller declares an agent's GitHub ID; an independent evaluator supplies third-party feedback. Owners and approved operators cannot self-endorse. Each repository chooses its trusted evaluators, scopes, chain, and registry implementations. There is no global trust score, token incentive, automatic approval, or automatic merge. Public withdrawal preserves history and affects subsequent checks.
 
-The [ERC-8004 evaluation](docs/erc8004-evaluation.md) explains the migration from ENS and its limits. Local contract, CLI, browser, and policy checks are distinct from the [public registry read observations](docs/erc8004-deployment.md). Real public wallet feedback/withdrawal and hosted ERC rollout remain separate release acceptance steps. This is test-network software; `human_verification` is `not_included`.
+The [ERC-8004 evaluation](docs/erc8004-evaluation.md) explains the migration from ENS and its limits. Local contract, CLI, browser, and policy checks, [public registry read observations](docs/erc8004-deployment.md), and [hosted workspace checks](docs/history.md) are separate evidence. Real public wallet feedback/withdrawal and accepted public contributor evidence remain release acceptance work. This is test-network software; `human_verification` is `not_included`.
 
 Devouch is inspired by [Mitchell Hashimoto's vouch](https://github.com/mitchellh/vouch), a separate implementation that also supports shared contributor lists. See [design principles](docs/design.md), [verification history](docs/history.md), and [the roadmap](docs/roadmap.md).
 
