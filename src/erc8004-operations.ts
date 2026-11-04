@@ -127,15 +127,22 @@ export async function validateCurrentPlan(reader: Erc8004Reader, input: Transact
   return plan;
 }
 
-export async function confirmTransaction(reader: Erc8004Reader, input: TransactionPlan, hash: Hex) {
+export async function confirmTransaction(reader: Erc8004Reader, input: TransactionPlan, hash: Hex,
+  submittedHash: Hex | null = null) {
   const plan = validateTransactionPlan(input); insist(validHash(hash), 'invalid_transaction_hash');
   const client = reader.client;
   insist(await client.getChainId() === plan.deployment.chainId, 'wrong_chain', 'unavailable');
   const [receipt, tx] = await Promise.all([client.getTransactionReceipt({ hash }), client.getTransaction({ hash })]);
-  insist(tx.to && sameAddress(tx.to, plan.transaction.to) && sameAddress(tx.from, plan.from) && tx.value === 0n
-    && tx.input.toLowerCase() === plan.transaction.data.toLowerCase(), 'transaction_mismatch');
+  insist(sameAddress(tx.from, plan.from) && tx.value === 0n, 'transaction_mismatch');
+  const exactCall = tx.to && sameAddress(tx.to, plan.transaction.to)
+    && tx.input.toLowerCase() === plan.transaction.data.toLowerCase();
+  // Wallets may wrap a call. Their recorded hash can prove failure, but never prove a successful operation.
+  const submittedRevert = receipt.status === 'reverted' && submittedHash !== null
+    && validHash(submittedHash) && submittedHash.toLowerCase() === hash.toLowerCase();
+  insist(exactCall || submittedRevert, 'transaction_mismatch');
   insist(receipt.blockNumber > BigInt(plan.snapshot.blockNumber)
-    && receipt.transactionHash.toLowerCase() === hash.toLowerCase(), 'transaction_mismatch');
+    && receipt.transactionHash.toLowerCase() === hash.toLowerCase() && tx.hash.toLowerCase() === hash.toLowerCase()
+    && tx.blockNumber === receipt.blockNumber && tx.blockHash === receipt.blockHash, 'transaction_mismatch');
   const observed = await client.getBlock({ blockNumber: receipt.blockNumber });
   insist(observed.hash === receipt.blockHash, 'snapshot_changed', 'unavailable');
   if (receipt.status === 'reverted') return { status: 'reverted' as const, hash };
