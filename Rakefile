@@ -1,4 +1,4 @@
-# ABOUTME: Runs the Ruby behavioral suite and syntax checks for the hackathon application.
+# ABOUTME: Runs the Ruby behavioral suite and syntax checks for the Devouch application.
 # ABOUTME: Keeps remote-chain and browser validation as explicit separate commands.
 require "rake/testtask"
 Rake::TestTask.new(:test) do |task|

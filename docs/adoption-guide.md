@@ -1,16 +1,16 @@
 # Devouch 導入マニュアル
 
-更新：2026-09-26。0.2.0の階層ENSに対応した [Action](../action.yml)・[CLI](../exe/devouch)・静的画面を対象にします。[v0.1との互換性と更新手順](upgrading-0.2.md)を確認してください。ローカルテスト、固定commitの公開確認、[自repoのPR #17](https://github.com/geeknees/devouch/pull/17)での試用は[Roadmap記録](roadmap-plan.md)に分けて記載しています。Pagesの確認範囲は[公開記録](release-evidence.md)、masusanouの実fork PRは[実PRの検証記録](demo-evidence.md#masusanouの実fork-pr)、起動方法は[README](../README.md)を参照してください。
+現行の0.2.0向け手順です。[v0.1との互換性と更新手順](upgrading-0.2.md)、日付付きの[検証履歴](history.md)、[利用ガイド](usage.md)を併せて参照してください。
 
 公開 OSS リポジトリのメンテナー向けに、まず PR 作者の推薦を Actions の結果に表示するところまでを扱います。メンテナーは設定と workflow の2ファイルを追加し、推薦を持つ貢献者は初回だけ推薦 JSON を追加します。推薦結果を読み、レビューへ進めるかはメンテナーが決めます。
 
 静的画面の **[Maintainers](https://geeknees.github.io/devouch/#maintainers)** から設定を作れる。ローカル起動の場合は`http://127.0.0.1:4173/#maintainers`を開く。受け入れ先の`owner/repo`とレビューした公開Action commit SHAを指定する。最大8件の公開ENS名を検証し、表示されたissuer・scope・resolverを自分の判断で選ぶ。既定では誰も選択されず、invalid・revoked・expired・missing・unavailableの結果からは選べない。最終同意の後、`.devouch/policy.json`と`.github/workflows/devouch.yml`をダウンロードして通常のPRでレビューする。画面はwalletもGitHub loginも必要とせず、GitHubへ書き込まない。
 
-検証結果は表示されたblock時点のもの。採用方針は「選択したissuer・scope・resolverに一致する有効な推薦」を受け入れ、画面で見たsubjectだけへ制限するものではない。新しいサブネームに別resolverを使うなら、そのresolverを許可するレビューも必要。[名前空間の作成手順](namespaces.md)を参照。`v0.1`のActionは階層名に対応しないため、下記ではRoadmap実装のSHAを指定する。公開確認の結果は[記録](roadmap-plan.md)を参照する。
+検証結果は表示されたblock時点のもの。採用方針は「選択したissuer・scope・resolverに一致する有効な推薦」を受け入れ、画面で見たsubjectだけへ制限するものではない。新しいサブネームに別resolverを使うなら、そのresolverを許可するレビューも必要。[名前空間の作成手順](namespaces.md)を参照。`v0.1`のActionは階層名に対応しないため、下記ではRoadmap実装のSHAを指定する。公開確認の結果は[記録](history.md)を参照する。
 
 PR を送る側の手順は [AI エージェント管理者向けマニュアル](agent-operator-guide.md)を参照してください。推薦の依頼、エージェントへの指示、送信後の確認をまとめています。
 
-GitHub Actions を使わず手元で取得・検証する操作は [CLI](cli-interface.md#4-取得と検証を直接使う)にまとめています。CLI のローカル導入は Action を使う前提条件ではありません。
+GitHub Actions を使わず手元で取得・検証する操作は [CLI](cli-interface.md#commands)にまとめています。CLI のローカル導入は Action を使う前提条件ではありません。
 
 ## 導入するとどうなるか
 
@@ -22,7 +22,7 @@ PR が作成・更新されると、Devouch が PR 作者に対する推薦を�
 |---|---|
 | 導入するメンテナー | GitHub Actions を利用できる repo、受け入れる推薦者の公開情報、設定と workflow |
 | 推薦された貢献者 | 推薦者から受け取った公開済みの推薦 JSON。初回 PR に1ファイル追加 |
-| 推薦者 | 自分のウォレット、ENS 名と resolver、発行・失効のガス。推薦の作成手順は [ハンドオフ](hackathon-handoff.md#cli-と-web-の操作案) |
+| 推薦者 | 自分のウォレット、ENS 名と resolver、発行・失効のガス。推薦の作成手順は [利用ガイド](usage.md) |
 
 検証だけを導入するメンテナーと貢献者には、ウォレット、ENS 名の取得、ガス、World 認証、サーバー、DB、Ruby / Bun のローカルインストールを求めません。Action が必要なRubyとNode.jsを用意します。GitHub と RPC の利用制限・費用条件は残ります。
 
@@ -30,7 +30,7 @@ PR が作成・更新されると、Devouch が PR 作者に対する推薦を�
 
 **ブロックチェーンは、推薦の公開・撤回を、複数のリポジトリから確認できる共通の記録として使います。** 推薦者が一度公開した推薦を各 repo が利用でき、推薦者が撤回した後は、各 repo の次の検証でその変更を確認できます。Devouch 運営者への問い合わせや承認は、この経路に必要ありません。
 
-今回の案では Ethereum のテストネット Sepolia 上の ENSv2 を使います。ENS の名前に紐づくデータを扱うコントラクトを resolver と呼びます。推薦者が自分で管理する resolver の text record に、**推薦本文と署名を含む JSON 全体**を保存します。ENSv2 は、この記録の読み書きと更新権限の管理を提供します。[ENSv2 の公式説明](https://docs.ens.domains/ensv2/permissioned-resolver/)
+現行版では Ethereum のテストネット Sepolia 上の ENSv2 を使います。ENS の名前に紐づくデータを扱うコントラクトを resolver と呼びます。推薦者が自分で管理する resolver の text record に、**推薦本文と署名を含む JSON 全体**を保存します。ENSv2 は、この記録の読み書きと更新権限の管理を提供します。[ENSv2 の公式説明](https://docs.ens.domains/ensv2/permissioned-resolver/)
 
 | 担当 | Devouch での役割 |
 |---|---|
@@ -78,7 +78,7 @@ resolver の公開アドレスは導入者が確認します。画面の公開�
 
 ## 2. GitHub Actions の workflow を追加する
 
-`.github/workflows/devouch.yml` を作ります。配布先は公開repoの `geeknees/devouch` です。階層対応をローカル検証した40桁SHAで [workflow](../.github/workflows/devouch.yml)を固定しています。導入前に、[Roadmap記録](roadmap-plan.md)で固定commitの公開確認と試用結果を確認してください。
+`.github/workflows/devouch.yml` を作ります。配布先は公開repoの `geeknees/devouch` です。階層対応をローカル検証した40桁SHAで [workflow](../.github/workflows/devouch.yml)を固定しています。導入前に、[Roadmap記録](history.md)で固定commitの公開確認と試用結果を確認してください。
 
 ```yaml
 # ABOUTME: Reports the pull request author's portable endorsement.
@@ -111,7 +111,7 @@ jobs:
 
 既定 RPC は認証不要の `https://sepolia.gateway.tenderly.co` です。実際のデモ名の履歴とCLI requestまで確認しました。代替の `https://rpc.sepolia.ethpandaops.io` も配備時の状態照会まで確認済みで、`rpc-url` 入力で変更できます。PublicNodeは時間経過後に実名の準備確認が失敗したため、デモの代替には使いません。公開RPCの可用性・履歴保持・制限は保証せず、未完了の照会は unavailable にします。masusanouの実fork PRでは、手動登録のSecretを追加せず、GitHub提供tokenと既定RPCでvalid / acceptedを確認しました。初回forkの実行承認は必要でした。
 
-Roadmap版の試用では、GitHub runnerからTenderlyへの取得が2回とも`rpc_unavailable`になったため、上の例とMaintainersの出力はethPandaOpsを明示します。同じ推薦は両RPCからローカルでvalid / accepted、ethPandaOpsでは[実Actionもvalid / accepted](https://github.com/geeknees/devouch/actions/runs/36218361289)を確認済みです。初回失敗を含む詳細は[Roadmap記録](roadmap-plan.md)に残しました。自動的なRPC切替は行わず、履歴を確認できなければ判定を止めます。
+Roadmap版の試用では、GitHub runnerからTenderlyへの取得が2回とも`rpc_unavailable`になったため、上の例とMaintainersの出力はethPandaOpsを明示します。同じ推薦は両RPCからローカルでvalid / accepted、ethPandaOpsでは[実Actionもvalid / accepted](https://github.com/geeknees/devouch/actions/runs/36218361289)を確認済みです。初回失敗を含む詳細は[Roadmap記録](history.md)に残しました。自動的なRPC切替は行わず、履歴を確認できなければ判定を止めます。
 
 この workflow には `checkout`、PR のビルド、テスト実行を追加しません。Action 自身のコードだけで GitHub 上の JSON と chain を読みます。配布版はタグではなく commit SHA で固定します。[GitHub の Action 固定に関する説明](https://docs.github.com/en/actions/reference/security/secure-use#using-third-party-actions)
 
@@ -132,7 +132,7 @@ Roadmap版の試用では、GitHub runnerからTenderlyへの取得が2回とも
 
 Action は GitHub の PR 作者の ID と JSON の `subject` を照合します。実行を起こした人、再実行したメンテナー、Git commit の author 名を推薦対象に使いません。他人の有効な JSON を置いても、その PR 作者への推薦として通しません。
 
-PR の送信名義は、管理者本人のアカウントと、エージェント自身の専用アカウントの両方を想定します。レビュー案では実際の PR 作者へ直接推薦を付け、エージェント名義ならそのアカウントへの推薦を使います。管理者の推薦を別 ID へ引き継ぐことや、管理関係を証明する委任は含まれていません。[送信名義ごとの例](agent-operator-guide.md#二つの送信名義と推薦の対象)と [管理者との関係](agent-operator-guide.md#管理者との関係と-github-app)を参照してください。
+PR の送信名義は、管理者本人のアカウントと、エージェント自身の専用アカウントの両方を想定します。レビュー案では実際の PR 作者へ直接推薦を付け、エージェント名義ならそのアカウントへの推薦を使います。管理者の推薦を別 ID へ引き継ぐことや、管理関係を証明する委任は含まれていません。[送信名義ごとの例](agent-operator-guide.md#prepare-the-contribution)と [管理者との関係](agent-operator-guide.md#reuse-and-operations)を参照してください。
 
 PR のチェックから `Devouch endorsement report` の実行を開き、Summary を確認します。想定する表示は次のとおりです。
 

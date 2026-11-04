@@ -36,7 +36,7 @@
 
 1. 既存の原本JSON、publication.json、repo方針、使っているAction SHAを保存する。ブラウザに未確認の取引があれば、現在の版でreceiptを照合するかrecovery fileを保存する。
 2. [導入ガイド](adoption-guide.md)の0.2.0固定SHAへActionを更新し、CLIとWebも同じ版へ揃える。`./exe/devouch --version`とJSONの`verifier_version`で確認する。
-3. 既存原本をそのまま再検証する。`invalid`なら理由と権限履歴を確認する。権限変更による無効化の場合は、必要な所有権・root TEXT権限を確認した後、新しいID・nonce・署名で発行する。既存デモの二つの有効な推薦を作り直す必要はない。
+3. 既存原本をそのまま再検証する。`invalid`なら理由と権限履歴を確認する。権限変更による無効化の場合は、必要な所有権・root TEXT権限を確認した後、新しいID・nonce・署名で発行する。変更のない有効な推薦は原本のまま再検証する。
 4. 複数推薦が必要な場合だけ[Namespaces](namespaces.md)で新しい名前と専用resolverを作る。移行のために既存のdirect名を上書き・失効する必要はない。新resolverは導入先の`allowedResolvers`へ追加するレビューが必要で、新issuerへの信頼は自動追加されない。
 5. 実PRのレポートで`valid / accepted`と対象・base/head SHA・snapshotを確認する。緑のreportジョブだけで受入れと判断しない。
 
@@ -48,4 +48,4 @@
 
 通常のdirect名の原本はv0.1でも使えるが、上表の権限変更は旧版では見逃す場合がある。0.2.0で無効になった推薦を有効に見せる目的で切り戻さない。追加したresolver等の方針変更は別途レビューし、方針を自動的に緩めない。
 
-既存デモ原本、`.devouch/policy.json`、PR #2は今回の更新対象外。実機で新しいサブネームを試す手順は[Sepolia確認ガイド](sepolia-namespace-check.md)に分ける。
+新しいサブネームの作成手順は[名前空間ガイド](namespaces.md)を参照する。既存の公開推薦を書き換える操作は、その推薦者が個別に判断する。
