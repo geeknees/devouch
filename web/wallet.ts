@@ -1,5 +1,5 @@
 // ABOUTME: Sends only reviewed zero-value registry calls through the user's connected wallet.
-// ABOUTME: Verifies chain, account, calldata, receipt, and readback before clearing a pending operation.
+// ABOUTME: Verifies successful calls exactly and clears failed wrappers only through their recorded wallet hash.
 import { toHex, type EIP1193Provider, type Hex } from 'viem';
 import { address } from '../src/json';
 import { insist } from '../src/errors';
@@ -30,7 +30,7 @@ export class WalletSession {
   }
   async recover(hash: Hex) {
     const pending = this.submission.pending; insist(pending, 'pending_transaction_missing');
-    const result = await confirmTransaction(this.reader, pending.plan, hash);
+    const result = await confirmTransaction(this.reader, pending.plan, hash, pending.hash);
     this.submission.complete(); return result;
   }
 }

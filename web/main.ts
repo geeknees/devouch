@@ -99,7 +99,7 @@ async function recover() {
   invalidate();
   if (result.reference) showReference(result.reference);
   if (result.agentId !== undefined) input('map-agent').value = result.agentId;
-  status(result.status === 'reverted' ? 'Transaction reverted. No operation completed.' :
+  status(result.status === 'reverted' ? 'Transaction reverted. The registry operation did not complete. Pending state cleared; review the failure before preparing another operation.' :
     'Transaction mined and exact state read back.' + (result.agentId !== undefined ? ' Agent ID: ' + result.agentId : ''), result.status === 'reverted');
 }
 for (const node of document.querySelectorAll<HTMLElement>('[data-tab], [data-go]'))

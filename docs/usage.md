@@ -19,6 +19,10 @@ The controller's GitHub declaration and evaluator's recommendation do not prove 
 
 Pending operations are saved locally before wallet submission. A lost response can mean the transaction was sent. Reloading does not permit a duplicate. Check wallet history, enter the exact hash, and check the transaction. A rejected wallet request clears its pending record; an unknown outcome does not. Save the public recovery JSON when moving between browsers. Recovery requires the matching network's RPC, but no wallet connection.
 
+A wallet may wrap the reviewed call in a smart-account transaction. If the wallet returned a hash that Devouch saved, a canonical reverted receipt for that hash, sender, and zero ETH value clears the pending operation. This confirms that the registry operation failed; it does not undo an EIP-7702 account delegation. A manually entered hash for an unknown wrapped submission is insufficient. Successful wrapped transactions still require exact call verification and remain pending when the wrapper cannot be verified. Do not resend an operation that may have succeeded.
+
+An internal call can run out of gas even when the outer transaction has gas remaining. Inspect the failed call before adjusting transaction settings. If MetaMask displays a malicious-site or transaction warning, keep submission paused until the warning's target and reason have been checked; a matching deployment or an absent public blocklist entry alone does not resolve the warning.
+
 An imported unsigned plan is checked against its reconstructed registry calldata and current chain state before sending. Plans expire after 15 minutes. Unknown or mismatched receipts remain pending. Preserve unreadable recovery storage and recover from a valid exported file in another browser rather than blindly resending. Local files, references, and recovery data contain only public information; never import keys or recovery phrases.
 
 ## CLI
