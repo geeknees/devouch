@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - uses: geeknees/devouch@b258e40925838e075b78763b7859a68cee65cb59
+      - uses: geeknees/devouch@0749383ec4b728b5d5490397b6baf7008b48e79a
         with:
           policy-path: .devouch/erc8004-policy.json
           mode: report
